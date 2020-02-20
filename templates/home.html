@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>
+    Heat factor
+  </title>
+  <body>
+    <h2>USPSA Match Heat Factor</h2>
+    <form action="/heat_factor/" method="post">
+      {% csrf_token %}
+      Cut-n-Paste the Practiscore match URL:
+      <input type="text" name="param" size="80" required>
+      <br>
+      <font color="red">
+      {% if error %}
+          {{ error }}
+      {% endif %}
+      </font>
+      <br>
+      <input type="submit" value="Heat Factor">
+    </form><br>
+    <hr>
+    <h2>Methodology:</h2>
+    <p>
+      Heat Factor takes all of the GM, M, A and B class shooters (sorry C and D class, you need to dry fire more) in a<br>
+      division and assigns a random rating within a range to each shooter.<br><br>
+      The ranges are:<br>
+      GM: 95-100<br>
+      M: 85-94<br>
+      A: 75-84<br>
+      B: 60-74<br><br>
+      Then sum the total of the ratings and divide by the total number of GM, M, A and B class shooters in the division.<br>
+    </p>
+    <br>
+    <h2>Disclaimer:</h2>
+      <p>
+        I spent very little time debugging this app.  I'm sure there are a lot of matches out there that are configued<br>
+        in Practiscore.com in a different way than what I tested.  So if it doesn't work with your match drop me a line.<br>
+        It only works with USPSA matches.<br>
+        I didn't spend any time on the front-end which is why it looks like shit.<br><br>
+        Contact: <a href="mailto:heat.factor.app@gmail.com">Heat Factor App</a>
+      </p>
+  </body>
+</head>
+</html>
