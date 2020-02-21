@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
-<html>
-  <title>
-    Heat factor
-  </title>
-  <img src="data:image/png;base64,{{ graphic | safe }}">
+{% extends "base.html" %}
+
+{% block content %}
+  <center>
+    <img src="data:image/png;base64,{{ graphic | safe }}">
+  </center>
   <hr>
-</html>
+{% endblock content %}

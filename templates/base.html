@@ -1,0 +1,21 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+    <head>
+        <title>Heat Factor</title>
+        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400" rel="stylesheet">
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    </head>
+    <div style="background-color:lightblue">
+      <center>
+      <h2>USPSA Heat Factor by Division</h2>
+      </center>
+    </div>
+    <body>
+    {% block content %}{% endblock content %}
+    Contact: <a href="mailto:heat.factor.app@gmail.com">Heat Factor App</a>
+    </body>
+</html>
