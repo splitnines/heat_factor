@@ -191,7 +191,7 @@ def home(request):
     return render(request, 'home.html')
 
 def heat_factor(request):
-    url = request.POST.get('param')
+    url = request.POST.get('p_url')
     if re.match(r'^https://practiscore.com/results/new/[0-9a-z-]+$', url):
         prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
         prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)

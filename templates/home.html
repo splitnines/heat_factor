@@ -8,8 +8,10 @@
     <h2>USPSA Match Heat Factor</h2>
     <form action="/heat_factor/" method="post">
       {% csrf_token %}
-      Cut-n-Paste the Practiscore match URL:
-      <input type="text" name="param" size="80" required>
+      <label for="heat factor">
+        Cut-n-Paste the Practiscore match URL:
+      </label>
+      <input id="heat_factor" type="text" name="p_url" size="80" required>
       <br>
       <font color="red">
       {% if error %}
