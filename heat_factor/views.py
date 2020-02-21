@@ -11,6 +11,16 @@ from io import BytesIO
 import base64
 
 
+def fix_g_class(class_list, class_cnt):
+    """this fixes practiscores use of both 'G' and 'GM' class"""
+    gm_cnts = 0
+    for i in class_list:
+        if (i == 'g'):
+            gm_cnts += class_cnt[class_list.index('g')]
+        if (i == 'gm'):
+            gm_cnts += class_cnt[class_list.index('gm')]
+    return gm_cnts
+
 def get_it(url):
 
     match_link_html = requests.get(url)
@@ -21,14 +31,25 @@ def get_it(url):
     match_breakdown_html = requests.get(match_breakdown_link)
     bs = BeautifulSoup(match_breakdown_html.text, 'lxml')
 
+    # get the order of the classes
+    class_order_list = []
+    if bs.find(text='Division'):
+        for i in bs.find(text='Division').parent.next_siblings:
+            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
+                class_order_list.append(i.get_text().lower())
+
     # Production Division
     if bs.find(text='Production'):
         prod_class_list = []
         for i in bs.find(text='Production').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 prod_class_list.append(int(i.get_text()))
-        prod_dict = {'gm' : prod_class_list[6], 'm' : prod_class_list[5],
-                     'a' : prod_class_list[4], 'b' : prod_class_list[3]}
+        prod_gm_cnt = fix_g_class(class_order_list, prod_class_list)
+        prod_dict = {'gm' : prod_gm_cnt,
+                     'm' : prod_class_list[class_order_list.index('m')],
+                     'a' : prod_class_list[class_order_list.index('a')],
+                     'b' : prod_class_list[class_order_list.index('b')]
+                    }
     else:
         prod_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
@@ -38,8 +59,12 @@ def get_it(url):
         for i in bs.find(text='Open').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 opn_class_list.append(int(i.get_text()))
-        opn_dict = {'gm' : opn_class_list[6], 'm' : opn_class_list[5],
-                    'a' : opn_class_list[4], 'b' : opn_class_list[3]}
+        opn_gm_cnt = fix_g_class(class_order_list, opn_class_list)
+        opn_dict = {'gm' : opn_gm_cnt,
+                    'm' : opn_class_list[class_order_list.index('m')],
+                    'a' : opn_class_list[class_order_list.index('a')],
+                    'b' : opn_class_list[class_order_list.index('b')]
+                   }
     else:
         opn_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
@@ -49,8 +74,12 @@ def get_it(url):
         for i in bs.find(text='Carry Optics').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 co_class_list.append(int(i.get_text()))
-        co_dict = {'gm' : co_class_list[6], 'm' : co_class_list[5],
-                   'a' : co_class_list[4], 'b' : co_class_list[3]}
+        co_gm_cnt = fix_g_class(class_order_list, co_class_list)
+        co_dict = {'gm' : co_gm_cnt,
+                   'm' : co_class_list[class_order_list.index('m')],
+                   'a' : co_class_list[class_order_list.index('a')],
+                   'b' : co_class_list[class_order_list.index('b')]
+                  }
     else:
         co_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
@@ -60,8 +89,12 @@ def get_it(url):
         for i in bs.find(text='Limited').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 lim_class_list.append(int(i.get_text()))
-        lim_dict = {'gm' : lim_class_list[6], 'm' : lim_class_list[5],
-                    'a' : lim_class_list[4], 'b' : lim_class_list[3]}
+        lim_gm_cnt = fix_g_class(class_order_list, lim_class_list)
+        lim_dict = {'gm' : lim_gm_cnt,
+                    'm' : lim_class_list[class_order_list.index('m')],
+                    'a' : lim_class_list[class_order_list.index('a')],
+                    'b' : lim_class_list[class_order_list.index('b')]
+                   }
     else:
         lim_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
@@ -71,8 +104,12 @@ def get_it(url):
         for i in bs.find(text='PCC').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 pcc_class_list.append(int(i.get_text()))
-        pcc_dict = {'gm' : pcc_class_list[6], 'm' : pcc_class_list[5],
-                    'a' : pcc_class_list[4], 'b' : pcc_class_list[3]}
+        pcc_gm_cnt = fix_g_class(class_order_list, pcc_class_list)
+        pcc_dict = {'gm' : pcc_gm_cnt,
+                    'm' : pcc_class_list[class_order_list.index('m')],
+                    'a' : pcc_class_list[class_order_list.index('a')],
+                    'b' : pcc_class_list[class_order_list.index('b')]
+                   }
     else:
         pcc_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
@@ -82,8 +119,12 @@ def get_it(url):
         for i in bs.find(text='Single Stack').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
                 ss_class_list.append(int(i.get_text()))
-        ss_dict = {'gm' : ss_class_list[6], 'm' : ss_class_list[5],
-                   'a' : ss_class_list[4], 'b' : ss_class_list[3]}
+        ss_gm_cnt = fix_g_class(class_order_list, ss_class_list)
+        ss_dict = {'gm' : ss_gm_cnt,
+                   'm' : ss_class_list[class_order_list.index('m')],
+                   'a' : ss_class_list[class_order_list.index('a')],
+                   'b' : ss_class_list[class_order_list.index('b')]
+                  }
     else:
         ss_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
