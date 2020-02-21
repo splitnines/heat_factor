@@ -99,7 +99,7 @@ def get_it(url):
         lim_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
 
     # PCC division
-    if bs.find(text='Limited'):
+    if bs.find(text='PCC'):
         pcc_class_list = []
         for i in bs.find(text='PCC').parent.next_siblings:
             if str(type(i)) != "<class 'bs4.element.NavigableString'>":
