@@ -1,12 +1,10 @@
 from django.shortcuts import render
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import random
 from bs4 import BeautifulSoup
 import requests
 import re
-import datetime
 from io import BytesIO
 import base64
 
@@ -19,10 +17,31 @@ def fix_g_class(class_list, class_cnt):
             gm_cnts += class_cnt[class_list.index('g')]
         if (i == 'gm'):
             gm_cnts += class_cnt[class_list.index('gm')]
+
     return gm_cnts
 
-def get_it(url):
+def division_counts(bs, class_order_list, division):
+    """take in beautifulsoup object, class_oder_list and division name text
+    and returns a dict with number of shooters per class"""
+    if bs.find(text=division):
+        division_class_list = []
+        for i in bs.find(text=division).parent.next_siblings:
+            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
+                division_class_list.append(int(i.get_text()))
 
+        division_gm_cnt = fix_g_class(class_order_list, division_class_list) # call fix_g_class function
+        division_dict = {'gm' : division_gm_cnt,
+                         'm' : division_class_list[class_order_list.index('m')],
+                         'a' : division_class_list[class_order_list.index('a')],
+                         'b' : division_class_list[class_order_list.index('b')]
+                        }
+    else:
+        division_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+
+    return division_dict
+
+def get_it(url):
+    """scrape the practiscore url provided by the user"""
     match_link_html = requests.get(url)
     bs = BeautifulSoup(match_link_html.text, 'lxml')
     match_name = bs.find('h4').get_text()
@@ -39,103 +58,34 @@ def get_it(url):
                 class_order_list.append(i.get_text().lower())
 
     # Production Division
-    if bs.find(text='Production'):
-        prod_class_list = []
-        for i in bs.find(text='Production').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                prod_class_list.append(int(i.get_text()))
-        prod_gm_cnt = fix_g_class(class_order_list, prod_class_list)
-        prod_dict = {'gm' : prod_gm_cnt,
-                     'm' : prod_class_list[class_order_list.index('m')],
-                     'a' : prod_class_list[class_order_list.index('a')],
-                     'b' : prod_class_list[class_order_list.index('b')]
-                    }
-    else:
-        prod_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    prod_dict = division_counts(bs, class_order_list, 'Production')
 
     # Open division
-    if bs.find(text='Open'):
-        opn_class_list = []
-        for i in bs.find(text='Open').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                opn_class_list.append(int(i.get_text()))
-        opn_gm_cnt = fix_g_class(class_order_list, opn_class_list)
-        opn_dict = {'gm' : opn_gm_cnt,
-                    'm' : opn_class_list[class_order_list.index('m')],
-                    'a' : opn_class_list[class_order_list.index('a')],
-                    'b' : opn_class_list[class_order_list.index('b')]
-                   }
-    else:
-        opn_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    opn_dict = division_counts(bs, class_order_list, 'Open')
 
     # CO division
-    if bs.find(text='Carry Optics'):
-        co_class_list = []
-        for i in bs.find(text='Carry Optics').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                co_class_list.append(int(i.get_text()))
-        co_gm_cnt = fix_g_class(class_order_list, co_class_list)
-        co_dict = {'gm' : co_gm_cnt,
-                   'm' : co_class_list[class_order_list.index('m')],
-                   'a' : co_class_list[class_order_list.index('a')],
-                   'b' : co_class_list[class_order_list.index('b')]
-                  }
-    else:
-        co_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    co_dict = division_counts(bs, class_order_list, 'Carry Optics')
 
     # Limited division
-    if bs.find(text='Limited'):
-        lim_class_list = []
-        for i in bs.find(text='Limited').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                lim_class_list.append(int(i.get_text()))
-        lim_gm_cnt = fix_g_class(class_order_list, lim_class_list)
-        lim_dict = {'gm' : lim_gm_cnt,
-                    'm' : lim_class_list[class_order_list.index('m')],
-                    'a' : lim_class_list[class_order_list.index('a')],
-                    'b' : lim_class_list[class_order_list.index('b')]
-                   }
-    else:
-        lim_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    lim_dict = division_counts(bs, class_order_list, 'Limited')
 
     # PCC division
-    if bs.find(text='PCC'):
-        pcc_class_list = []
-        for i in bs.find(text='PCC').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                pcc_class_list.append(int(i.get_text()))
-        pcc_gm_cnt = fix_g_class(class_order_list, pcc_class_list)
-        pcc_dict = {'gm' : pcc_gm_cnt,
-                    'm' : pcc_class_list[class_order_list.index('m')],
-                    'a' : pcc_class_list[class_order_list.index('a')],
-                    'b' : pcc_class_list[class_order_list.index('b')]
-                   }
-    else:
-        pcc_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    pcc_dict = division_counts(bs, class_order_list, 'PCC')
 
     # Single Stack division
-    if bs.find(text='Single Stack'):
-        ss_class_list = []
-        for i in bs.find(text='Single Stack').parent.next_siblings:
-            if str(type(i)) != "<class 'bs4.element.NavigableString'>":
-                ss_class_list.append(int(i.get_text()))
-        ss_gm_cnt = fix_g_class(class_order_list, ss_class_list)
-        ss_dict = {'gm' : ss_gm_cnt,
-                   'm' : ss_class_list[class_order_list.index('m')],
-                   'a' : ss_class_list[class_order_list.index('a')],
-                   'b' : ss_class_list[class_order_list.index('b')]
-                  }
-    else:
-        ss_dict = {'gm' : 0, 'm' : 0, 'a' : 0, 'b' : 0}
+    ss_dict = division_counts(bs, class_order_list, 'Single Stack')
 
     return prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name
 
 
-def run_it(prod, opn, co, lim, pcc, ss):
+def run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict):
 
     # heat multiplier
-    multiplier = {'gm' : random.randrange(95, 100), 'm' : random.randrange(85, 94),
-                  'a' : random.randrange(75, 84), 'b' : random.randrange(60, 74)}
+    multiplier = {'gm' : random.randrange(95, 100),
+                  'm' : random.randrange(85, 94),
+                  'a' : random.randrange(75, 84),
+                  'b' : random.randrange(60, 74)
+                 }
     # init heat counts
     prod_heat_count = 0
     opn_heat_count = 0
@@ -153,26 +103,26 @@ def run_it(prod, opn, co, lim, pcc, ss):
     # loop through the dicts
     for key in multiplier:
         # calc heat counts
-        for num in range(0, prod[key]):
+        for num in range(0, prod_dict[key]):
             prod_heat_count += multiplier[key]
-        for num in range(0, opn[key]):
+        for num in range(0, opn_dict[key]):
             opn_heat_count += multiplier[key]
-        for num in range(0, co[key]):
+        for num in range(0, co_dict[key]):
             co_heat_count += multiplier[key]
-        for num in range(0, lim[key]):
+        for num in range(0, lim_dict[key]):
             lim_heat_count += multiplier[key]
-        for num in range(0, pcc[key]):
+        for num in range(0, pcc_dict[key]):
             pcc_heat_count += multiplier[key]
-        for num in range(0, ss[key]):
+        for num in range(0, ss_dict[key]):
             ss_heat_count += multiplier[key]
 
         #calc total shooters in sample
-        prod_count += prod[key]
-        opn_count += opn[key]
-        co_count += co[key]
-        lim_count += lim[key]
-        pcc_count += pcc[key]
-        ss_count += ss[key]
+        prod_count += prod_dict[key]
+        opn_count += opn_dict[key]
+        co_count += co_dict[key]
+        lim_count += lim_dict[key]
+        pcc_count += pcc_dict[key]
+        ss_count += ss_dict[key]
 
     # factor heat index
     prod_heat_idx = round(prod_heat_count / prod_count, 2) if prod_count > 0 else 0
@@ -186,15 +136,15 @@ def run_it(prod, opn, co, lim, pcc, ss):
 
 
 def graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx, match_name):
+    """graph the data from practiscore, save image to memory and pass image back"""
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
     heat_idx = [prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx]
 
-    x = np.arange(len(labels))  # the label locations
-    width = 0.3  # the width of the bars
+    x = np.arange(len(labels))
+    width = 0.3
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x, heat_idx, width, label='Heat Factor')
-    # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Heat Factor')
     ax.set_title(match_name)
     ax.set_xticks(x)
@@ -213,8 +163,6 @@ def graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_id
 
     autolabel(rects1)
     fig.tight_layout()
-    t_stamp =str(datetime.datetime.now()).replace(' ', '_').replace('.', '_').replace(':', '')
-
     # use IO BytesIO to store image in memory
     # I took this from the web and need to figure out how it works
     buffer = BytesIO()
@@ -229,14 +177,19 @@ def graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_id
     return graphic
 
 def home(request):
+    """display app home page/landing page"""
+
     return render(request, 'home.html')
 
 def heat_factor(request):
+    """get practiscore url from form, pass it to get_it fuction then run thru the rest of the program"""
     url = request.POST.get('p_url')
     if re.match(r'^https://practiscore.com/results/new/[0-9a-z-]+$', url):
         prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
         prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
         graphic = graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx, match_name)
+
         return render(request, 'heat_factor.html', {'graphic':graphic})
     else:
+
         return render(request, 'home.html', {'error':'Not a valid Practiscore.com URL: ' + url})
