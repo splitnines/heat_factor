@@ -1,25 +1,25 @@
 <!DOCTYPE HTML>
 {% extends "base.html" %}
 
+
 {% block content %}
     <form action="/heat_factor/" method="post">
       {% csrf_token %}
-      <label for="heat factor">
-        <h3>Copy-n-Paste the Practiscore match URL:</h3>
-      </label>
-      <input id="heat_factor" type="text" name="p_url" size="80" required>
-      <br>
-      <font color="red">
-      {% if error %}
-          {{ error }}
-      {% endif %}
-      </font>
+    <h3>
+      {{ form.as_p }}
+    </h3>
       <br>
       <input type="submit" value="Heat Factor">
-    </form><br>
+    </form>
+    {% if error %}
+      <font color="red">
+        {{ error }}
+      </font>
+    {% endif %}
+    <br>
     <hr>
     <h2>Methodology:</h2>
-    <p>
+    <p align="justify">
       The Heat Factor App collects the classification information from the Match Breakdown section of a Practiscore.com match URL.  Each shooter is then given a rank based on thier classification.
       <br><br>
       The rankings that are used align with USPSA classifications:<br>
@@ -35,7 +35,7 @@
     </p>
     <br>
       <h2>Disclaimer:</h2>
-      <p>
+      <p align="justify">
         Practiscore.com seems to have a few different ways a match can be entered.  These differences may cause the Heat Factor app not to work for a specific match or to produce errouous data.  If a match isn't working for you please email me at the contact email address.  If your Heat Factor is really high, above 85, it's likely there's a problem with the app reading the match data.  Please email the match link to me if this is the case.
       <br><br>
       </p>

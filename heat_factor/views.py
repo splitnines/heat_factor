@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -7,6 +7,9 @@ import requests
 import re
 from io import BytesIO
 import base64
+import datetime
+from .forms import PractiscoreUrlForm
+from django.http import HttpResponseRedirect
 
 
 def fix_g_class(class_list, class_cnt):
@@ -176,10 +179,17 @@ def graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_id
 
     return graphic
 
+
 def home(request):
     """display app home page/landing page"""
+    if request.method == 'POST':
+        form = PractiscoreUrlForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('/')
+    else:
+        form = PractiscoreUrlForm()
 
-    return render(request, 'home.html')
+    return render(request, 'home.html', {'form': form})
 
 def heat_factor(request):
     """get practiscore url from form, pass it to get_it fuction then run thru the rest of the program"""
@@ -189,7 +199,19 @@ def heat_factor(request):
         prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
         graphic = graph_it(prod_heat_idx, opn_heat_idx, co_heat_idx, lim_heat_idx, pcc_heat_idx, ss_heat_idx, match_name)
 
-        return render(request, 'heat_factor.html', {'graphic':graphic})
+        return render(request, 'heat_factor.html', {'graphic':graphic, 'date':datetime.datetime.now()})
     else:
 
-        return render(request, 'home.html', {'error':'Not a valid Practiscore.com URL: ' + url})
+        # redirect on bad_url detection
+        return redirect('/bad_url/')
+
+def bad_url(request):
+    """this page is displayed when a bad URL is entered.  I don't like it this way"""
+    if request.method == 'POST':
+        form = PractiscoreUrlForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('/')
+    else:
+        form = PractiscoreUrlForm()
+
+    return render(request, 'bad_url.html', {'form': form})
