@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import PractiscoreUrlForm
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -8,8 +9,7 @@ import re
 from io import BytesIO
 import base64
 import datetime
-from .forms import PractiscoreUrlForm
-from django.http import HttpResponseRedirect
+
 
 
 def fix_g_class(class_list, class_cnt):
