@@ -56,7 +56,7 @@ def bad_url(request):
 
 
 def get_upped(request):
-    """Description text here"""
+    """Creates a ClassifactionWhatIf object and calls various methods on that object to produce responses."""
 
     mem_num = request.POST.get('mem_num')
     division = request.POST.get('division')
@@ -64,7 +64,7 @@ def get_upped(request):
     try:
         shooter = ClassifactionWhatIf(mem_num, division)
     except:
-        return render(request, 'get_upped.html', {'error':'An error occured.'})
+        return render(request, 'get_upped.html', {'response_text':'2 Mikes, 2 No-shoots.  An error occured.'})
 
     if shooter.get_shooter_class() == 'GM':
         return render(request, 'get_upped.html', {'response_text':'You are a ' + shooter.get_shooter_class() + ' already.  Nowhere to go from here.'})
