@@ -64,7 +64,7 @@ def get_upped(request):
     try:
         shooter = ClassifactionWhatIf(mem_num, division)
     except:
-        return render(request, 'get_upped.html', {'response_text':'2 Mikes, 2 No-shoots.  An error occured.'})
+        return render(request, 'get_upped.html', {'response_text':'2 Mikes, 2 No-shoots.  An error occured.  If your classifier scores are set to private this app won\'t work'})
 
     if shooter.get_shooter_class() == 'GM':
         return render(request, 'get_upped.html', {'response_text':'You are a ' + shooter.get_shooter_class() + ' already.  Nowhere to go from here.'})

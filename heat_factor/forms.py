@@ -21,6 +21,7 @@ class GetUppedForm(forms.Form):
     )
 
     DIVISION_LIST = [
+        ('',''),
         ('Open', 'Open'),
         ('Limited', 'Limited'),
         ('Production', 'Production'),
