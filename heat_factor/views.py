@@ -65,19 +65,19 @@ def get_upped(request):
         shooter = ClassifactionWhatIf(mem_num, division)
     except:
         return render(request, 'get_upped.html', {'response_text':
-                                                  '2 Mikes, 2 No-shoots: No scores found for memeber {} in {} division.  If your USPSA classifier scores are set to priviate this tool won\'t.  If you don\'t have at least 3 qualifing classifier scores on record this tool won\'t work.'.format(mem_num, division)})
+                                                  '<font color=\"red\">2 Mikes, 2 No-shoots:</font> No scores found for memeber {} in {} division.  If your USPSA classifier scores are set to priviate this tool won\'t.  If you don\'t have at least 3 qualifing classifier scores on record this tool won\'t work.'.format(mem_num, division)})
 
     if shooter.get_shooter_class() == 'GM':
         return render(request, 'get_upped.html', {'response_text':
-                                                  'You\'re a {}.  Nowhere to go from here.'.format(shooter.get_shooter_class())})
+                                                  'You\'re a <font color=\"blue\">{}</font>.  Nowhere to go from here.'.format(shooter.get_shooter_class())})
 
     if shooter.get_shooter_class() == 'U':
         return render(request, 'get_upped.html', {'response_text':
-                                                  'You need a score of {}% in your next classifier to achieve an initial classification of {} class.'.format(str(shooter.get_initial_classifaction()[0]), shooter.get_initial_classifaction()[1])})
+                                                  'You need a score of <font color=\"green\">{}%</font> in your next classifier to achieve an initial classification of <font color=\"green\">{}</font> class.'.format(str(shooter.get_initial_classifaction()[0]), shooter.get_initial_classifaction()[1])})
 
     if shooter.get_upped() > 100:
         return render(request, 'get_upped.html', {'response_text':
-                                                  'You can not move up in your next classifier because you need a score greater than 100%. Enjoy {} class'.format(shooter.get_shooter_class())})
+                                                  'You can not move up in your next classifier because you need a score greater than <font color=\"red\">100%</font>. Enjoy {} class'.format(shooter.get_shooter_class())})
     else:
         return render(request, 'get_upped.html', {'response_text':
-                                                  'You need a score of {}% to make {} class.'.format(str(shooter.get_upped()), shooter.get_next_class())})
+                                                  'You need a score of <font color=\"green\">{}%</font> to make <font color=\"green\">{}</font> class.'.format(str(shooter.get_upped()), shooter.get_next_class())})
