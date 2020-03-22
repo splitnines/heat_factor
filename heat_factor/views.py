@@ -29,7 +29,7 @@ def heat_factor(request):
     """get practiscore url from form, pass it to get_it fuction then run thru the rest of the program"""
 
     url = request.POST.get('p_url')
-    if re.match(r'^https://(www\.)*practiscore\.com/results/new/[0-9a-z-]+$', url):
+    if re.match(r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$', url):
         prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
         heat_idx_list = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
         graphic = graph_it(heat_idx_list, match_name)
