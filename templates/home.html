@@ -8,7 +8,7 @@
   </center>
 </div>
 <p>Provides a classification-like number for a division at a match.  Copy-n-paste a Practiscore match URL to see the "Heat Factor" of each division in that match.</p>
-    <form action="/heat_factor/" method="post">
+    <form action="/heat_factor/" method="POST">
       {% csrf_token %}
     <h3>
       {{ practiscore_url_form.as_p }}
@@ -24,7 +24,7 @@
   </center>
 </div>
 <p>Enter your USPSA membership number and a division you shoot and this will tell what percentage you need on your next classifier to move up a class, if possible.</p>
-    <form action="/get_upped/" method="post">
+    <form action="/get_upped/" method="POST">
       {% csrf_token %}
     <h3>
       {{ get_upped_form.as_p }}
@@ -33,6 +33,24 @@
       <input type="submit" value="Get Upped">
     </form>
     <br>
+<div style="background-color:lightblue">
+  <center>
+    <h2>Match Accuracy/Points Tool</h2>
+    </center>
+  </div>
+<p>Enter your Practiscore username/email and password and your USPSA membership number to get a graph that plots your accuracy/points in matches over time.  This is a good tool for those of us who have accuracy/points as our weakness.  You can track progress based on when you implemmented gear changes or training changes.  Matches prior to 2019-01-01 will not be included.  A maximum of 100 matches will be loaded.
+<br><br>
+<font color="red"><b>The graph takes about  1 minute to load so be patient.<b></font>
+</p>
+        <form action="/accu_graph/" method="POST">
+          {% csrf_token %}
+        <h3>
+          {{ accu_stats_form1.as_p }}
+        </h3>
+          <br>
+          <input type="submit" value="AccuStats">
+        </form>
+        <br>
     <hr>
 
 {% endblock content %}

@@ -3,9 +3,10 @@ import datetime
 
 from django.shortcuts import render, redirect
 
-from .forms import PractiscoreUrlForm, GetUppedForm
+from .forms import PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
 from .heatfactor import fix_g_class, division_counts, get_it, run_it, graph_it
 from .classificationwhatif import ClassifactionWhatIf
+
 
 
 
@@ -13,15 +14,31 @@ def home(request):
     """display app home page/landing page"""
 
     if request.method == 'POST':
+
         practiscore_url_form = PractiscoreUrlForm(request.POST)
         get_upped_form = GetUppedForm(request.POST)
-        if practiscore_url_form.is_valid() and get_upped_form.is_valid():
+        accu_stats_form1 = AccuStatsForm1(request.POST)
+
+        if practiscore_url_form.is_valid():
             return HttpResponseRedirect('/')
+        elif get_upped_form.is_valid():
+            return HttpResponseRedirect('/')
+        elif accu_stats_form1.is_valid():
+            return HttpResponseRedirect('/')
+
     else:
+
         practiscore_url_form = PractiscoreUrlForm()
         get_upped_form = GetUppedForm()
+        accu_stats_form1 = AccuStatsForm1()
 
-    return render(request, 'home.html', {'practiscore_url_form':practiscore_url_form, 'get_upped_form':get_upped_form})
+
+    return render(request, 'home.html', {
+        'practiscore_url_form': practiscore_url_form,
+        'get_upped_form'      : get_upped_form,
+        'accu_stats_form1'    : accu_stats_form1,
+        }
+    )
 
 
 
@@ -46,13 +63,13 @@ def bad_url(request):
     """this page is displayed when a bad URL is entered.  I don't like it this way"""
 
     if request.method == 'POST':
-        form = PractiscoreUrlForm(request.POST)
-        if form.is_valid():
+        practiscore_url_form = PractiscoreUrlForm(request.POST)
+        if practiscore_url_form.is_valid():
             return HttpResponseRedirect('/')
     else:
-        form = PractiscoreUrlForm()
+        practiscore_url_form = PractiscoreUrlForm()
 
-    return render(request, 'bad_url.html', {'form': form})
+    return render(request, 'bad_url.html', {'practiscore_url_form': practiscore_url_form})
 
 
 

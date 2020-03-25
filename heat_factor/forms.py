@@ -37,3 +37,33 @@ class GetUppedForm(forms.Form):
         widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
+
+
+
+class AccuStatsForm1(forms.Form):
+
+    username = forms.CharField(
+        label="Practiscore username/email",
+        max_length=50,
+        widget=forms.TextInput(attrs={'size': '50'}),
+        required=True,
+    )
+
+    password = forms.CharField(
+        label="Practiscore password",
+        max_length=32,
+        widget=forms.PasswordInput(attrs={'size': '32'}),
+        required=True,
+    )
+
+    mem_num = forms.CharField(
+        label="USPSA Membership Number",
+        max_length=10,
+        widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+
+
+class AccuStatsForm2(forms.Form):
+    pass
