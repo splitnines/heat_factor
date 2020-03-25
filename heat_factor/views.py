@@ -133,6 +133,7 @@ def points(request):
         # in production this will dump to an error page url
         print(get_match_links(login_data))
         exit()
+    del password, login_data
 
     scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_start_end, delete_list, mem_num)
 
