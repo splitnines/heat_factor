@@ -74,7 +74,7 @@ def num_npm(score_field):
 
 
 
-def create_dataframe(json_obj, match_start_end, delete_list, mem_num):
+def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     """This is were the magic happens.  Performs the calculations on the data pulled from the Practiscore AWS API.
        Params are the json object with match uuids, dict with start and end data filters, a list with dates
        to exclude from the report and the shooters membership number.
@@ -93,7 +93,7 @@ def create_dataframe(json_obj, match_start_end, delete_list, mem_num):
         match_link_date = datetime.date.fromisoformat(match_link_info['date'])
         if match_link_info['date'] in delete_list:
             continue
-        if match_link_date <= datetime.date.fromisoformat(match_start_end['start_date']) and match_link_date >= datetime.date.fromisoformat(match_start_end['end_date']):
+        if match_link_date <= datetime.date.fromisoformat(match_date_range['end_date']) and match_link_date >= datetime.date.fromisoformat(match_date_range['start_date']):
             match_uuid = match_link_info['matchId']
             try:
                 match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
@@ -242,7 +242,7 @@ def plot_stats(scores, shooter_name, mem_number):
     plt.plot(x, scores['Pct Points'], label='Percent Points', linestyle='solid', marker='o', markersize=6, linewidth=3)
     plt.plot(x, scores['Avg Pct Scored'], label='Average Percent Points', color='black', linestyle='dashed',  linewidth=3)
     plt.plot(x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c', linestyle='solid', marker='o', markersize=6, linewidth=3)
-    plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.45, linewidth=1.15, edgecolor='gray')
+    plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.50, linewidth=1.15, edgecolor='gray')
 
     plt.title('Percent of Match Points Scored')
     plt.ylabel('Percent')
@@ -261,7 +261,7 @@ def plot_stats(scores, shooter_name, mem_number):
 
     for x_errors, y_errors in zip(x, scores['Errors']):
         label4 = "{:.2f}".format(y_errors)
-        plt.annotate(label4, (x_errors, 1.0), textcoords='offset points', xytext=(0.1,0), ha='right', fontsize=8, rotation=90)
+        plt.annotate(label4, (x_errors, 1.0), textcoords='offset points', xytext=(0.1,0), ha='center', fontsize=8, rotation=90)
 
 
     plt.annotate('Shooter Name: %s' % shooter_name, (1, 1), (-125, 20), fontsize=7, xycoords='axes fraction', textcoords='offset points', va='top')

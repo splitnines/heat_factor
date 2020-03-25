@@ -2,6 +2,7 @@ import re
 import datetime
 
 from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from .forms import PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
 from .heatfactor import fix_g_class, division_counts, get_it, run_it, graph_it
@@ -105,41 +106,54 @@ def get_upped(request):
 
 def points(request):
 
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    mem_num  = request.POST.get('mem_num')
+    username           = request.POST.get('username')
+    password           = request.POST.get('password')
+    mem_num            = request.POST.get('mem_num')
+    delete_match       = request.POST.get('delete_match') if type(request.POST.get('delete_match')) == str else ''
+    shooter_end_date   = request.POST.get('shooter_end_date') if type(request.POST.get('shooter_end_date')) == str else ''
+    shooter_start_date = request.POST.get('shooter_start_date') if type(request.POST.get('shooter_start_date')) == str else ''
+
 
     login_data = {
         'username': username,
         'password': password
     }
 
-    match_start_end = {
-        'start_date': str(datetime.date.fromisoformat(str(datetime.date.today()))),
-        'end_date': '2019-01-01', # I can probably get rid of this
+    match_date_range = {
+        # set the default date range
+        'end_date': str(datetime.date.fromisoformat(str(datetime.date.today()))),
+        'start_date': '2019-01-01', # I can probably get rid of this
+
     }
 
-    user_start_date = ''
-    user_end_date = ''
-    if user_start_date != '' and user_start_date < str(datetime.date.fromisoformat(str(datetime.date.today()))):
-        match_start_end['start_date'] = user_start_date
-    if user_end_date != '' and user_end_date >= match_start_end['end_date'] and user_end_date < match_start_end['start_date']:
-        match_start_end['end_date'] = user_end_date
+
+    if shooter_end_date != '' and shooter_end_date < str(datetime.date.fromisoformat(str(datetime.date.today()))):
+        match_date_range['end_date'] = shooter_end_date
+
+    if shooter_start_date != '' and shooter_start_date > match_date_range['start_date'] and shooter_start_date < match_date_range['end_date']:
+        match_date_range['start_date'] = shooter_start_date
+
 
     delete_list = []
+    for ex_match in delete_match.replace(' ', '').split(','):
+        if re.match('^(\d\d\d\d-\d\d-\d\d)$', ex_match):
+            delete_list.append(ex_match)
+
 
     match_links_json = get_match_links(login_data)
-    if type(get_match_links(login_data)) == str:
-        # in production this will dump to an error page url
-        #print(get_match_links(login_data))
+    if type(match_links_json) == str:
+
         return redirect('/login_error/')
+
     del password, login_data
 
-    scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_start_end, delete_list, mem_num)
+    scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_date_range, delete_list, mem_num)
 
     graph = plot_stats(scores_df, shooter_fn + ' ' + shooter_ln, mem_num)
 
-    return render(request, 'points.html', {'graph': graph, 'date': datetime.datetime.now()})
+    return render(
+        request, 'points.html', { 'graph': graph, 'date': datetime.datetime.now(), 'accu_stats_form2': AccuStatsForm2() })
+
 
 
 def login_error(request):

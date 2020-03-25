@@ -1,4 +1,5 @@
 from django import forms
+import datetime
 
 class PractiscoreUrlForm(forms.Form):
 
@@ -66,4 +67,41 @@ class AccuStatsForm1(forms.Form):
 
 
 class AccuStatsForm2(forms.Form):
-    pass
+
+    username = forms.CharField(
+        label="Practiscore username/email",
+        max_length=50,
+        widget=forms.TextInput(attrs={'size': '50'}),
+        required=True,
+    )
+
+    password = forms.CharField(
+        label="Practiscore password",
+        max_length=32,
+        widget=forms.PasswordInput(attrs={'size': '32'}),
+        required=True,
+    )
+
+    mem_num = forms.CharField(
+        label="USPSA Membership Number",
+        max_length=10,
+        widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+    shooter_end_date = forms.DateField(
+        initial=datetime.date.fromisoformat(str(datetime.date.today())),
+        required=False,
+    )
+
+    shooter_start_date = forms.DateField(
+        initial=datetime.date.fromisoformat('2019-01-01'),
+        required=False,
+    )
+
+    delete_match = forms.CharField(
+        label="Exclude Dates",
+        max_length=60,
+        widget=forms.TextInput(attrs={'size': '20'}),
+        required=False,
+    )
