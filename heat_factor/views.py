@@ -126,7 +126,7 @@ def points(request):
     if user_end_date != '' and user_end_date >= match_start_end['end_date'] and user_end_date < match_start_end['start_date']:
         match_start_end['end_date'] = user_end_date
 
-    delete_list = [ '2020-01-26' ]
+    delete_list = []
 
     match_links_json = get_match_links(login_data)
     if type(get_match_links(login_data)) == str:
