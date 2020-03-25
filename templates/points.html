@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p align="left"><a href="/">Return Home</a></p>
+<div style="background-color:lightblue">
+  <center>
+  <h2>Percent of Match Points Scored</h2>
+  </center>
+</div>
+  <center>
+    <img src="data:image/png;base64,{{ graph | safe }}">
+  </center>
+  <p align="right"><font size="2"> {{ date }} </font></p>
+  <hr>
+
+{% endblock content %}

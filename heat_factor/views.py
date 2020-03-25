@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from .forms import PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
 from .heatfactor import fix_g_class, division_counts, get_it, run_it, graph_it
 from .classificationwhatif import ClassifactionWhatIf
+from . USPSA_Stats import create_dataframe, get_match_links, plot_stats
 
 
 
@@ -99,3 +100,42 @@ def get_upped(request):
     else:
         return render(request, 'get_upped.html', {'response_text':
                                                   'You need a score of <font color=\"green\">{}%</font> to make <font color=\"green\">{}</font> class.'.format(str(shooter.get_upped()), shooter.get_next_class())})
+
+
+
+def points(request):
+
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    mem_num  = request.POST.get('mem_num')
+
+    login_data = {
+        'username': username,
+        'password': password
+    }
+
+    match_start_end = {
+        'start_date': str(datetime.date.fromisoformat(str(datetime.date.today()))),
+        'end_date': '2019-01-01', # I can probably get rid of this
+    }
+
+    user_start_date = ''
+    user_end_date = ''
+    if user_start_date != '' and user_start_date < str(datetime.date.fromisoformat(str(datetime.date.today()))):
+        match_start_end['start_date'] = user_start_date
+    if user_end_date != '' and user_end_date >= match_start_end['end_date'] and user_end_date < match_start_end['start_date']:
+        match_start_end['end_date'] = user_end_date
+
+    delete_list = [ '2020-01-26' ]
+
+    match_links_json = get_match_links(login_data)
+    if type(get_match_links(login_data)) == str:
+        # in production this will dump to an error page url
+        print(get_match_links(login_data))
+        exit()
+
+    scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_start_end, delete_list, mem_num)
+
+    graph = plot_stats(scores_df, shooter_fn + ' ' + shooter_ln, mem_num)
+
+    return render(request, 'points.html', {'graph': graph, 'date': datetime.datetime.now()})

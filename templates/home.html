@@ -38,17 +38,17 @@
     <h2>Match Accuracy/Points Tool</h2>
     </center>
   </div>
-<p>Enter your Practiscore username/email and password and your USPSA membership number to get a graph that plots your accuracy/points in matches over time.  This is a good tool for those of us who have accuracy/points as our weakness.  You can track progress based on when you implemmented gear changes or training changes.  Matches prior to 2019-01-01 will not be included.  A maximum of 100 matches will be loaded.
+<p>Enter your Practiscore username/email and password and your USPSA membership number to get a graph that plots your accuracy/points in matches over time.  This is a good tool for those of us who have accuracy/points as our weakness.  You can track progress based on when you implemmented gear changes or training changes.  Matches prior to 2019-01-01 will not be included.  A maximum of 50 matches will be graphed.  It only works for USPSA matches (maybe IPSC, but I haven't tested it).
 <br><br>
 <font color="red"><b>The graph takes about  1 minute to load so be patient.<b></font>
 </p>
-        <form action="/accu_graph/" method="POST">
+        <form action="/points/" method="POST">
           {% csrf_token %}
         <h3>
           {{ accu_stats_form1.as_p }}
         </h3>
           <br>
-          <input type="submit" value="AccuStats">
+          <input type="submit" value="Points Stats">
         </form>
         <br>
     <hr>
