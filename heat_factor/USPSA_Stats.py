@@ -246,7 +246,7 @@ def plot_stats(scores, shooter_name, mem_number):
 
     x = np.arange(len(scores['Match Date']))
 
-    plt.figure(figsize=[14.5, 8])
+    plt.figure(figsize=(14.5, 8))
 
 
     plt.plot(x, scores['Pct Points'], label='Percent Points', linestyle='solid', marker='o', markersize=6, linewidth=3)
