@@ -142,12 +142,16 @@ def points(request):
 
     match_links_json = get_match_links(login_data)
     if type(match_links_json) == str:
-
-        return redirect('/login_error/')
+        return render(request, 'error.html', {'message': match_links_json})
 
     del password, login_data
 
-    scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_date_range, delete_list, mem_num)
+
+    try:
+        scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_date_range, delete_list, mem_num)
+    except:
+        return render(request, 'error.html', {'message': create_dataframe(match_links_json, match_date_range, delete_list, mem_num)})
+
 
     graph = plot_stats(scores_df, shooter_fn + ' ' + shooter_ln, mem_num)
 
@@ -156,6 +160,6 @@ def points(request):
 
 
 
-def login_error(request):
+def error(request):
 
-    return render(request, 'login_error.html')
+    return render(request, 'error.html')

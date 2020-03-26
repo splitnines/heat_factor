@@ -91,16 +91,18 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     count = 0
     for match_link_info in json_obj:
         match_link_date = datetime.date.fromisoformat(match_link_info['date'])
+
         if match_link_info['date'] in delete_list:
             continue
+
         if match_link_date <= datetime.date.fromisoformat(match_date_range['end_date']) and match_link_date >= datetime.date.fromisoformat(match_date_range['start_date']):
             match_uuid = match_link_info['matchId']
+
             try:
                 match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
-                match_scores = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_scores.json').text)
                 #match_results = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/    results.json').text)
             except:
-                print('error downloading aws json files')
+                return 'error downloading aws match_def.json file'
 
             if match_def['match_type'] != 'uspsa_p':
                 continue
@@ -110,7 +112,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
 
             for match_info in match_def['match_shooters']:
-                if 'sh_id' in match_info and re.match(mem_num, match_info['sh_id']):
+                if 'sh_id' in match_info and match_info['sh_id'].upper() == mem_num.upper():
                     shooter_uuid  = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']
                     shooter_lname = match_info['sh_ln']
@@ -125,6 +127,11 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             total_ns       = 0
             total_mikes    = 0
             total_npm      = 0
+
+            try:
+                match_scores = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_scores.json').text)
+            except:
+                return 'error downloading aws match_scores.json file'
 
             for score in match_scores['match_scores']:
                 for stage_score in score['stage_stagescores']:
@@ -200,12 +207,15 @@ def get_match_links(login_dict):
 
     with requests.Session() as sess:
         login = sess.post('https://practiscore.com/login', data=login_dict, headers=headers)
+
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
             return 'Bad password.'
+
         elif re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
             return 'Bad email/username'
+
         elif re.findall(login_status_strs['success'], str(login.content)):
             shooter_ps_match_links = sess.get('https://practiscore.com/associate/step2', headers=headers)
             sess.get('https://practiscore.com/logout', headers=headers)
