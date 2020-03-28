@@ -1,5 +1,7 @@
 import re
 import datetime
+import requests
+import json
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -49,9 +51,20 @@ def heat_factor(request):
 
     url = request.POST.get('p_url')
     if re.match(r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$', url):
-        prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
-        heat_idx_list = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
-        graphic = graph_it(heat_idx_list, match_name)
+
+        match_uuid = get_it(url)
+        try:
+            match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
+        except:
+            return render(request, 'error.html', {'message': 'problem downloading aws json file.'})
+
+        heat_idx, match_name = run_it(match_def)
+        """heat_idx is a tuple containing the Heat Factor for each division in the match if the following order:
+           Production, Open, Carry Optics, Limited, PCC, Single Stack"""
+
+        #prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
+        #heat_idx = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
+        graphic = graph_it(heat_idx, match_name)
 
         return render(request, 'heat_factor.html', {'graphic':graphic, 'date':datetime.datetime.now()})
     else:
