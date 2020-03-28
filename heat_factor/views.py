@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
 from .forms import PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
-from .heatfactor import fix_g_class, division_counts, get_it, run_it, graph_it
+from .heatfactor import get_it, run_it, graph_it
 from .classificationwhatif import ClassifactionWhatIf
 from .USPSA_Stats import create_dataframe, get_match_links, plot_stats
 
@@ -62,8 +62,6 @@ def heat_factor(request):
         """heat_idx is a tuple containing the Heat Factor for each division in the match if the following order:
            Production, Open, Carry Optics, Limited, PCC, Single Stack"""
 
-        #prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict, match_name = get_it(url)
-        #heat_idx = run_it(prod_dict, opn_dict, co_dict, lim_dict, pcc_dict, ss_dict)
         graphic = graph_it(heat_idx, match_name)
 
         return render(request, 'heat_factor.html', {'graphic':graphic, 'date':datetime.datetime.now()})
