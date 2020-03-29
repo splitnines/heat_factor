@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import random
 import requests
 import re
+import json
 from io import BytesIO
 import base64
 
@@ -15,17 +16,23 @@ def get_it(match_link):
     non_uuid_regex = re.compile('practiscore\.com/results/new/(\d+)$')
 
     if re.search(non_uuid_regex, match_link):
-        non_uuid = re.search(non_uuid_regex, match_link)
-        match_html_text = requests.get('https://practiscore.com/results/new/' + non_uuid.group(1)).text
+
+        match_html_text = requests.get(match_link).text
         aws_uuid_regex = re.compile('https://s3\.amazonaws\.com/ps-scores/production/([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})/match_def.json')
         if re.search(aws_uuid_regex, match_html_text):
             match_uuid = re.search(aws_uuid_regex, match_html_text)[1]
 
+
     elif re.search(uuid_regex, match_link):
         match_uuid = re.search(uuid_regex, match_link)[1]
 
-    return match_uuid
+    try:
+        match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
+    except:
+        return 'problem downloading aws json file.'
 
+    return match_def
+    
 
 def run_it(match_def):
     """run_it is the function used to calculate the Heat Factor for each division in a match.  It takes the match_def json file

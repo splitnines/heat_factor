@@ -50,21 +50,24 @@ def heat_factor(request):
     """get practiscore url from form, pass it to get_it fuction then run thru the rest of the program"""
 
     url = request.POST.get('p_url')
-    if re.match(r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$', url):
+    if re.search(r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$', url):
 
-        match_uuid = get_it(url)
-        try:
-            match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
-        except:
-            return render(request, 'error.html', {'message': 'problem downloading aws json file.'})
+        match_def = get_it(url)
 
-        heat_idx, match_name = run_it(match_def)
-        """heat_idx is a tuple containing the Heat Factor for each division in the match if the following order:
-           Production, Open, Carry Optics, Limited, PCC, Single Stack"""
+        if 'match_name' in match_def:
 
-        graphic = graph_it(heat_idx, match_name)
+            heat_idx, match_name = run_it(match_def)
+            """heat_idx is a tuple containing the Heat Factor for each division in the match in the following order:
+               Production, Open, Carry Optics, Limited, PCC, Single Stack"""
 
-        return render(request, 'heat_factor.html', {'graphic':graphic, 'date':datetime.datetime.now()})
+            graphic = graph_it(heat_idx, match_name)
+
+            return render(request, 'heat_factor.html', {'graphic':graphic, 'date':datetime.datetime.now()})
+
+        elif match_def == 'problem downloading aws json file.':
+
+            return render(request, 'error.html', {'message': match_def})
+
     else:
 
         # redirect on bad_url detection
@@ -96,7 +99,7 @@ def get_upped(request):
         shooter = ClassifactionWhatIf(mem_num, division)
     except:
         return render(request, 'get_upped.html', {'response_text':
-                                                  '<font color=\"red\">2 Mikes, 2 No-shoots:</font> No scores found for memeber {} in {} division.  If your USPSA classifier scores are set to priviate this tool won\'t.  If you don\'t have at least 3 qualifing classifier scores on record this tool won\'t work.'.format(mem_num, division), 'date': datetime.datetime.now()})
+                                                  '<font color=\"red\">2 Mikes, 2 No-shoots:</font> No scores found for memeber <font color=\"red\">{}</font> in <font color=\"red\">{}</font> division.  If your USPSA classifier scores are set to priviate this tool won\'t.  If you don\'t have at least 3 qualifing classifier scores on record this tool won\'t work.'.format(mem_num, division), 'date': datetime.datetime.now()})
 
     if shooter.get_shooter_class() == 'GM':
         return render(request, 'get_upped.html', {'response_text':

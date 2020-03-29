@@ -1,4 +1,4 @@
-from urllib.request import urlopen, Request
+import requests
 from bs4 import BeautifulSoup
 
 class ClassifactionWhatIf:
@@ -17,20 +17,21 @@ class ClassifactionWhatIf:
     def __init__(self, mem_num, division):
         """Takes shooters membership number and division to query and init the object and varibles"""
 
-        self.mem_num = mem_num
-        self.division = division.title() if division != 'PCC' else division.upper()
+        self.mem_num         = mem_num
+        self.division        = division.title() if division != 'PCC' else division.upper()
         self.division_search = division.title().replace(' ', '_') if division != 'PCC' else division.upper().replace(' ', '_')
 
-        self.classification_dict = {'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0}
-        self.next_class_up = {'M':'GM', 'A':'M', 'B':'A', 'C':'B', 'D':'C'}
-        self.reverse_classification_dict = {95:'GM', 85:'M', 75:'A', 60:'B', 40:'C', 2:'D', 0:'U'}
+        self.classification_dict         = { 'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0 }
+        self.next_class_up               = { 'M':'GM', 'A':'M', 'B':'A', 'C':'B', 'D':'C' }
+        self.reverse_classification_dict = { 95:'GM', 85:'M', 75:'A', 60:'B', 40:'C', 2:'D', 0:'U' }
 
         division_list = ['Open', 'Limited', 'Limited 10', 'Production', 'Revolver', 'Single Stack', 'Carry Optics', 'PCC']
         if not self.division in division_list:
             raise ValueError(self.division + ' not a valid division')
 
-        uspsa_org_response = urlopen(Request('https://uspsa.org/classification/' + self.mem_num, headers={'User-Agent': 'Chrome/80.0.3987.132'}))
-        self.bs = BeautifulSoup(uspsa_org_response.read(), 'lxml')
+        uspsa_org_response = requests.get('https://uspsa.org/classification/' + self.mem_num).text
+        self.bs = BeautifulSoup(uspsa_org_response, 'lxml')
+
 
         if self.bs.find('tbody', {'id':self.division_search + '-dropDown'}) is None:
             raise AttributeError('No records available for ' + self.mem_num + ' in ' + self.division + '.')

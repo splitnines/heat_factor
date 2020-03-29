@@ -6,7 +6,6 @@ import requests
 import re
 import datetime
 import base64
-from getpass import getpass
 from io import BytesIO
 
 
