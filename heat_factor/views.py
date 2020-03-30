@@ -20,21 +20,25 @@ def home(request):
     if request.method == 'POST':
 
         practiscore_url_form = PractiscoreUrlForm(request.POST)
-        get_upped_form = GetUppedForm(request.POST)
-        accu_stats_form1 = AccuStatsForm1(request.POST)
+        get_upped_form       = GetUppedForm(request.POST)
+        accu_stats_form1     = AccuStatsForm1(request.POST)
 
-        if practiscore_url_form.is_valid():
-            return HttpResponseRedirect('/')
-        elif get_upped_form.is_valid():
-            return HttpResponseRedirect('/')
-        elif accu_stats_form1.is_valid():
+        if practiscore_url_form.is_valid() and get_upped_form.is_valid() and accu_stats_form1.is_valid():
+
+            return render(request, 'home.html', {
+                'practiscore_url_form': practiscore_url_form,
+                'get_upped_form'      : get_upped_form,
+                'accu_stats_form1'    : accu_stats_form1,
+                }
+            )
+        else:
             return HttpResponseRedirect('/')
 
     else:
 
         practiscore_url_form = PractiscoreUrlForm()
-        get_upped_form = GetUppedForm()
-        accu_stats_form1 = AccuStatsForm1()
+        get_upped_form       = GetUppedForm()
+        accu_stats_form1     = AccuStatsForm1()
 
 
     return render(request, 'home.html', {
@@ -81,7 +85,13 @@ def bad_url(request):
     if request.method == 'POST':
         practiscore_url_form = PractiscoreUrlForm(request.POST)
         if practiscore_url_form.is_valid():
+
+            return render(request, 'bad_url.html', {'practiscore_url_form': practiscore_url_form})
+
+        else:
+
             return HttpResponseRedirect('/')
+
     else:
         practiscore_url_form = PractiscoreUrlForm()
 
@@ -164,13 +174,37 @@ def points(request):
     try:
         scores_df, shooter_fn, shooter_ln = create_dataframe(match_links_json, match_date_range, delete_list, mem_num)
     except:
-        return render(request, 'error.html', {'message': create_dataframe(match_links_json, match_date_range, delete_list, mem_num)})
+        return render(request, 'error.html', {
+                     'message': create_dataframe(match_links_json, match_date_range, delete_list, mem_num)
+                     }
+        )
 
 
     graph = plot_stats(scores_df, shooter_fn + ' ' + shooter_ln, mem_num)
 
-    return render(
-        request, 'points.html', { 'graph': graph, 'date': datetime.datetime.now(), 'accu_stats_form2': AccuStatsForm2() })
+    if request.method == 'POST':
+        accu_stats_form2 = AccuStatsForm2(request.POST)
+
+        if accu_stats_form2.is_valid():
+            return render(request, 'points.html',{
+                    'graph': graph, 'date': datetime.datetime.now(),
+                    'accu_stats_form2': accu_stats_form2,
+                }
+            )
+
+        else:
+
+            return HttpResponseRedirect('/')
+
+    else:
+        accu_stats_form2 = AccuStatsForm2()
+
+
+    return render(request, 'points.html',{
+            'graph': graph, 'date': datetime.datetime.now(),
+            'accu_stats_form2': accu_stats_form2,
+        }
+    )
 
 
 
