@@ -114,6 +114,6 @@ class AccuStatsForm2(forms.Form):
     delete_match = forms.CharField(
         label="Exclude Dates",
         max_length=60,
-        widget=forms.TextInput(attrs={'size': '20'}),
+        widget=forms.TextInput(attrs={'size': '32', 'placeholder': 'Example: 2020-03-15, 2019-09-22'}),
         required=False,
     )
