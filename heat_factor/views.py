@@ -209,5 +209,8 @@ def points(request):
 
 
 def error(request):
-
     return render(request, 'error.html')
+
+
+def corvid_da(request):
+    return render(request, 'CORVID-19_data_analysis.html')
