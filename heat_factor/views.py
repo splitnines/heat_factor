@@ -213,4 +213,4 @@ def error(request):
 
 
 def corvid_da(request):
-    return render(request, 'CORVID-19_data_analysis.html')
+    return render(request, 'COVID-19_data_analysis.html')
