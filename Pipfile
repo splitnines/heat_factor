@@ -17,6 +17,7 @@ whitenoise = "*"
 pandas = "*"
 urllib3 = "*"
 django-heroku = "*"
+whitenoise-django = "*"
 
 [requires]
 python_version = "3.8"

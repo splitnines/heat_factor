@@ -24,14 +24,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = os.environ.get('DEBUG_VALUE')
-DEBUG = True
+DEBUG = os.environ.get('DEBUG_VALUE', False)
+#DEBUG = True
 #DEBUG = False
 
 
-ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['.herokuapp.com']
-#ALLOWED_HOSTS = [str(os.environ.get('ALLOWED_HOSTS'))]
+ALLOWED_HOSTS = [str(os.environ.get('ALLOWED_HOSTS'))]
 
 
 # Application definition
@@ -131,7 +131,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
