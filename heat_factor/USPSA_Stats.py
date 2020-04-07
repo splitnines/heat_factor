@@ -195,7 +195,7 @@ def get_match_links(login_dict):
     """Performs Practiscore.com login and retrieval of match url uuids.  Param is a dict with login creds.
        Returns errors on bad credentials.  Returns a json object with the match url data on success"""
 
-    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149     Safari/537.36' }
+    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36' }
 
 
     login_status_strs = {
