@@ -1,6 +1,6 @@
 import json
 import re
-import datetime
+import datetime as dt
 import base64
 from io import BytesIO
 import pandas as pd
@@ -10,8 +10,8 @@ import requests
 
 
 
-"""The following functions where converted from the practiscore javascipt code that decodes the AWS
-   json files with the scores"""
+"""The following functions where converted from the practiscore javascipt code
+   that decodes the AWS json files with the scores"""
 
 def num_alphas(score_field):
     A_MASK = 0x0000000F
@@ -19,7 +19,9 @@ def num_alphas(score_field):
     A_SHIFT = 0
     A_SHIFT2 = 28
 
-    return ((score_field & A_MASK) >> A_SHIFT) + ((score_field & A_MASK2) >> A_SHIFT2)
+    return ((score_field & A_MASK) >> A_SHIFT) + \
+        ((score_field & A_MASK2) >> A_SHIFT2)
+
 
 def num_bravos(score_field):
     B_MASK = 0x000000F0
@@ -27,7 +29,9 @@ def num_bravos(score_field):
     B_SHIFT = 4
     B_SHIFT2 = 32
 
-    return ((score_field & B_MASK) >> B_SHIFT) + ((score_field & B_MASK2) >> B_SHIFT2)
+    return ((score_field & B_MASK) >> B_SHIFT) + \
+        ((score_field & B_MASK2) >> B_SHIFT2)
+
 
 def num_charlies(score_field):
     C_MASK = 0x00000F00
@@ -35,7 +39,9 @@ def num_charlies(score_field):
     C_SHIFT = 8
     C_SHIFT2 = 36
 
-    return ((score_field & C_MASK) >> C_SHIFT) + ((score_field & C_MASK2) >> C_SHIFT2)
+    return ((score_field & C_MASK) >> C_SHIFT) + \
+        ((score_field & C_MASK2) >> C_SHIFT2)
+
 
 def num_deltas(score_field):
     D_MASK = 0x0000F000
@@ -43,7 +49,9 @@ def num_deltas(score_field):
     D_SHIFT = 12
     D_SHIFT2 = 40
 
-    return ((score_field & D_MASK) >> D_SHIFT) + ((score_field & D_MASK2) >> D_SHIFT2)
+    return ((score_field & D_MASK) >> D_SHIFT) + \
+        ((score_field & D_MASK2) >> D_SHIFT2)
+
 
 def num_ns(score_field):
     NS_MASK = 0x000F0000
@@ -51,7 +59,9 @@ def num_ns(score_field):
     NS_SHIFT = 16
     NS_SHIFT2 = 44
 
-    return ((score_field & NS_MASK) >> NS_SHIFT) + ((score_field & NS_MASK2) >> NS_SHIFT2)
+    return ((score_field & NS_MASK) >> NS_SHIFT) + \
+        ((score_field & NS_MASK2) >> NS_SHIFT2)
+
 
 def num_m(score_field):
     M_MASK = 0x00F00000
@@ -59,7 +69,9 @@ def num_m(score_field):
     M_SHIFT = 20
     M_SHIFT2 = 48
 
-    return ((score_field & M_MASK) >> M_SHIFT) + ((score_field & M_MASK2) >> M_SHIFT2)
+    return ((score_field & M_MASK) >> M_SHIFT) + \
+        ((score_field & M_MASK2) >> M_SHIFT2)
+
 
 def num_npm(score_field):
     NPM_MASK = 0x0F000000
@@ -67,42 +79,47 @@ def num_npm(score_field):
     NPM_SHIFT = 24
     NPM_SHIFT2 = 42
 
-    return ((score_field & NPM_MASK) >> NPM_SHIFT) + ((score_field & NPM_MASK2) >> NPM_SHIFT2)
+    return ((score_field & NPM_MASK) >> NPM_SHIFT) + \
+        ((score_field & NPM_MASK2) >> NPM_SHIFT2)
 
 """End javascript converted functions"""
 
 
 
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
-    """This is were the magic happens.  Performs the calculations on the data pulled from the Practiscore AWS API.
-       Params are the json object with match uuids, dict with start and end data filters, a list with dates
-       to exclude from the report and the shooters membership number.
-       Returns a pandas dataframe to be processed by the plot function"""
+    """This is were the magic happens.  Performs the calculations on the data
+       pulled from the Practiscore AWS API. Params are the json object with
+       match uuids, dict with start and end data filters, a list with dates to
+       exclude from the report and the shooters membership number. Returns a
+       pandas dataframe to be processed by the plot function"""
 
     scores_df = pd.DataFrame(
-        columns = [
-            'Match Date', 'Total Alphas', 'Total Charlies', 'Total Deltas', 'Total No-shoots', 'Total Mikes', 'Total NPM',
-            'Round Count', 'Points Poss.', 'Points Scored', 'Pct Points', 'A/C Ratio', 'Errors'
-        ]
-    )
+        columns = ['Match Date', 'Total Alphas', 'Total Charlies',
+                   'Total Deltas', 'Total No-shoots', 'Total Mikes',
+                   'Total NPM', 'Round Count', 'Points Poss.', 'Points Scored',
+                    'Pct Points', 'A/C Ratio', 'Errors'])
 
     # count is used to limit the number of matches that can be plotted
     count = 0
     for match_link_info in json_obj:
-        match_link_date = datetime.date.fromisoformat(match_link_info['date'])
+        match_link_date = dt.date.fromisoformat(match_link_info['date'])
 
         if match_link_info['date'] in delete_list:
             continue
 
-        if match_link_date <= datetime.date.fromisoformat(match_date_range['end_date']) and \
-            match_link_date >= datetime.date.fromisoformat(match_date_range['start_date']):
+        form_end_date   = dt.date.fromisoformat(match_date_range['end_date'])
+        form_start_date = dt.date.fromisoformat(match_date_range['start_date'])
+        if (match_link_date <= form_end_date and
+            match_link_date >= form_start_date):
             match_uuid = match_link_info['matchId']
 
             try:
-                match_def = json.loads(requests.get(
-                                       'https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json'
-                                       ).text)
-                #match_results = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/    results.json').text)
+                aws_match_link = (f'https://s3.amazonaws.com/ps-scores/'
+                                  f'production/{match_uuid}/match_def.json')
+                match_def = (json.loads(requests.get(aws_match_link).text))
+                #match_results = json.loads(requests.get('https://s3.
+                #amazonaws.com/ps-scores/production/' + match_uuid + '/
+                #results.json').text)
             except:
                 return 'error downloading aws match_def.json file'
 
@@ -114,7 +131,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
 
             for match_info in match_def['match_shooters']:
-                if 'sh_id' in match_info and match_info['sh_id'].upper() == mem_num.upper():
+                if ('sh_id' in match_info and match_info['sh_id'].upper() ==
+                    mem_num.upper()):
                     shooter_uuid  = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']
                     shooter_lname = match_info['sh_ln']
@@ -131,9 +149,9 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             total_npm      = 0
 
             try:
-                match_scores = json.loads(requests.get(
-                                          'https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_scores.json'
-                                          ).text)
+                aws_scores_link = (f'https://s3.amazonaws.com/ps-scores/'
+                                  f'production/{match_uuid}/match_scores.json')
+                match_scores = json.loads(requests.get(aws_scores_link).text)
             except:
                 return 'error downloading aws match_scores.json file'
 
@@ -153,15 +171,20 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                 total_mikes    += num_m(ts)
                                 total_npm      += num_npm(ts)
 
-            round_count = sum((total_alphas, total_bravos, total_charlies, total_deltas, total_ns, total_mikes, total_npm))
+            round_count = sum((total_alphas, total_bravos, total_charlies,
+                               total_deltas, total_ns, total_mikes, total_npm))
             points_possible = (round_count * 5)
 
             if shooter_pf == 'MINOR':
-                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 3 + (total_deltas * 1)))) - \
-                    ((total_ns * 10) + (total_mikes *10))
+                points_scored = (((total_alphas * 5) +
+                                 ((total_bravos + total_charlies) * 3) +
+                                 (total_deltas)) - ((total_ns * 10) +
+                                 (total_mikes *10)))
             else:
-                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 4 + (total_deltas * 2)))) - \
-                ((total_ns * 10) + (total_mikes *10))
+                points_scored = (((total_alphas * 5) +
+                                 ((total_bravos + total_charlies) * 4) +
+                                 (total_deltas * 2)) - ((total_ns * 10) +
+                                 (total_mikes *10)))
 
             if points_scored > 0:
                 pct_points = round((points_scored / points_possible) * 100, 2)
@@ -169,20 +192,23 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                 pct_points = 'NaN'
 
             if total_alphas > 0 and total_charlies > 0:
-                alpha_charlie_ratio = round((total_charlies / total_alphas) * 100, 2)
+                alpha_charlie_ratio = (round((total_charlies /
+                                       total_alphas) * 100, 2))
             else:
                 alpha_charlie_ratio = 'NaN'
 
             if sum([total_deltas, total_mikes, total_ns]) > 0:
-                pct_errors = round((sum([total_deltas, total_mikes, total_ns]) / round_count) * 100, 2)
+                pct_errors = (round((sum([total_deltas, total_mikes, total_ns])
+                              / round_count) * 100, 2))
             else:
                 pct_errors = 'NaN'
 
 
-            score_list = [
-                match_date, total_alphas, total_charlies + total_bravos, total_deltas, total_ns, total_mikes,
-                total_npm, round_count, points_possible, points_scored, pct_points, alpha_charlie_ratio, pct_errors
-            ]
+            score_list = [match_date, total_alphas,
+                          total_charlies + total_bravos, total_deltas,
+                          total_ns, total_mikes, total_npm, round_count,
+                          points_possible, points_scored, pct_points,
+                          alpha_charlie_ratio, pct_errors]
 
             score_series = pd.Series(score_list, index=scores_df.columns)
             scores_df = scores_df.append(score_series, ignore_index=True)
@@ -192,76 +218,78 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             if count > 50:
                 break
 
-    scores_df['Avg Pct Scored'] = round((scores_df['Points Scored'].sum() / scores_df['Points Poss.'].sum()) * 100, 2)
+    scores_df['Avg Pct Scored'] = (round((scores_df['Points Scored'].sum() /
+                                   scores_df['Points Poss.'].sum()) * 100, 2))
     scores_df.sort_values(by=['Match Date'], inplace=True)
     return scores_df, shooter_fname, shooter_lname
 
 
-
-
 def get_match_links(login_dict):
-    """Performs Practiscore.com login and retrieval of match url uuids.  Param is a dict with login creds.
-       Returns errors on bad credentials.  Returns a json object with the match url data on success"""
+    """Performs Practiscore.com login and retrieval of match url uuids.  Param
+       is a dict with login creds. Returns errors on bad credentials.  Returns
+       a json object with the match url data on success"""
 
-    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
-        Chrome/80.0.3987.149 Safari/537.36' }
-
-
+    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/80.0.3987.149 Safari/537.36' }
     login_status_strs = {
         'bad_pass' : 'Forgot Password',
         'bad_email': 'have an account with the email',
         'success'  : 'https://practiscore\.com/associate/step2',
     }
-
+    
     with requests.Session() as sess:
-        login = sess.post('https://practiscore.com/login', data=login_dict, headers=headers)
-
+        login = sess.post('https://practiscore.com/login',
+                          data=login_dict, headers=headers)
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
             return 'Bad password.'
-
         elif re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
             return 'Bad email/username'
-
         elif re.findall(login_status_strs['success'], str(login.content)):
-            shooter_ps_match_links = sess.get('https://practiscore.com/associate/step2', headers=headers)
+            shooter_ps_match_links = sess.get('https://practiscore.com/'
+                                              'associate/step2',
+                                              headers=headers)
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
-
-    match_link_raw_data = re.search(r'var matches = (\[.+\]);\\n\s+var selected =', str(shooter_ps_match_links.content))
+    match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
+    match_link_raw_data = re.search(match_link_re,
+                                    str(shooter_ps_match_links.content))
 
     match_links_json = []
+    my_epoch = dt.date.fromisoformat('2019-01-01')
     for match_link_info in json.loads(match_link_raw_data.group(1)):
-        if datetime.date.fromisoformat(match_link_info['date']) >= datetime.date.fromisoformat('2019-01-01'):
+        if dt.date.fromisoformat(match_link_info['date']) >= my_epoch:
             match_links_json.append(match_link_info)
 
     return match_links_json
-
-
 
 
 def add_annotation(x_ax, y_ax):
     """adds labels to plot"""
     for xx, yy in zip(x_ax, y_ax):
         label = "{:.2f}".format(yy)
-        plt.annotate(label, (xx, yy), textcoords='offset points', xytext=(-5,0), ha='right', fontsize=8)
+        plt.annotate(label, (xx, yy), textcoords='offset points',
+                     xytext=(-5,0), ha='right', fontsize=8)
     return
 
+
 def plot_stats(scores, shooter_name, mem_number):
-    """Plots stats in graph.  Params are pandas dataframe, shooters full name and shooters membership number.
-       Returns graph saved in memory"""
+    """Plots stats in graph.  Params are pandas dataframe, shooters full name
+       and shooters membership number. Returns graph saved in memory"""
 
     x = np.arange(len(scores['Match Date']))
 
     plt.figure(figsize=(14.5, 8))
-
-
-    plt.plot(x, scores['Pct Points'], label='Percent Points', linestyle='solid', marker='o', markersize=6, linewidth=3)
-    plt.plot(x, scores['Avg Pct Scored'], label='Average Percent Points', color='black', linestyle='dashed',  linewidth=3)
-    plt.plot(x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c', linestyle='solid', marker='o', markersize=6,
-        linewidth=3)
-    plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.50, linewidth=1.15, edgecolor='gray')
+    plt.plot(x, scores['Pct Points'], label='Percent Points',
+             linestyle='solid', marker='o', markersize=6, linewidth=3)
+    plt.plot(x, scores['Avg Pct Scored'], label='Average Percent Points',
+             color='black', linestyle='dashed',  linewidth=3)
+    plt.plot(x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c',
+             linestyle='solid', marker='o', markersize=6, linewidth=3)
+    plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.50,
+            linewidth=1.15, edgecolor='gray')
 
     plt.title('Percent of Match Points Scored')
     plt.ylabel('Percent')
@@ -271,7 +299,8 @@ def plot_stats(scores, shooter_name, mem_number):
     plt.xticks(x, scores['Match Date'], rotation=90)
     plt.subplots_adjust(left=0, right=1)
 
-    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, borderaxespad=0.)
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2,
+               borderaxespad=0.)
     plt.grid(linestyle='--', linewidth='0.25')
     plt.margins(x=0.01)
 
@@ -280,17 +309,22 @@ def plot_stats(scores, shooter_name, mem_number):
 
     for x_errors, y_errors in zip(x, scores['Errors']):
         label4 = "{:.2f}".format(y_errors)
-        plt.annotate(label4, (x_errors, 1.0), textcoords='offset points', xytext=(0.1,0), ha='center', fontsize=8, rotation=90)
+        plt.annotate(label4, (x_errors, 1.0), textcoords='offset points',
+                     xytext=(0.1,0), ha='center', fontsize=8, rotation=90)
 
-
-    plt.annotate('Shooter Name: %s' % shooter_name, (1, 1), (-125, 20), fontsize=7, xycoords='axes fraction',
+    plt.annotate(f'Shooter Name: {shooter_name}', (1, 1), (-125, 20),
+                 fontsize=7, xycoords='axes fraction',
                  textcoords='offset points', va='top')
-    plt.annotate('USPSA#: %s' % mem_number, (1, 1), (-125, 10), fontsize=7, xycoords='axes fraction',
-                  textcoords='offset points', va='top')
-    plt.annotate('Total Round Count: ' + str(scores['Round Count'].sum()), (0,0), (0, -92), xycoords='axes fraction',
-                  textcoords='offset points', va='top')
-    plt.annotate('Average Percent Points: ' + str(scores['Avg Pct Scored'].iloc[-1]), (0,0), (0, -80), xycoords='axes fraction',
-                  textcoords='offset points', va='top')
+    plt.annotate(f'USPSA#: {mem_number}', (1, 1), (-125, 10), fontsize=7,
+                 xycoords='axes fraction', textcoords='offset points',
+                 va='top')
+    plt.annotate(f'Total Round Count: {str(scores["Round Count"].sum())}',
+                 (0,0), (0, -92), xycoords='axes fraction',
+                 textcoords='offset points', va='top')
+    plt.annotate(f'Average Percent Points: '
+                 f'{str(scores["Avg Pct Scored"].iloc[-1])}', (0,0), (0, -80),
+                 xycoords='axes fraction', textcoords='offset points',
+                 va='top')
 
     plt.tight_layout()
     # comment out plt.show() for production testing/deployment
