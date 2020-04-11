@@ -1,12 +1,12 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import json
-import requests
 import re
 import datetime
 import base64
 from io import BytesIO
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import requests
 
 
 
@@ -94,11 +94,14 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
         if match_link_info['date'] in delete_list:
             continue
 
-        if match_link_date <= datetime.date.fromisoformat(match_date_range['end_date']) and match_link_date >= datetime.date.fromisoformat(match_date_range['start_date']):
+        if match_link_date <= datetime.date.fromisoformat(match_date_range['end_date']) and \
+            match_link_date >= datetime.date.fromisoformat(match_date_range['start_date']):
             match_uuid = match_link_info['matchId']
 
             try:
-                match_def = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json').text)
+                match_def = json.loads(requests.get(
+                                       'https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_def.json'
+                                       ).text)
                 #match_results = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/    results.json').text)
             except:
                 return 'error downloading aws match_def.json file'
@@ -128,7 +131,9 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             total_npm      = 0
 
             try:
-                match_scores = json.loads(requests.get('https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_scores.json').text)
+                match_scores = json.loads(requests.get(
+                                          'https://s3.amazonaws.com/ps-scores/production/' + match_uuid + '/match_scores.json'
+                                          ).text)
             except:
                 return 'error downloading aws match_scores.json file'
 
@@ -152,9 +157,11 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             points_possible = (round_count * 5)
 
             if shooter_pf == 'MINOR':
-                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 3 + (total_deltas * 1)))) - ((total_ns *     10) +         (total_mikes *10))
+                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 3 + (total_deltas * 1)))) - \
+                    ((total_ns * 10) + (total_mikes *10))
             else:
-                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 4 + (total_deltas * 2)))) - ((total_ns *     10) +         (total_mikes *10))
+                points_scored = (((total_alphas * 5) + ((total_bravos + total_charlies) * 4 + (total_deltas * 2)))) - \
+                ((total_ns * 10) + (total_mikes *10))
 
             if points_scored > 0:
                 pct_points = round((points_scored / points_possible) * 100, 2)
@@ -173,7 +180,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
 
             score_list = [
-                match_date, total_alphas, total_charlies + total_bravos, total_deltas, total_ns, total_mikes, total_npm, round_count, points_possible, points_scored, pct_points, alpha_charlie_ratio, pct_errors
+                match_date, total_alphas, total_charlies + total_bravos, total_deltas, total_ns, total_mikes,
+                total_npm, round_count, points_possible, points_scored, pct_points, alpha_charlie_ratio, pct_errors
             ]
 
             score_series = pd.Series(score_list, index=scores_df.columns)
@@ -195,7 +203,8 @@ def get_match_links(login_dict):
     """Performs Practiscore.com login and retrieval of match url uuids.  Param is a dict with login creds.
        Returns errors on bad credentials.  Returns a json object with the match url data on success"""
 
-    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36' }
+    headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
+        Chrome/80.0.3987.149 Safari/537.36' }
 
 
     login_status_strs = {
@@ -250,7 +259,8 @@ def plot_stats(scores, shooter_name, mem_number):
 
     plt.plot(x, scores['Pct Points'], label='Percent Points', linestyle='solid', marker='o', markersize=6, linewidth=3)
     plt.plot(x, scores['Avg Pct Scored'], label='Average Percent Points', color='black', linestyle='dashed',  linewidth=3)
-    plt.plot(x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c', linestyle='solid', marker='o', markersize=6, linewidth=3)
+    plt.plot(x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c', linestyle='solid', marker='o', markersize=6,
+        linewidth=3)
     plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.50, linewidth=1.15, edgecolor='gray')
 
     plt.title('Percent of Match Points Scored')
@@ -273,10 +283,14 @@ def plot_stats(scores, shooter_name, mem_number):
         plt.annotate(label4, (x_errors, 1.0), textcoords='offset points', xytext=(0.1,0), ha='center', fontsize=8, rotation=90)
 
 
-    plt.annotate('Shooter Name: %s' % shooter_name, (1, 1), (-125, 20), fontsize=7, xycoords='axes fraction', textcoords='offset points', va='top')
-    plt.annotate('USPSA#: %s' % mem_number, (1, 1), (-125, 10), fontsize=7, xycoords='axes fraction', textcoords='offset points', va='top')
-    plt.annotate('Total Round Count: ' + str(scores['Round Count'].sum()), (0,0), (0, -92), xycoords='axes fraction',     textcoords='offset points', va='top')
-    plt.annotate('Average Percent Points: ' + str(scores['Avg Pct Scored'].iloc[-1]), (0,0), (0, -80), xycoords='axes     fraction', textcoords='offset points', va='top')
+    plt.annotate('Shooter Name: %s' % shooter_name, (1, 1), (-125, 20), fontsize=7, xycoords='axes fraction',
+                 textcoords='offset points', va='top')
+    plt.annotate('USPSA#: %s' % mem_number, (1, 1), (-125, 10), fontsize=7, xycoords='axes fraction',
+                  textcoords='offset points', va='top')
+    plt.annotate('Total Round Count: ' + str(scores['Round Count'].sum()), (0,0), (0, -92), xycoords='axes fraction',
+                  textcoords='offset points', va='top')
+    plt.annotate('Average Percent Points: ' + str(scores['Avg Pct Scored'].iloc[-1]), (0,0), (0, -80), xycoords='axes fraction',
+                  textcoords='offset points', va='top')
 
     plt.tight_layout()
     # comment out plt.show() for production testing/deployment
