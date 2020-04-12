@@ -11,7 +11,7 @@ import requests
 
 
 """The following functions where converted from the practiscore javascipt code
-   that decodes the AWS json files with the scores"""
+   that decodes the AWS json files with the scores for paper targets"""
 
 def num_alphas(score_field):
     A_MASK = 0x0000000F
@@ -19,8 +19,8 @@ def num_alphas(score_field):
     A_SHIFT = 0
     A_SHIFT2 = 28
 
-    return ((score_field & A_MASK) >> A_SHIFT) + \
-        ((score_field & A_MASK2) >> A_SHIFT2)
+    return (((score_field & A_MASK) >> A_SHIFT) +
+              ((score_field & A_MASK2) >> A_SHIFT2))
 
 
 def num_bravos(score_field):
@@ -29,8 +29,8 @@ def num_bravos(score_field):
     B_SHIFT = 4
     B_SHIFT2 = 32
 
-    return ((score_field & B_MASK) >> B_SHIFT) + \
-        ((score_field & B_MASK2) >> B_SHIFT2)
+    return (((score_field & B_MASK) >> B_SHIFT) +
+              ((score_field & B_MASK2) >> B_SHIFT2))
 
 
 def num_charlies(score_field):
@@ -39,8 +39,8 @@ def num_charlies(score_field):
     C_SHIFT = 8
     C_SHIFT2 = 36
 
-    return ((score_field & C_MASK) >> C_SHIFT) + \
-        ((score_field & C_MASK2) >> C_SHIFT2)
+    return (((score_field & C_MASK) >> C_SHIFT) +
+              ((score_field & C_MASK2) >> C_SHIFT2))
 
 
 def num_deltas(score_field):
@@ -49,8 +49,8 @@ def num_deltas(score_field):
     D_SHIFT = 12
     D_SHIFT2 = 40
 
-    return ((score_field & D_MASK) >> D_SHIFT) + \
-        ((score_field & D_MASK2) >> D_SHIFT2)
+    return (((score_field & D_MASK) >> D_SHIFT) +
+              ((score_field & D_MASK2) >> D_SHIFT2))
 
 
 def num_ns(score_field):
@@ -59,8 +59,8 @@ def num_ns(score_field):
     NS_SHIFT = 16
     NS_SHIFT2 = 44
 
-    return ((score_field & NS_MASK) >> NS_SHIFT) + \
-        ((score_field & NS_MASK2) >> NS_SHIFT2)
+    return (((score_field & NS_MASK) >> NS_SHIFT) +
+              ((score_field & NS_MASK2) >> NS_SHIFT2))
 
 
 def num_m(score_field):
@@ -69,8 +69,8 @@ def num_m(score_field):
     M_SHIFT = 20
     M_SHIFT2 = 48
 
-    return ((score_field & M_MASK) >> M_SHIFT) + \
-        ((score_field & M_MASK2) >> M_SHIFT2)
+    return (((score_field & M_MASK) >> M_SHIFT) +
+              ((score_field & M_MASK2) >> M_SHIFT2))
 
 
 def num_npm(score_field):
@@ -79,11 +79,8 @@ def num_npm(score_field):
     NPM_SHIFT = 24
     NPM_SHIFT2 = 42
 
-    return ((score_field & NPM_MASK) >> NPM_SHIFT) + \
-        ((score_field & NPM_MASK2) >> NPM_SHIFT2)
-
-"""End javascript converted functions"""
-
+    return (((score_field & NPM_MASK) >> NPM_SHIFT) +
+              ((score_field & NPM_MASK2) >> NPM_SHIFT2))
 
 
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
@@ -93,11 +90,12 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
        exclude from the report and the shooters membership number. Returns a
        pandas dataframe to be processed by the plot function"""
 
-    scores_df = pd.DataFrame(
-        columns = ['Match Date', 'Total Alphas', 'Total Charlies',
-                   'Total Deltas', 'Total No-shoots', 'Total Mikes',
-                   'Total NPM', 'Round Count', 'Points Poss.', 'Points Scored',
-                    'Pct Points', 'A/C Ratio', 'Errors'])
+    scores_df = pd.DataFrame(columns = ['Match Date', 'Total Alphas',
+                                        'Total Charlies', 'Total Deltas',
+                                        'Total No-shoots', 'Total Mikes',
+                                        'Total NPM', 'Round Count',
+                                        'Points Poss.', 'Points Scored',
+                                        'Pct Points', 'A/C Ratio', 'Errors'])
 
     # count is used to limit the number of matches that can be plotted
     count = 0
@@ -109,6 +107,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
         form_end_date   = dt.date.fromisoformat(match_date_range['end_date'])
         form_start_date = dt.date.fromisoformat(match_date_range['start_date'])
+
         if (match_link_date <= form_end_date and
             match_link_date >= form_start_date):
             match_uuid = match_link_info['matchId']
@@ -237,7 +236,7 @@ def get_match_links(login_dict):
         'bad_email': 'have an account with the email',
         'success'  : 'https://practiscore\.com/associate/step2',
     }
-    
+
     with requests.Session() as sess:
         login = sess.post('https://practiscore.com/login',
                           data=login_dict, headers=headers)
