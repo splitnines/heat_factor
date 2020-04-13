@@ -104,13 +104,11 @@ def get_upped(request):
                 'won\'t. If you don\'t have at least 3 qualifing classifier '
                 'scores on record this tool won\'t work.',
                 'date': dt.datetime.now()})
-
     if shooter.get_shooter_class() == 'GM':
         return render(request, 'get_upped.html', {'response_text':
                 f'You\'re a <font color=\"blue\">{shooter.get_shooter_class()}'
                 '</font>.  Nowhere to go from here.',
                 'date': dt.datetime.now()})
-
     if shooter.get_shooter_class() == 'U':
         return render(request, 'get_upped.html', {'response_text':
                 'You need a score of <font color=\"green\">'
@@ -119,7 +117,6 @@ def get_upped(request):
                 'of <font color=\"green\">'
                 f'{str(shooter.get_initial_classifaction()[1])}</font> class.',
                 'date': dt.datetime.now()})
-
     if shooter.get_upped() > 100:
         return render(request, 'get_upped.html', {'response_text':
                 'You can not move up in your next classifier because you '
@@ -149,22 +146,16 @@ def points(request):
     shooter_start_date = (request.POST.get('shooter_start_date')
                          if type(request.POST.get('shooter_start_date')) ==
                          str else '')
-
-    login_data = {
-        'username': username,
-        'password': password
-    }
-
-    match_date_range = {
-        # set the default date range
-        'end_date': str(dt.date.fromisoformat(str(dt.date.today()))),
-        'start_date': '2019-01-01',
-    }
+    login_data         = {'username': username,
+                          'password': password }
+    # set the default date range
+    match_date_range   = {
+                'end_date': str(dt.date.fromisoformat(str(dt.date.today()))),
+                'start_date': '2019-01-01',}
 
     if (shooter_end_date != '' and
         shooter_end_date < str(dt.date.fromisoformat(str(dt.date.today())))):
         match_date_range['end_date'] = shooter_end_date
-
     if (shooter_start_date != '' and
         shooter_start_date > match_date_range['start_date'] and
         shooter_start_date < match_date_range['end_date']):
@@ -178,7 +169,6 @@ def points(request):
     match_links_json = get_match_links(login_data)
     if type(match_links_json) == str:
         return render(request, 'error.html', {'message': match_links_json})
-
     del password, login_data
 
     try:
@@ -191,16 +181,14 @@ def points(request):
                 {'message': create_dataframe(match_links_json,
                                              match_date_range, delete_list,
                                              mem_num)})
-
     graph = plot_stats(scores_df, shooter_fn + ' ' + shooter_ln, mem_num)
 
     if request.method == 'POST':
         accu_stats_form2 = AccuStatsForm2(request.POST)
         if accu_stats_form2.is_valid():
-            return render(request, 'points.html',{
-                    'graph': graph, 'date': dt.datetime.now(),
-                    'accu_stats_form2': accu_stats_form2,
-                    })
+            return render(request, 'points.html',{'graph': graph,
+                                     'date': dt.datetime.now(),
+                                     'accu_stats_form2': accu_stats_form2,})
         else:
             return HttpResponseRedirect('/')
     else:

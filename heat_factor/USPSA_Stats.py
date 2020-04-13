@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import requests
 
 
-
 """The following functions where converted from the practiscore javascipt code
    that decodes the AWS json files with the scores for paper targets"""
 
