@@ -1,12 +1,14 @@
 import json
 import re
 import datetime as dt
+import asyncio
 import base64
 from io import BytesIO
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import requests
+from aiohttp import ClientSession
 
 
 """The following functions where converted from the practiscore javascipt code
@@ -83,12 +85,52 @@ def num_npm(score_field):
             ((score_field & NPM_MASK2) >> NPM_SHIFT2))
 
 
+async def fetch(url, session):
+    try:
+        async with session.get(url) as response:
+            return await response.text()
+    except Exception:
+        return f'Error downloading {url}'
+
+
+async def run(links):
+
+    def_tasks = []
+    scores_tasks = []
+
+    # Fetch all responses within one Client session per file,
+    # keep connection alive for all requests.
+    async with ClientSession() as session:
+        for link in links:
+            url1 = ('https://s3.amazonaws.com/ps-scores/'
+                    f"production/{link['matchId']}/match_def.json")
+            def_task = asyncio.ensure_future(fetch(url1, session))
+            def_tasks.append(def_task)
+
+            url2 = ('https://s3.amazonaws.com/ps-scores/'
+                    f"production/{link['matchId']}/match_scores.json")
+            scores_task = asyncio.ensure_future(fetch(url2, session))
+            scores_tasks.append(scores_task)
+
+        def_resp = await asyncio.gather(*def_tasks)
+        scores_resp = await asyncio.gather(*scores_tasks)
+        # you now have all response bodies in these variable
+        return def_resp, scores_resp
+
+
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     """This is were the magic happens.  Performs the calculations on the data
        pulled from the Practiscore AWS API. Params are the json object with
        match uuids, dict with start and end data filters, a list with dates to
        exclude from the report and the shooters membership number. Returns a
        pandas dataframe to be processed by the plot function"""
+
+    loop = asyncio.get_event_loop()
+    future = asyncio.ensure_future(run(json_obj))
+    match_def_data, match_scores_data = loop.run_until_complete(future)
+
+    match_def_json = [json.loads(i) for i in match_def_data]
+    match_scores_json = [json.loads(i) for i in match_scores_data]
 
     scores_df = pd.DataFrame(columns=['Match Date', 'Total Alphas',
                                       'Total Charlies', 'Total Deltas',
@@ -99,30 +141,19 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
     # count is used to limit the number of matches that can be plotted
     count = 0
-    for match_link_info in json_obj:
-        match_link_date = dt.date.fromisoformat(match_link_info['date'])
+    for match_def in match_def_json:
+        match_date = dt.date.fromisoformat(match_def['match_date'])
 
-        if match_link_info['date'] in delete_list:
+        if match_date in delete_list:
             continue
 
         form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
         form_start_date = dt.date.fromisoformat(match_date_range['start_date'])
 
-        if (match_link_date <= form_end_date and
-                match_link_date >= form_start_date):
-            match_uuid = match_link_info['matchId']
+        if (match_date <= form_end_date and match_date >= form_start_date):
+            match_uuid = match_def['matchId']
 
-            try:
-                aws_match_link = (f'https://s3.amazonaws.com/ps-scores/'
-                                  f'production/{match_uuid}/match_def.json')
-                match_def = (json.loads(requests.get(aws_match_link).text))
-                # match_results = json.loads(requests.get('https://s3.
-                # amazonaws.com/ps-scores/production/' + match_uuid + '/
-                # results.json').text)
-            except Exception:
-                return 'error downloading aws match_def.json file'
-
-            if match_def['match_type'] != 'uspsa_p':
+            if match_def['match_subtype'] != 'uspsa':
                 continue
 
             match_date = match_def['match_date']
