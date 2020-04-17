@@ -1,4 +1,7 @@
+aiohttp==3.6.2
 asgiref==3.2.7
+async-timeout==3.0.1
+attrs==19.3.0
 beautifulsoup4==4.8.2
 bs4==0.0.1
 certifi==2019.11.28
@@ -12,6 +15,7 @@ idna==2.9
 kiwisolver==1.2.0
 lxml==4.5.0
 matplotlib==3.2.1
+multidict==4.7.5
 numpy==1.18.2
 pandas==1.0.3
 psycopg2==2.8.4
@@ -24,3 +28,4 @@ soupsieve==2.0
 sqlparse==0.3.1
 urllib3==1.25.8
 whitenoise==5.0.1
+yarl==1.4.2
