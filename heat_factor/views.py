@@ -11,7 +11,7 @@ from .USPSA_Stats import create_dataframe, get_match_links, plot_stats
 
 
 def home(request):
-    """display app home page/landing page"""
+    """Display app home page/landing page"""
 
     if request.method == 'POST':
         practiscore_url_form = PractiscoreUrlForm(request.POST)
@@ -61,7 +61,7 @@ def heat_factor(request):
             return render(request, 'error.html', {'message': match_def})
 
     else:
-        # redirect on bad_url detection
+        # Redirect on bad_url detection
         return redirect('/bad_url/')
 
 
@@ -133,6 +133,7 @@ def get_upped(request):
 
 
 def points(request):
+    """Returns a matplotlib .png to the points.html template"""
 
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -148,7 +149,7 @@ def points(request):
                           str else '')
     login_data = {'username': username,
                   'password': password}
-    # set the default date range
+    # Set the default date range
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(dt.date.today()))),
         'start_date': '2019-01-01', }

@@ -12,7 +12,13 @@ from aiohttp import ClientSession
 
 
 """The following functions where converted from the practiscore javascipt code
-   that decodes the AWS json files with the scores for paper targets"""
+that decodes the AWS json files with the scores for paper targets.
+
+Returns the human consumable scores for paper targets.
+
+Args:
+score_field -- this the coded scores for paper targets in the AWS json file
+"""
 
 
 def num_alphas(score_field):
@@ -86,6 +92,13 @@ def num_npm(score_field):
 
 
 async def fetch(url, session):
+    """Retruns the AWS for each json file
+
+    Args:
+    url -- the individual url from the shooters list of matches
+    session -- the aiohttp session object
+    """
+
     try:
         async with session.get(url) as response:
             return await response.text()
@@ -94,6 +107,11 @@ async def fetch(url, session):
 
 
 async def run(links):
+    """Returns the AWS json files as a string object.
+
+    Args:
+    links -- the json object containing the shooters match uuids
+    """
 
     def_tasks = []
     scores_tasks = []
@@ -119,12 +137,17 @@ async def run(links):
 
 
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
-    """This is were the magic happens.  Performs the calculations on the data
-       pulled from the Practiscore AWS API. Params are the json object with
-       match uuids, dict with start and end data filters, a list with dates to
-       exclude from the report and the shooters membership number. Returns a
-       pandas dataframe to be processed by the plot function"""
+    """Returns the dataframe containing all the statistics and the shooters
+       first and last name.
 
+       Args:
+       json_obj -- the json object containing the shooters match uuids
+       match_date_range -- dict containing alternate start/end dates
+       deleate_list -- list containing dates to be omitted from plot
+       mem_num -- shooters USPSA membership number
+       """
+
+    # asyncio configuration, calls async functions.
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
     future = asyncio.ensure_future(run(json_obj))
@@ -141,7 +164,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                       'Points Poss.', 'Points Scored',
                                       'Pct Points', 'A/C Ratio', 'Errors'])
 
-    # count is used to limit the number of matches that can be plotted
+    # count is used to limit the number of matches that can be plotted.
     count = 0
     for idx, match_def in enumerate(match_def_json):
         match_date = dt.date.fromisoformat(match_def['match_date'])
@@ -153,7 +176,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
         form_start_date = dt.date.fromisoformat(match_date_range['start_date'])
 
         if (match_date <= form_end_date and match_date >= form_start_date):
-
             if match_def['match_subtype'] != 'uspsa':
                 continue
 
@@ -183,7 +205,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                     if re.match(shooter_uuid, stage_score['shtr']):
                         total_alphas += stage_score['poph']
                         total_mikes += stage_score['popm']
-
                         if 'ts' in stage_score:
                             for ts in stage_score['ts']:
                                 total_alphas += num_alphas(ts)
@@ -193,9 +214,9 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                 total_ns += num_ns(ts)
                                 total_mikes += num_m(ts)
                                 total_npm += num_npm(ts)
-
             round_count = sum((total_alphas, total_bravos, total_charlies,
                                total_deltas, total_ns, total_mikes, total_npm))
+
             points_possible = (round_count * 5)
 
             if shooter_pf == 'MINOR':
@@ -213,13 +234,11 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                 pct_points = round((points_scored / points_possible) * 100, 2)
             else:
                 pct_points = 'NaN'
-
             if total_alphas > 0 and total_charlies > 0:
                 alpha_charlie_ratio = (round((total_charlies /
                                               total_alphas) * 100, 2))
             else:
                 alpha_charlie_ratio = 'NaN'
-
             if sum([total_deltas, total_mikes, total_ns]) > 0:
                 pct_errors = (round((sum([total_deltas, total_mikes, total_ns])
                                      / round_count) * 100, 2))
@@ -235,7 +254,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             score_series = pd.Series(score_list, index=scores_df.columns)
             scores_df = scores_df.append(score_series, ignore_index=True)
 
-            # count is used to limit the number of matches that can be plotted
+            # count is used to limit the number of matches that can be plotted.
             count += 1
             if count > 50:
                 break
@@ -244,13 +263,17 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                           scores_df['Points Poss.'].sum()) *
                                          100, 2))
     scores_df.sort_values(by=['Match Date'], inplace=True)
+
     return scores_df, shooter_fname, shooter_lname
 
 
 def get_match_links(login_dict):
-    """Performs Practiscore.com login and retrieval of match url uuids.  Param
-       is a dict with login creds. Returns errors on bad credentials.  Returns
-       a json object with the match url data on success"""
+    """Returns the shooters list of matches from practiscore in the form of
+    a json object.
+
+    Args:
+    login_dict - dict containing the shooters practiscore login credentials
+    """
 
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -279,7 +302,6 @@ def get_match_links(login_dict):
     match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
     match_link_raw_data = re.search(match_link_re,
                                     str(shooter_ps_match_links.content))
-
     match_links_json = []
     my_epoch = dt.date.fromisoformat('2019-01-01')
     for match_link_info in json.loads(match_link_raw_data.group(1)):
@@ -290,17 +312,22 @@ def get_match_links(login_dict):
 
 
 def add_annotation(x_ax, y_ax):
-    """adds labels to plot"""
+    """Adds labels to plot"""
+
     for xx, yy in zip(x_ax, y_ax):
         label = "{:.2f}".format(yy)
         plt.annotate(label, (xx, yy), textcoords='offset points',
                      xytext=(-5, 0), ha='right', fontsize=8)
-    return
 
 
 def plot_stats(scores, shooter_name, mem_number):
-    """Plots stats in graph.  Params are pandas dataframe, shooters full name
-       and shooters membership number. Returns graph saved in memory"""
+    """Returns a matplotlib .png object saved in memory
+
+    Args:
+    scores -- pandas dataframe containing the shooters scores for all matches
+    shooter_name -- the shooters first and last name as a string object
+    mem_number -- the shooters USPSA membership number
+    """
 
     x = np.arange(len(scores['Match Date']))
 
@@ -313,7 +340,6 @@ def plot_stats(scores, shooter_name, mem_number):
              linestyle='solid', marker='o', markersize=6, linewidth=3)
     plt.bar(x, scores['Errors'], label='Errors', color='rosybrown', width=0.50,
             linewidth=1.15, edgecolor='gray')
-
     plt.title('Percent of Match Points Scored')
     plt.ylabel('Percent')
     plt.xlabel('Date of Match')
@@ -350,17 +376,13 @@ def plot_stats(scores, shooter_name, mem_number):
                  va='top')
 
     plt.tight_layout()
-    # comment out plt.show() for production testing/deployment
-    # plt.show()
-
     # use IO BytesIO to store image in memory
-    # I took this from the web and need to figure out how it works
+    # I took this from the web and need to figure out what its doing
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
     image_png = buffer.getvalue()
     buffer.close()
-
     graphic = base64.b64encode(image_png)
     graphic = graphic.decode('utf-8')
 
