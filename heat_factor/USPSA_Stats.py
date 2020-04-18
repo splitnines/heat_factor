@@ -91,8 +91,8 @@ def num_npm(score_field):
             ((score_field & NPM_MASK2) >> NPM_SHIFT2))
 
 
-async def fetch(url, session):
-    """Retruns the AWS for each json file
+async def http_get(url, session):
+    """Returns the AWS for each json file
 
     Args:
     url -- the individual url from the shooters list of matches
@@ -106,7 +106,7 @@ async def fetch(url, session):
         return f'Error downloading {url}'
 
 
-async def run(links):
+async def http_sess(links):
     """Returns the AWS json files as a string object.
 
     Args:
@@ -122,12 +122,12 @@ async def run(links):
         for link in links:
             url1 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_def.json")
-            def_task = asyncio.ensure_future(fetch(url1, session))
+            def_task = asyncio.ensure_future(http_get(url1, session))
             def_tasks.append(def_task)
 
             url2 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_scores.json")
-            scores_task = asyncio.ensure_future(fetch(url2, session))
+            scores_task = asyncio.ensure_future(http_get(url2, session))
             scores_tasks.append(scores_task)
 
         def_resp = await asyncio.gather(*def_tasks)
@@ -150,7 +150,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     # asyncio configuration, calls async functions.
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
-    future = asyncio.ensure_future(run(json_obj))
+    future = asyncio.ensure_future(http_sess(json_obj))
     match_def_data, match_scores_data = loop.run_until_complete(future)
     loop.close()
 
@@ -191,6 +191,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                     shooter_pf = match_info['sh_pf'].upper()
                     # shooter_div = match_info['sh_dvp']
                     # shooter_class = match_info['sh_grd']
+                else:
+                    continue
 
             total_alphas = 0
             total_bravos = 0

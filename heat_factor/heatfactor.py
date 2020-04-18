@@ -1,16 +1,18 @@
-import matplotlib.pyplot as plt
 import random
-import requests
 import re
 import json
 from io import BytesIO
 import base64
+import requests
+import matplotlib.pyplot as plt
 
 
 def get_it(match_link):
-    """get_it is the function used to fetch the match data from
-       practiscore/aws.  It takes the users supplied practiscore url
-       and returns the uuid for the match."""
+    """Returns a json object with the match info.
+
+    Args:
+    match_link -- user provided url as a sting object
+    """
 
     uuid_regex = re.compile(
         r'practiscore\.com/results/new/([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-'
@@ -41,12 +43,13 @@ def get_it(match_link):
 
 
 def run_it(match_def):
-    """run_it is the function used to calculate the Heat Factor for each
-       division in a match.  It takes the match_def json fileas its only param
-       and returns a tuple with the heat factor numbers and the match name"""
+    """Returns a list of floats.
+
+    Args:
+    match_def -- json object
+    """
 
     match_name = match_def['match_name']
-
     division_heat = {
         'Production': [0, 0, 0, 0, ],
         'Limited': [0, 0, 0, 0, ],
@@ -55,7 +58,6 @@ def run_it(match_def):
         'PCC': [0, 0, 0, 0, ],
         'Single Stack': [0, 0, 0, 0, ],
     }
-
     division_count = {
         'Production': 0,
         'Limited': 0,
@@ -64,32 +66,24 @@ def run_it(match_def):
         'PCC': 0,
         'Single Stack': 0,
     }
-
     for shooter in match_def['match_shooters']:
-
         class_weights = {
             'G': random.randrange(95, 100),
             'M': random.randrange(85, 94),
             'A': random.randrange(75, 84),
             'B': random.randrange(60, 74),
         }
-
         for division in division_heat:
-
             if 'sh_dvp' in shooter and 'sh_grd' in shooter:
-
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'G':
                     division_heat[division][0] += class_weights['G']
                     division_count[division] += 1
-
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'M':
                     division_heat[division][1] += class_weights['M']
                     division_count[division] += 1
-
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'A':
                     division_heat[division][2] += class_weights['A']
                     division_count[division] += 1
-
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'B':
                     division_heat[division][3] += class_weights['B']
                     division_count[division] += 1
@@ -117,8 +111,12 @@ def run_it(match_def):
 
 
 def graph_it(heat_idx, match_name):
-    """graph the data from practiscore, save image to memory and pass image
-       back.  Production, Open, Carry Optics, Limited, PCC, Single Stack"""
+    """Returns as matplotlib graph saved as a BytesIO object
+
+    Args:
+    heat_idx -- a list of floats
+    match_name -- sting
+    """
 
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
 
@@ -126,25 +124,19 @@ def graph_it(heat_idx, match_name):
     width = 0.3
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x, heat_idx, width, label='Heat Factor')
+    rects = ax.bar(x, heat_idx, width, label='Heat Factor')
     ax.set_ylabel('Heat Factor')
     ax.set_title(match_name)
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
-    # ax.legend()
 
-    def autolabel(rects):
-        """Attach a text label above each bar in *rects*, displaying its
-           height."""
-        for rect in rects:
-            height = rect.get_height()
-            ax.annotate('{}'.format(height),
-                        xy=(rect.get_x() + rect.get_width() / 2, height),
-                        xytext=(0, 0),
-                        textcoords="offset points",
-                        ha='center', va='bottom')
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate(f'{height}', xy=(rect.get_x() + rect.get_width() / 2,
+                                     height), xytext=(0, 0),
+                    textcoords="offset points", ha='center',
+                    va='bottom')
 
-    autolabel(rects1)
     fig.tight_layout()
     # use IO BytesIO to store image in memory
     # I took this from the web and need to figure out how it works
@@ -153,7 +145,6 @@ def graph_it(heat_idx, match_name):
     buffer.seek(0)
     image_png = buffer.getvalue()
     buffer.close()
-
     graphic = base64.b64encode(image_png)
     graphic = graphic.decode('utf-8')
 
