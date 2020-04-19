@@ -43,7 +43,7 @@ def get_it(match_link):
 
 
 def run_it(match_def):
-    """Returns a list of floats.
+    """Returns a list of floats and match_name string.
 
     Args:
     match_def -- json object
