@@ -178,10 +178,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
         if (match_date <= form_end_date and match_date >= form_start_date):
             if match_def['match_subtype'] != 'uspsa':
                 continue
-
             match_date = match_def['match_date']
             # match_name = match_def['match_name']
-
             for match_info in match_def['match_shooters']:
                 if ('sh_id' in match_info and match_info['sh_id'].upper() ==
                         mem_num.upper()):
@@ -218,7 +216,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                 total_npm += num_npm(ts)
             round_count = sum((total_alphas, total_bravos, total_charlies,
                                total_deltas, total_ns, total_mikes, total_npm))
-
             points_possible = (round_count * 5)
 
             if shooter_pf == 'MINOR':
@@ -231,7 +228,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                   ((total_bravos + total_charlies) * 4) +
                                   (total_deltas * 2)) - ((total_ns * 10) +
                                                          (total_mikes * 10)))
-
             if points_scored > 0:
                 pct_points = round((points_scored / points_possible) * 100, 2)
             else:
