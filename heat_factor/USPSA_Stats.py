@@ -92,7 +92,7 @@ def num_npm(score_field):
 
 
 async def http_get(url, session):
-    """Returns the AWS for each json file
+    """Returns the AWS response for each json file
 
     Args:
     url -- the individual url from the shooters list of matches
@@ -115,25 +115,27 @@ async def http_sess(links):
 
     def_tasks = []
     scores_tasks = []
-
     # Fetch all responses within one Client session per file,
     # keep connection alive for all requests.
     async with ClientSession() as session:
         for link in links:
             url1 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_def.json")
-            def_task = asyncio.ensure_future(http_get(url1, session))
-            def_tasks.append(def_task)
-
+            def_tasks.append(asyncio.create_task(http_get(url1, session)))
+            #  def_task = asyncio.ensure_future(http_get(url1, session))
+            #  def_tasks.append(def_task)
             url2 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_scores.json")
-            scores_task = asyncio.ensure_future(http_get(url2, session))
-            scores_tasks.append(scores_task)
+            scores_tasks.append(asyncio.create_task(http_get(url2, session)))
+            # scores_task = asyncio.ensure_future(http_get(url2, session))
+            # scores_tasks.append(scores_task)
 
-        def_resp = await asyncio.gather(*def_tasks)
-        scores_resp = await asyncio.gather(*scores_tasks)
+        # def_resp = (x for x in await asyncio.gather(*def_tasks))
+        # scores_resp = (x for x in await asyncio.gather(*scores_tasks))
         # you now have all response bodies in these variable
-        return def_resp, scores_resp
+        # return def_resp, scores_resp
+        return ((x for x in await asyncio.gather(*def_tasks)),
+                (x for x in await asyncio.gather(*scores_tasks)))
 
 
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
@@ -150,8 +152,10 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     # asyncio configuration, calls async functions.
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
-    future = asyncio.ensure_future(http_sess(json_obj))
-    match_def_data, match_scores_data = loop.run_until_complete(future)
+    # future = asyncio.ensure_future(http_sess(json_obj))
+    # match_def_data, match_scores_data = loop.run_until_complete(future)
+    (match_def_data,
+     match_scores_data) = loop.run_until_complete(http_sess(json_obj))
     loop.close()
 
     match_def_json = [json.loads(i) for i in match_def_data]
