@@ -98,7 +98,6 @@ async def http_get(url, session):
     url -- the individual url from the shooters list of matches
     session -- the aiohttp session object
     """
-
     try:
         async with session.get(url) as response:
             return await response.text()
@@ -112,7 +111,6 @@ async def http_sess(links):
     Args:
     links -- the json object containing the shooters match uuids
     """
-
     def_tasks = []
     scores_tasks = []
     # Fetch all responses within one Client session per file,
@@ -122,18 +120,11 @@ async def http_sess(links):
             url1 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_def.json")
             def_tasks.append(asyncio.create_task(http_get(url1, session)))
-            #  def_task = asyncio.ensure_future(http_get(url1, session))
-            #  def_tasks.append(def_task)
+
             url2 = ('https://s3.amazonaws.com/ps-scores/'
                     f"production/{link['matchId']}/match_scores.json")
             scores_tasks.append(asyncio.create_task(http_get(url2, session)))
-            # scores_task = asyncio.ensure_future(http_get(url2, session))
-            # scores_tasks.append(scores_task)
 
-        # def_resp = (x for x in await asyncio.gather(*def_tasks))
-        # scores_resp = (x for x in await asyncio.gather(*scores_tasks))
-        # you now have all response bodies in these variable
-        # return def_resp, scores_resp
         return ((x for x in await asyncio.gather(*def_tasks)),
                 (x for x in await asyncio.gather(*scores_tasks)))
 
@@ -148,12 +139,10 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
        deleate_list -- list containing dates to be omitted from plot
        mem_num -- shooters USPSA membership number
        """
-
     # asyncio configuration, calls async functions.
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
-    # future = asyncio.ensure_future(http_sess(json_obj))
-    # match_def_data, match_scores_data = loop.run_until_complete(future)
+
     (match_def_data,
      match_scores_data) = loop.run_until_complete(http_sess(json_obj))
     loop.close()
@@ -276,7 +265,6 @@ def get_match_links(login_dict):
     Args:
     login_dict - dict containing the shooters practiscore login credentials
     """
-
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                'AppleWebKit/537.36 (KHTML, like Gecko) '
                'Chrome/80.0.3987.149 Safari/537.36'}
@@ -330,7 +318,6 @@ def plot_stats(scores, shooter_name, mem_number):
     shooter_name -- the shooters first and last name as a string object
     mem_number -- the shooters USPSA membership number
     """
-
     x = np.arange(len(scores['Match Date']))
 
     plt.figure(figsize=(14.5, 8))
