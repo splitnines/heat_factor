@@ -100,6 +100,7 @@ async def http_get(url, session):
     """
     try:
         async with session.get(url) as response:
+            assert response.status == 200
             return await response.text()
     except Exception:
         return f'Error downloading {url}'
