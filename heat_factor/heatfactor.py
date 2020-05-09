@@ -11,12 +11,12 @@ def get_it(match_link):
     """Returns a json object with the match info.
 
     Args:
-    match_link -- user provided url as a sting object
-    """
+    match_link -- user provided url as a sting object"""
 
     uuid_regex = re.compile(
         r'practiscore\.com/results/new/([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-'
-        r'[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})$')
+        r'[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})$'
+    )
     non_uuid_regex = re.compile(r'practiscore\.com/results/new/(\d+)$')
 
     if re.search(non_uuid_regex, match_link):
@@ -25,7 +25,8 @@ def get_it(match_link):
         aws_uuid_regex = re.compile(
             r'https://s3\.amazonaws\.com/ps-scores/production/([0-9a-fA-F]{8}'
             r'\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-'
-            '[0-9a-fA-F]{12})/match_def.json')
+            '[0-9a-fA-F]{12})/match_def.json'
+        )
         if re.search(aws_uuid_regex, match_html_text):
             match_uuid = re.search(aws_uuid_regex, match_html_text)[1]
 
@@ -33,9 +34,11 @@ def get_it(match_link):
         match_uuid = re.search(uuid_regex, match_link)[1]
 
     try:
-        match_def = json.loads(requests.get(
-            f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
-            'match_def.json').text)
+        match_def = (
+            json.loads(requests.get(
+                f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
+                'match_def.json').text)
+        )
     except ValueError:
         return 'problem downloading aws json file.'
 
@@ -46,10 +49,10 @@ def run_it(match_def):
     """Returns a list of floats and match_name string.
 
     Args:
-    match_def -- json object
-    """
+    match_def -- json object"""
 
     match_name = match_def['match_name']
+
     division_heat = {
         'Production': [0, 0, 0, 0, ],
         'Limited': [0, 0, 0, 0, ],
@@ -66,6 +69,7 @@ def run_it(match_def):
         'PCC': 0,
         'Single Stack': 0,
     }
+
     for shooter in match_def['match_shooters']:
         class_weights = {
             'G': random.randrange(95, 100),
@@ -75,22 +79,26 @@ def run_it(match_def):
         }
         for division in division_heat:
             if 'sh_dvp' in shooter and 'sh_grd' in shooter:
+
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'G':
                     division_heat[division][0] += class_weights['G']
                     division_count[division] += 1
+
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'M':
                     division_heat[division][1] += class_weights['M']
                     division_count[division] += 1
+
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'A':
                     division_heat[division][2] += class_weights['A']
                     division_count[division] += 1
+
                 if shooter['sh_dvp'] == division and shooter['sh_grd'] == 'B':
                     division_heat[division][3] += class_weights['B']
                     division_count[division] += 1
 
     heat_idx = (
-        round(sum(division_heat['Production']) /
-              division_count['Production'], 2)
+        round(sum(division_heat['Production'])
+              / division_count['Production'], 2)
         if division_count['Production'] > 0 else 0,
         round(sum(division_heat['Open']) /
               division_count['Open'], 2) if division_count['Open'] > 0 else 0,
@@ -115,8 +123,7 @@ def graph_it(heat_idx, match_name):
 
     Args:
     heat_idx -- a list of floats
-    match_name -- sting
-    """
+    match_name -- sting"""
 
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
 
@@ -132,19 +139,20 @@ def graph_it(heat_idx, match_name):
 
     for rect in rects:
         height = rect.get_height()
-        ax.annotate(f'{height}', xy=(rect.get_x() + rect.get_width() / 2,
-                                     height), xytext=(0, 0),
-                    textcoords="offset points", ha='center',
-                    va='bottom')
+        ax.annotate(
+            f'{height}', xy=(rect.get_x() + rect.get_width() / 2, height),
+            xytext=(0, 0), textcoords="offset points", ha='center', va='bottom'
+        )
 
     fig.tight_layout()
-    # use IO BytesIO to store image in memory
-    # I took this from the web and need to figure out how it works
+
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
+
     buffer.seek(0)
     image_png = buffer.getvalue()
     buffer.close()
+
     graphic = base64.b64encode(image_png)
     graphic = graphic.decode('utf-8')
 

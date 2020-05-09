@@ -2,14 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 
 
+classification_dict = {
+    'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0
+}
+next_class_up = {
+    'M': 'GM', 'A': 'M', 'B': 'A', 'C': 'B', 'D': 'C'
+}
+reverse_classification_dict = {
+    95: 'GM', 85: 'M', 75: 'A', 60: 'B', 40: 'C', 2: 'D', 0: 'U'
+}
+division_list = [
+    'Open', 'Limited', 'Limited 10', 'Production',
+    'Revolver', 'Single Stack', 'Carry Optics', 'PCC'
+]
+
+
 class ClassifactionWhatIf:
 
     """Use this object to get percent a shooter needs in mext classifier to
     move up in classification.
 
     Methods - get_upped, get_shooter_class, get_next_class,
-    get_initial_classifaction
-    """
+    get_initial_classifaction"""
 
     def __init__(self, mem_num, division):
         """Args:
@@ -18,39 +32,41 @@ class ClassifactionWhatIf:
         """
 
         self.mem_num = mem_num
-        self.division = (division.title() if division != 'PCC' else
-                         division.upper())
-        self.division_search = (division.title().replace(' ', '_') if
-                                division != 'PCC' else
-                                division.upper().replace(' ', '_'))
-        self.classification_dict = {'GM': 95, 'M': 85, 'A': 75,
-                                    'B': 60, 'C': 40, 'D': 2, 'U': 0}
-        self.next_class_up = {'M': 'GM', 'A': 'M', 'B': 'A',
-                              'C': 'B', 'D': 'C'}
-        self.reverse_classification_dict = {95: 'GM', 85: 'M', 75: 'A',
-                                            60: 'B', 40: 'C', 2: 'D', 0: 'U'}
-        division_list = ['Open', 'Limited', 'Limited 10', 'Production',
-                         'Revolver', 'Single Stack', 'Carry Optics', 'PCC']
+
+        if division != 'PCC':
+            self.division = division.title()
+        else:
+            self.division = division.upper()
+
+        if self.division != 'PCC':
+            self.division_search = division.title().replace(' ', '_')
+        else:
+            self.division_search = division.upper().replace(' ', '_')
 
         if self.division not in division_list:
-            raise ValueError(self.division + ' not a valid division')
+            raise ValueError(f'{self.division} is not a valid division')
 
-        uspsa_org_response = requests.get('https://uspsa.org/classification/'
-                                          f'{self.mem_num}').text
+        uspsa_org_response = requests.get(
+            f'https://uspsa.org/classification/{self.mem_num}'
+        ).text
         self.bs = BeautifulSoup(uspsa_org_response, 'lxml')
 
-        if (self.bs.find('tbody',
-                         {'id': f'{self.division_search}-dropDown'}) is None):
-            raise AttributeError(f'No records available for {self.mem_num} in '
-                                 f'{self.division}.')
+        if (
+            self.bs.find(
+                'tbody', {'id': f'{self.division_search}-dropDown'}) is None
+        ):
+            raise AttributeError(
+                f'No records available for {self.mem_num} in {self.division}.'
+            )
 
     def __get_classifier_scores(self):
         """Returns a list of tuples with the qualifying classifier scores"""
 
         self.classifier_score_list = []
 
-        table_body = self.bs.find('tbody',
-                                  {'id': f'{self.division_search}-dropDown'})
+        table_body = self.bs.find(
+            'tbody', {'id': f'{self.division_search}-dropDown'}
+        )
         table_rows = table_body.find_all('tr')
 
         for row in table_rows[1:]:
@@ -70,10 +86,12 @@ class ClassifactionWhatIf:
         for row in rows:
             header = row.find_all('th')
             data = row.find_all('td')
+
             try:
                 float(str([x.text.strip() for x in data][1].split(': ')[1]))
             except ValueError:
                 raise ValueError()
+
             if [x.text.strip() for x in header][0] == self.division:
                 self.classifacation = (float(
                     str([x.text.strip() for x in data][1].split(': ')[1])))
@@ -91,9 +109,11 @@ class ClassifactionWhatIf:
 
         if self.shooter_class == 'U':
             return None
-        return (round((self.classification_dict[
-                       self.next_class_up[self.shooter_class]] *
-                       (score_count + 1)) - score_sum, 4))
+        return (
+            round((classification_dict[
+                next_class_up[self.shooter_class]
+            ] * (score_count + 1)) - score_sum, 4)
+        )
 
     def get_shooter_class(self):
         """Returns the shooters current classifaction letter."""
@@ -101,22 +121,32 @@ class ClassifactionWhatIf:
         self.cur_pct = self.__get_shooter_classifaction()
         self.shooter_class = 'U'
 
-        if self.cur_pct >= self.classification_dict['GM']:
+        if self.cur_pct >= classification_dict['GM']:
             self.shooter_class = 'GM'
-        elif (self.cur_pct >= self.classification_dict['M'] and
-              self.cur_pct < self.classification_dict['GM']):
+        elif (
+            self.cur_pct >= classification_dict['M'] and
+            self.cur_pct < classification_dict['GM']
+        ):
             self.shooter_class = 'M'
-        elif (self.cur_pct >= self.classification_dict['A'] and
-              self.cur_pct < self.classification_dict['M']):
+        elif (
+            self.cur_pct >= classification_dict['A'] and
+            self.cur_pct < classification_dict['M']
+        ):
             self.shooter_class = 'A'
-        elif (self.cur_pct >= self.classification_dict['B'] and
-              self.cur_pct < self.classification_dict['A']):
+        elif (
+            self.cur_pct >= classification_dict['B'] and
+            self.cur_pct < classification_dict['A']
+        ):
             self.shooter_class = 'B'
-        elif (self.cur_pct >= self.classification_dict['C'] and
-              self.cur_pct < self.classification_dict['B']):
+        elif (
+            self.cur_pct >= classification_dict['C'] and
+            self.cur_pct < classification_dict['B']
+        ):
             self.shooter_class = 'C'
-        elif (self.cur_pct >= self.classification_dict['D'] and
-              self.cur_pct < self.classification_dict['C']):
+        elif (
+            self.cur_pct >= classification_dict['D'] and
+            self.cur_pct < classification_dict['C']
+        ):
             self.shooter_class = 'D'
 
         return self.shooter_class
@@ -127,7 +157,7 @@ class ClassifactionWhatIf:
         self.shooter_class = self.get_shooter_class()
         if self.shooter_class == 'U':
             return 'U'
-        return self.next_class_up[self.shooter_class]
+        return next_class_up[self.shooter_class]
 
     def get_initial_classifaction(self):
         """Returns the initial class and percent needed for a 'U' shooter to
@@ -138,47 +168,62 @@ class ClassifactionWhatIf:
 
         score_sum, score_count = self.__sum_scores()
 
-        if (round((self.classification_dict['GM'] * (score_count + 1)) -
-                  score_sum, 4) <= 100):
-            return (round((self.classification_dict['GM'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['GM']])
+        if (
+            round((classification_dict['GM'] * (score_count + 1))
+                  - score_sum, 4) <= 100
+        ):
+            return (
+                round((classification_dict['GM'] * (score_count + 1))
+                      - score_sum, 4),
+                reverse_classification_dict
+                [classification_dict['GM']]
+            )
 
-        if (round((self.classification_dict['M'] *
-                   (score_count + 1)) - score_sum, 4) <= 100):
-            return (round((self.classification_dict['M'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['M']])
+        if (
+            round((classification_dict['M'] * (score_count + 1))
+                  - score_sum, 4) <= 100
+        ):
+            return (
+                round((classification_dict['M'] *
+                       (score_count + 1)) - score_sum, 4),
+                reverse_classification_dict[classification_dict['M']]
+            )
 
-        if (round((self.classification_dict['A'] *
-                   (score_count + 1)) - score_sum, 4) <= 100):
-            return (round((self.classification_dict['A'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['A']])
+        if (
+            round((classification_dict['A'] *
+                   (score_count + 1)) - score_sum, 4) <= 100
+        ):
+            return (
+                round((classification_dict['A'] *
+                       (score_count + 1)) - score_sum, 4),
+                reverse_classification_dict[classification_dict['A']]
+            )
 
-        if (round((self.classification_dict['B'] *
-                   (score_count + 1)) - score_sum, 4) <= 100):
-            return (round((self.classification_dict['B'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['B']])
+        if (
+            round((classification_dict['B'] *
+                   (score_count + 1)) - score_sum, 4) <= 100
+        ):
+            return (round((classification_dict['B'] * (score_count + 1))
+                          - score_sum, 4),
+                    reverse_classification_dict[classification_dict['B']])
 
-        if (round((self.classification_dict['C'] *
-                   (score_count + 1)) - score_sum, 4) <= 100):
-            return (round((self.classification_dict['C'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['C']])
+        if (
+            round((classification_dict['C'] *
+                   (score_count + 1)) - score_sum, 4) <= 100
+        ):
+            return (
+                round((classification_dict['C'] *
+                       (score_count + 1)) - score_sum, 4),
+                reverse_classification_dict[classification_dict['C']]
+            )
 
-        if (round((self.classification_dict['D'] *
-                   (score_count + 1)) - score_sum, 4) <= 100):
-            return (round((self.classification_dict['D'] *
-                           (score_count + 1)) - score_sum, 4),
-                    self.reverse_classification_dict[
-                self.classification_dict['D']])
+        if (
+            round((classification_dict['D'] *
+                   (score_count + 1)) - score_sum, 4) <= 100
+        ):
+            return (round((classification_dict['D'] * (score_count + 1))
+                          - score_sum, 4),
+                    reverse_classification_dict[classification_dict['D']])
 
         return self.initial_classification
 
