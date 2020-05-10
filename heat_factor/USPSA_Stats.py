@@ -2,6 +2,7 @@ import json
 import re
 import datetime as dt
 import asyncio
+from collections import deque, defaultdict
 import base64
 from io import BytesIO
 import pandas as pd
@@ -124,11 +125,11 @@ async def http_sess(links):
     Args:
     links -- the json object containing the shooters match uuids"""
 
-    def_tasks = []
-    scores_tasks = []
-    # Fetch all responses within one Client session per file,
-    # keep connection alive for all requests.
+    def_tasks = deque()
+    scores_tasks = deque()
+
     async with ClientSession() as session:
+
         for link in links:
             url1 = (
                 'https://s3.amazonaws.com/ps-scores/'
@@ -148,11 +149,11 @@ async def http_sess(links):
         )
 
 
-def async_loop(json_obj):
+def async_loop(json_links):
     """Return match data received from AWS in two json object
 
-    Args: json_obj - json object containing the shooters match
-                     links."""
+    Args: json_links - json object containing the shooters match
+                       links."""
 
     # why do I have to use Selector???
     # loop = asyncio.get_event_loop()
@@ -160,11 +161,77 @@ def async_loop(json_obj):
     asyncio.set_event_loop(loop)
 
     match_def_data, match_scores_data = (
-        loop.run_until_complete(http_sess(json_obj))
+        loop.run_until_complete(http_sess(json_links))
     )
     loop.close()
 
     return match_def_data, match_scores_data
+
+
+def calc_totals(match_scores, idx, shtr_uuid):
+    """Returns a dict with totals for each target.
+
+    Args: match_scores - json file with the shooters details from each match.
+          idx - used to align the two AWS json files with the scores.
+          shtr_uuid - the shooters uuid."""
+
+    totals = defaultdict(lambda: 0)
+
+    for score in match_scores[idx]['match_scores']:
+        for stage_score in score['stage_stagescores']:
+
+            if re.match(shtr_uuid, stage_score['shtr']):
+                totals['alphas'] += stage_score['poph']
+                totals['mikes'] += stage_score['popm']
+
+                if 'ts' in stage_score:
+
+                    for ts in stage_score['ts']:
+                        totals['alphas'] += num_alphas(ts)
+                        totals['bravos'] += num_bravos(ts)
+                        totals['charlies'] += num_charlies(ts)
+                        totals['deltas'] += num_deltas(ts)
+                        totals['ns'] += num_ns(ts)
+                        totals['mikes'] += num_m(ts)
+                        totals['npm'] += num_npm(ts)
+    return totals
+
+
+def rnd_count(totals):
+    """Returns total round count for all matches.
+
+    Args: totals - dict containing points data."""
+
+    return sum(
+        (totals['alphas'], totals['bravos'], totals['charlies'],
+         totals['deltas'], totals['ns'], totals['mikes'],
+         totals['npm']
+         )
+    )
+
+
+def pts_scored(pf, totals):
+    """Returns the total points scored.
+
+    Args: pf - str of shooters power factor (MAJOR or MINOR).
+          totals - dict containing points data."""
+
+    if pf == 'MINOR':
+        points = sum(
+            [(totals['alphas'] * 5), (totals['bravos'] * 3),
+             (totals['charlies'] * 3), (totals['deltas'])]
+        )
+        penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
+
+        return points - penalties
+
+    points = sum(
+        [(totals['alphas'] * 5), (totals['bravos'] * 4),
+         (totals['charlies'] * 4), (totals['deltas'] * 2)]
+    )
+    penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
+
+    return points - penalties
 
 
 def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
@@ -180,7 +247,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
 
     match_def_data, match_scores_data = async_loop(json_obj)
 
-    match_def_json = [json.loads(i) for i in match_def_data]
+    match_def_json = (json.loads(i) for i in match_def_data)
     match_scores_json = [json.loads(i) for i in match_scores_data]
 
     scores_df = pd.DataFrame(
@@ -192,8 +259,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
         ]
     )
 
-    # count is used to limit the number of matches that can be plotted.
-    count = 0
     for idx, match_def in enumerate(match_def_json):
         match_date = (
             dt.date.fromisoformat(match_def['match_date'])
@@ -208,87 +273,56 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
         )
 
         if match_date <= form_end_date and match_date >= form_start_date:
+
             if match_def['match_subtype'] != 'uspsa':
                 continue
+
             match_date = match_def['match_date']
-            # match_name = match_def['match_name']
+
             for match_info in match_def['match_shooters']:
                 if (
-                    'sh_id' in match_info and match_info['sh_id'].upper() ==
-                        mem_num.upper()
+                    'sh_id' in match_info and
+                    match_info['sh_id'].upper() == mem_num.upper()
                 ):
                     shooter_uuid = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']
                     shooter_lname = match_info['sh_ln']
                     shooter_pf = match_info['sh_pf'].upper()
-                    # shooter_div = match_info['sh_dvp']
-                    # shooter_class = match_info['sh_grd']
                 else:
                     continue
 
-            total_alphas = 0
-            total_bravos = 0
-            total_charlies = 0
-            total_deltas = 0
-            total_ns = 0
-            total_mikes = 0
-            total_npm = 0
+            totals = calc_totals(match_scores_json, idx, shooter_uuid)
 
-            for score in match_scores_json[idx]['match_scores']:
-                for stage_score in score['stage_stagescores']:
-                    if re.match(shooter_uuid, stage_score['shtr']):
-                        total_alphas += stage_score['poph']
-                        total_mikes += stage_score['popm']
-                        if 'ts' in stage_score:
-                            for ts in stage_score['ts']:
-                                total_alphas += num_alphas(ts)
-                                total_bravos += num_bravos(ts)
-                                total_charlies += num_charlies(ts)
-                                total_deltas += num_deltas(ts)
-                                total_ns += num_ns(ts)
-                                total_mikes += num_m(ts)
-                                total_npm += num_npm(ts)
-            round_count = sum(
-                (total_alphas, total_bravos, total_charlies, total_deltas,
-                 total_ns, total_mikes, total_npm)
-            )
+            round_count = rnd_count(totals)
+
             points_possible = (round_count * 5)
 
-            if shooter_pf == 'MINOR':
-                points_scored = (
-                    ((total_alphas * 5) + ((total_bravos + total_charlies) * 3)
-                     + (total_deltas)) - ((total_ns * 10) + (total_mikes * 10))
-                )
-            else:
-                points_scored = (
-                    ((total_alphas * 5) + ((total_bravos + total_charlies) * 4)
-                     + (total_deltas * 2)) - ((total_ns * 10)
-                                              + (total_mikes * 10))
-                )
+            points_scored = pts_scored(shooter_pf, totals)
 
             if points_scored > 0:
                 pct_points = round((points_scored / points_possible) * 100, 2)
             else:
                 pct_points = 'NaN'
 
-            if total_alphas > 0 and total_charlies > 0:
+            if totals['alphas'] > 0 and totals['charlies'] > 0:
                 alpha_charlie_ratio = (
-                    round((total_charlies / total_alphas) * 100, 2)
+                    round((totals['charlies'] / totals['alphas']) * 100, 2)
                 )
             else:
                 alpha_charlie_ratio = 'NaN'
 
-            if sum([total_deltas, total_mikes, total_ns]) > 0:
+            if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
                 pct_errors = (
-                    round((sum([total_deltas, total_mikes, total_ns])
-                           / round_count) * 100, 2)
+                    round((sum([totals['deltas'], totals['mikes'],
+                                totals['ns']]) / round_count) * 100, 2)
                 )
             else:
                 pct_errors = 'NaN'
 
             score_list = [
-                match_date, total_alphas, total_charlies + total_bravos,
-                total_deltas, total_ns, total_mikes, total_npm, round_count,
+                match_date, totals['alphas'],
+                totals['charlies'] + totals['bravos'], totals['deltas'],
+                totals['ns'], totals['mikes'], totals['npm'], round_count,
                 points_possible, points_scored, pct_points,
                 alpha_charlie_ratio, pct_errors
             ]
@@ -296,9 +330,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             score_series = pd.Series(score_list, index=scores_df.columns)
             scores_df = scores_df.append(score_series, ignore_index=True)
 
-            # count is used to limit the number of matches that can be plotted.
-            count += 1
-            if count > 50:
+            # limit total to plot to 50
+            if idx > 50:
                 break
 
     scores_df['Avg Pct Scored'] = (
@@ -317,11 +350,13 @@ def get_match_links(login_dict):
     Args:
     login_dict - dict containing the shooters practiscore login credentials
     """
+
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/80.0.3987.149 Safari/537.36'
     }
+
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
@@ -329,26 +364,35 @@ def get_match_links(login_dict):
     }
 
     with requests.Session() as sess:
-        login = sess.post('https://practiscore.com/login',
-                          data=login_dict, headers=headers)
+
+        login = sess.post(
+            'https://practiscore.com/login', data=login_dict, headers=headers
+        )
+
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
             return 'Bad password.'
+
         elif re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
             return 'Bad email/username'
+
         elif re.findall(login_status_strs['success'], str(login.content)):
             shooter_ps_match_links = (
-                sess.get('https://practiscore.com/associate/step2',
-                         headers=headers))
+                sess.get(
+                    'https://practiscore.com/associate/step2', headers=headers
+                )
+            )
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
 
     match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
+
     match_link_raw_data = (
-        re.search(match_link_re, str(shooter_ps_match_links.content))
+        match_link_re.search(str(shooter_ps_match_links.content))
     )
-    match_links_json = []
+
+    match_links_json = deque()
     my_epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(match_link_raw_data.group(1))
 

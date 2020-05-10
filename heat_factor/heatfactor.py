@@ -1,6 +1,7 @@
 import random
 import re
 import json
+from collections import defaultdict
 from io import BytesIO
 import base64
 import requests
@@ -22,11 +23,13 @@ def get_it(match_link):
     if re.search(non_uuid_regex, match_link):
 
         match_html_text = requests.get(match_link).text
+
         aws_uuid_regex = re.compile(
             r'https://s3\.amazonaws\.com/ps-scores/production/([0-9a-fA-F]{8}'
             r'\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-'
             '[0-9a-fA-F]{12})/match_def.json'
         )
+
         if re.search(aws_uuid_regex, match_html_text):
             match_uuid = re.search(aws_uuid_regex, match_html_text)[1]
 
@@ -61,14 +64,8 @@ def run_it(match_def):
         'PCC': [0, 0, 0, 0, ],
         'Single Stack': [0, 0, 0, 0, ],
     }
-    division_count = {
-        'Production': 0,
-        'Limited': 0,
-        'Carry Optics': 0,
-        'Open': 0,
-        'PCC': 0,
-        'Single Stack': 0,
-    }
+
+    division_count = defaultdict(lambda: 0)
 
     for shooter in match_def['match_shooters']:
         class_weights = {
@@ -96,23 +93,37 @@ def run_it(match_def):
                     division_heat[division][3] += class_weights['B']
                     division_count[division] += 1
 
+    # tuple with the heat index for each division or 0
     heat_idx = (
-        round(sum(division_heat['Production'])
-              / division_count['Production'], 2)
-        if division_count['Production'] > 0 else 0,
-        round(sum(division_heat['Open']) /
-              division_count['Open'], 2) if division_count['Open'] > 0 else 0,
-        round(sum(division_heat['Carry Optics']) /
-              division_count['Carry Optics'], 2)
-        if division_count['Carry Optics'] > 0 else 0,
-        round(sum(division_heat['Limited']) /
-              division_count['Limited'], 2)
-        if division_count['Limited'] > 0 else 0,
-        round(sum(division_heat['PCC']) /
-              division_count['PCC'], 2) if division_count['PCC'] > 0 else 0,
-        round(sum(division_heat['Single Stack']) /
-              division_count['Single Stack'], 2)
-        if division_count['Single Stack'] > 0 else 0,
+        round(
+            sum(division_heat['Production'])
+            / division_count['Production'], 2
+        ) if division_count['Production'] > 0 else 0,
+
+        round(
+            sum(division_heat['Open']) /
+            division_count['Open'], 2
+        ) if division_count['Open'] > 0 else 0,
+
+        round(
+            sum(division_heat['Carry Optics']) /
+            division_count['Carry Optics'], 2
+        ) if division_count['Carry Optics'] > 0 else 0,
+
+        round(
+            sum(division_heat['Limited']) /
+            division_count['Limited'], 2
+        ) if division_count['Limited'] > 0 else 0,
+
+        round(
+            sum(division_heat['PCC']) /
+            division_count['PCC'], 2
+        ) if division_count['PCC'] > 0 else 0,
+
+        round(
+            sum(division_heat['Single Stack']) /
+            division_count['Single Stack'], 2
+        ) if division_count['Single Stack'] > 0 else 0,
     )
 
     return heat_idx, match_name

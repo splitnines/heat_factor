@@ -48,8 +48,8 @@ class ClassifactionWhatIf:
 
         uspsa_org_response = requests.get(
             f'https://uspsa.org/classification/{self.mem_num}'
-        ).text
-        self.bs = BeautifulSoup(uspsa_org_response, 'lxml')
+        )
+        self.bs = BeautifulSoup(uspsa_org_response.text, 'lxml')
 
         if (
             self.bs.find(
@@ -60,9 +60,7 @@ class ClassifactionWhatIf:
             )
 
     def __get_classifier_scores(self):
-        """Returns a list of tuples with the qualifying classifier scores"""
-
-        self.classifier_score_list = []
+        """Returns a generator for the qualifying classifier scores"""
 
         table_body = self.bs.find(
             'tbody', {'id': f'{self.division_search}-dropDown'}
@@ -71,11 +69,10 @@ class ClassifactionWhatIf:
 
         for row in table_rows[1:]:
             if str(row.find_all('td')[3].text.strip()) == 'Y':
-                self.classifier_score_list.append((
+                yield (
                     str(row.find_all('td')[3].text.strip()),
-                    float(str(row.find_all('td')[4].text.strip()))))
-
-        return self.classifier_score_list
+                    float(str(row.find_all('td')[4].text.strip()))
+                )
 
     def __get_shooter_classifaction(self):
         """Returns classifacation for shooter in specified division or None"""
@@ -93,8 +90,10 @@ class ClassifactionWhatIf:
                 raise ValueError()
 
             if [x.text.strip() for x in header][0] == self.division:
-                self.classifacation = (float(
-                    str([x.text.strip() for x in data][1].split(': ')[1])))
+                self.classifacation = (
+                    float(
+                        str([x.text.strip() for x in data][1].split(': ')[1]))
+                )
                 return self.classifacation
 
         return None
@@ -102,7 +101,6 @@ class ClassifactionWhatIf:
     def get_upped(self):
         """Returns percent needed on next classifier to class-up."""
 
-        self.score_list = self.__get_classifier_scores()
         self.cur_pct = self.__get_shooter_classifaction()
         self.shooter_class = self.get_shooter_class()
         score_sum, score_count = self.__sum_scores()
@@ -110,9 +108,8 @@ class ClassifactionWhatIf:
         if self.shooter_class == 'U':
             return None
         return (
-            round((classification_dict[
-                next_class_up[self.shooter_class]
-            ] * (score_count + 1)) - score_sum, 4)
+            round((classification_dict[next_class_up[self.shooter_class]]
+                   * (score_count + 1)) - score_sum, 4)
         )
 
     def get_shooter_class(self):
@@ -164,7 +161,6 @@ class ClassifactionWhatIf:
            get classified."""
 
         self.initial_classification = 'U'
-        self.score_list = self.__get_shooter_classifaction()
 
         score_sum, score_count = self.__sum_scores()
 
@@ -229,14 +225,12 @@ class ClassifactionWhatIf:
 
     def __sum_scores(self):
         """Returns sum of the classifier scores and count of scores on
-        record.
-        """
+        record."""
 
-        self.score_list = self.__get_classifier_scores()
         self.score_sum = 0
         self.score_count = 0
 
-        for score in self.score_list:
+        for score in self.__get_classifier_scores():
             if self.score_count < 5:
                 self.score_sum += score[1]
                 self.score_count += 1

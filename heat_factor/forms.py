@@ -1,6 +1,10 @@
 from django import forms
 import datetime
 
+
+DAY = datetime.date.today()
+
+
 class PractiscoreUrlForm(forms.Form):
 
     p_url = forms.URLField(
@@ -9,7 +13,6 @@ class PractiscoreUrlForm(forms.Form):
         required=True,
         widget=forms.TextInput(attrs={'size': '65'})
     )
-
 
 
 class GetUppedForm(forms.Form):
@@ -22,7 +25,7 @@ class GetUppedForm(forms.Form):
     )
 
     DIVISION_LIST = [
-        ('',''),
+        ('', ''),
         ('Open', 'Open'),
         ('Limited', 'Limited'),
         ('Production', 'Production'),
@@ -38,7 +41,6 @@ class GetUppedForm(forms.Form):
         widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
-
 
 
 class AccuStatsForm1(forms.Form):
@@ -65,7 +67,7 @@ class AccuStatsForm1(forms.Form):
     )
 
     shooter_end_date = forms.DateField(
-        initial=datetime.date.fromisoformat(str(datetime.date.today())),
+        initial=datetime.date.fromisoformat(str(DAY)),
         widget=forms.HiddenInput(),
         required=False,
     )
@@ -75,7 +77,6 @@ class AccuStatsForm1(forms.Form):
         widget=forms.HiddenInput(),
         required=False,
     )
-
 
 
 class AccuStatsForm2(forms.Form):
@@ -102,7 +103,7 @@ class AccuStatsForm2(forms.Form):
     )
 
     shooter_end_date = forms.DateField(
-        initial=datetime.date.fromisoformat(str(datetime.date.today())),
+        initial=datetime.date.fromisoformat(str(DAY)),
         required=False,
     )
 
@@ -114,6 +115,11 @@ class AccuStatsForm2(forms.Form):
     delete_match = forms.CharField(
         label="Exclude Dates",
         max_length=60,
-        widget=forms.TextInput(attrs={'size': '32', 'placeholder': 'Example: 2020-03-15, 2019-09-22'}),
+        widget=forms.TextInput(
+            attrs={
+                'size': '32',
+                'placeholder': 'Example: 2020-03-15, 2019-09-22'
+            }
+        ),
         required=False,
     )
