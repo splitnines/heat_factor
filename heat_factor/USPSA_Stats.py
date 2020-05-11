@@ -203,10 +203,11 @@ def rnd_count(totals):
     Args: totals - dict containing points data."""
 
     return sum(
-        (totals['alphas'], totals['bravos'], totals['charlies'],
-         totals['deltas'], totals['ns'], totals['mikes'],
-         totals['npm']
-         )
+        (
+            totals['alphas'], totals['bravos'], totals['charlies'],
+            totals['deltas'], totals['ns'], totals['mikes'],
+            totals['npm']
+        )
     )
 
 
@@ -218,16 +219,20 @@ def pts_scored(pf, totals):
 
     if pf == 'MINOR':
         points = sum(
-            [(totals['alphas'] * 5), (totals['bravos'] * 3),
-             (totals['charlies'] * 3), (totals['deltas'])]
+            [
+                (totals['alphas'] * 5), (totals['bravos'] * 3),
+                (totals['charlies'] * 3), (totals['deltas'])
+            ]
         )
         penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
 
         return points - penalties
 
     points = sum(
-        [(totals['alphas'] * 5), (totals['bravos'] * 4),
-         (totals['charlies'] * 4), (totals['deltas'] * 2)]
+        [
+            (totals['alphas'] * 5), (totals['bravos'] * 4),
+            (totals['charlies'] * 4), (totals['deltas'] * 2)
+        ]
     )
     penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
 
@@ -330,7 +335,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             score_series = pd.Series(score_list, index=scores_df.columns)
             scores_df = scores_df.append(score_series, ignore_index=True)
 
-            # limit total to plot to 50
+            # limit total matches to plot to 50
             if idx > 50:
                 break
 
