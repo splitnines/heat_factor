@@ -452,7 +452,10 @@ def plot_stats(scores, shooter_name, mem_number):
     shooter_name -- the shooters first and last name as a string object
     mem_number -- the shooters USPSA membership number"""
 
-    print(f'{TS()} CALL_LOG: plot_stats called', file=sys.stderr)
+    print(
+        f'{TS()} CALL_LOG: plot_stats called {shooter_name}, {mem_number}',
+        file=sys.stderr
+    )
 
     x = np.arange(len(scores['Match Date']))
 
