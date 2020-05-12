@@ -236,13 +236,15 @@ def points(request):
             delete_list.append(ex_match)
 
     match_links_json = get_match_links(login_data)
+
+    del password, login_data
+
     if type(match_links_json) == str:
         return render(
             request, 'error.html', {
                 'message': match_links_json
             }
         )
-    del password, login_data
 
     try:
         scores_df, shooter_fn, shooter_ln = (
@@ -259,6 +261,7 @@ def points(request):
             }
         )
 
+    # check if dataframe is empty
     if scores_df.empty is True:
         return render(
             request, 'error.html', {

@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import requests
 from aiohttp import ClientSession
+import sys
 
 
 """The following functions where converted from the practiscore javascipt code
@@ -125,6 +126,7 @@ async def http_sess(links):
     Args:
     links -- the json object containing the shooters match uuids"""
 
+    print('ERROR_LOG: http_sess called', file=sys.stderr)
     def_tasks = deque()
     scores_tasks = deque()
 
@@ -377,7 +379,8 @@ def get_match_links(login_dict):
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
-        'success': r'https://practiscore\.com/associate/step2',
+        # 'success': r'https://practiscore\.com/associate/step2',
+        'success': r'<a href=\"([\w:/\.\d]+)\"\sid=\"viewAllButton\"'
     }
 
     with requests.Session() as sess:
@@ -394,10 +397,18 @@ def get_match_links(login_dict):
             sess.close
             return 'Bad email/username'
 
-        elif re.findall(login_status_strs['success'], str(login.content)):
+        elif not re.findall(login_status_strs['success'], str(login.content)):
+            sess.close
+            return f'"ViewAll" link not found.'
+
+        elif re.search(login_status_strs['success'], str(login.content)):
+            view_all_link = (
+                re.search(login_status_strs['success'], str(login.content))
+            )
             shooter_ps_match_links = (
                 sess.get(
-                    'https://practiscore.com/associate/step2', headers=headers
+                    view_all_link.group(1), headers=headers
+                    # 'https://practiscore.com/associate/step2', headers=headers
                 )
             )
             sess.get('https://practiscore.com/logout', headers=headers)
@@ -437,8 +448,8 @@ def plot_stats(scores, shooter_name, mem_number):
     Args:
     scores -- pandas dataframe containing the shooters scores for all matches
     shooter_name -- the shooters first and last name as a string object
-    mem_number -- the shooters USPSA membership number
-    """
+    mem_number -- the shooters USPSA membership number"""
+
     x = np.arange(len(scores['Match Date']))
 
     plt.figure(figsize=(14.5, 8))
