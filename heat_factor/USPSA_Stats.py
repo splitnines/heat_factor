@@ -116,8 +116,6 @@ async def http_get(url, session):
     Args:  url -- the individual url from the shooters list of matches
            session -- the aiohttp session object """
 
-    print(f'{TS()} CALL_LOG: http_get called', file=sys.stderr)
-
     try:
         async with session.get(url) as response:
             assert response.status == 200
@@ -131,8 +129,6 @@ async def http_sess(links):
 
     Args:
     links -- the json object containing the shooters match uuids"""
-
-    print(f'{TS()} CALL_LOG: http_sess called', file=sys.stderr)
 
     def_tasks = deque()
     scores_tasks = deque()
@@ -165,8 +161,6 @@ def async_loop(func, *args):
     Args: func - name of async function to call and "place on the loop."
           *args - list of arguments to pass to async function func"""
 
-    print(f'{TS()} CALL_LOG: async_loop called', file=sys.stderr)
-
     # why do I have to use Selector???
     # loop = asyncio.get_event_loop()
     loop = asyncio.SelectorEventLoop()
@@ -184,8 +178,6 @@ def async_loop(func, *args):
 
 def check_mem_num(mem_num):
 
-    print(f'{TS()} CALL_LOG: check_mem_num called', file=sys.stderr)
-
     uspsa_org_response = requests.get(
         f'https://uspsa.org/classification/{mem_num}'
     ).text
@@ -200,8 +192,6 @@ def calc_totals(match_scores, idx, shtr_uuid):
     Args: match_scores - json file with the shooters details from each match.
           idx - used to align the two AWS json files with the scores.
           shtr_uuid - the shooters uuid."""
-
-    print(f'{TS()} CALL_LOG: calc_totals called', file=sys.stderr)
 
     totals = defaultdict(lambda: 0)
 
@@ -230,8 +220,6 @@ def rnd_count(totals):
 
     Args: totals - dict containing points data."""
 
-    print(f'{TS()} CALL_LOG: rnd_count called', file=sys.stderr)
-
     return sum(
         (
             totals['alphas'], totals['bravos'], totals['charlies'],
@@ -246,8 +234,6 @@ def pts_scored(pf, totals):
 
     Args: pf - str of shooters power factor (MAJOR or MINOR).
           totals - dict containing points data."""
-
-    print(f'{TS()} CALL_LOG: pts_scored called', file=sys.stderr)
 
     if pf == 'MINOR':
         points = sum(
@@ -280,8 +266,6 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
        match_date_range -- dict containing alternate start/end dates
        deleate_list -- list containing dates to be omitted from plot
        mem_num -- shooters USPSA membership number"""
-
-    print(f'{TS()} CALL_LOG: create_dataframe called', file=sys.stderr)
 
     match_def_data, match_scores_data = async_loop(http_sess, json_obj)
 
@@ -388,8 +372,6 @@ def get_match_links(login_dict):
     Args:
     login_dict - dict containing the shooters practiscore login credentials"""
 
-    print(f'{TS()} CALL_LOG: get_match_links called', file=sys.stderr)
-
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -453,8 +435,6 @@ def get_match_links(login_dict):
 
 def add_annotation(x_ax, y_ax):
     """Adds labels to plot"""
-
-    print(f'{TS()} CALL_LOG: add_annotation called', file=sys.stderr)
 
     for xx, yy in zip(x_ax, y_ax):
         label = "{:.2f}".format(yy)
