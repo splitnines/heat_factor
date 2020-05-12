@@ -149,23 +149,35 @@ async def http_sess(links):
         )
 
 
-def async_loop(json_links):
-    """Return match data received from AWS in two json object
+def async_loop(func, *args):
+    """Calls the specified function with list of args and returns whatever
+       is received from the called function.
 
-    Args: json_links - json object containing the shooters match
-                       links."""
+    Args: func - name of async function to call and "place on the loop."
+          *args - list of arguments to pass to async function func"""
 
     # why do I have to use Selector???
     # loop = asyncio.get_event_loop()
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
 
-    match_def_data, match_scores_data = (
-        loop.run_until_complete(http_sess(json_links))
+    # match_def_data, match_scores_data
+    response = (
+        loop.run_until_complete(func(*args))
     )
     loop.close()
 
-    return match_def_data, match_scores_data
+    # return match_def_data, match_scores_data
+    return response
+
+
+def check_mem_num(mem_num):
+    uspsa_org_response = requests.get(
+        f'https://uspsa.org/classification/{mem_num}'
+    ).text
+    oops = re.compile('Oops!')
+    if oops.search(uspsa_org_response):
+        raise ValueError
 
 
 def calc_totals(match_scores, idx, shtr_uuid):
@@ -250,7 +262,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
        mem_num -- shooters USPSA membership number
        """
 
-    match_def_data, match_scores_data = async_loop(json_obj)
+    match_def_data, match_scores_data = async_loop(http_sess, json_obj)
 
     match_def_json = (json.loads(i) for i in match_def_data)
     match_scores_json = [json.loads(i) for i in match_scores_data]

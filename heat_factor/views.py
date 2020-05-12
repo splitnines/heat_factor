@@ -7,7 +7,9 @@ from .forms import (
 )
 from .heatfactor import get_it, run_it, graph_it
 from .classificationwhatif import ClassifactionWhatIf
-from .USPSA_Stats import create_dataframe, get_match_links, plot_stats
+from .USPSA_Stats import (
+    create_dataframe, get_match_links, plot_stats, check_mem_num
+)
 
 
 def home(request):
@@ -185,6 +187,17 @@ def points(request):
     mem_num = request.POST.get('mem_num')
     DAY = dt.date.today()
 
+    # perform check_mem_num here.  no point in moving forward if an
+    # invalid USPSA membership number is provided.
+    try:
+        check_mem_num(mem_num)
+    except ValueError:
+        return render(
+            request, 'error.html', {
+                'message': f'{mem_num} is not a valid USPSA membership number'
+            }
+        )
+
     delete_match = (
         request.POST.get('delete_match')
         if type(request.POST.get('delete_match')) == str else ''
@@ -245,6 +258,14 @@ def points(request):
                 )
             }
         )
+
+    if scores_df.empty is True:
+        return render(
+            request, 'error.html', {
+                'message': f'no matches found for {mem_num}'
+            }
+        )
+
     graph = plot_stats(scores_df, f'{shooter_fn} {shooter_ln}', mem_num)
 
     if request.method == 'POST':
