@@ -10,7 +10,6 @@ from .classificationwhatif import ClassifactionWhatIf
 from .USPSA_Stats import (
     create_dataframe, get_match_links, plot_stats, check_mem_num
 )
-import sys
 
 
 def home(request):
@@ -180,6 +179,10 @@ def get_upped(request):
         )
 
 
+def TS():
+    return dt.datetime.now()
+
+
 def points(request):
     """Returns a matplotlib .png to the points.html template"""
 
@@ -272,14 +275,9 @@ def points(request):
 
     graph = plot_stats(scores_df, f'{shooter_fn} {shooter_ln}', mem_num)
 
-    def TS():
-        return dt.datetime.now()
-
     if request.method == 'POST':
         accu_stats_form2 = AccuStatsForm2(request.POST)
         if accu_stats_form2.is_valid():
-            print(f'{TS()} CALL_LOG: 1st render in views.points',
-                  file=sys.stderr)
             return render(
                 request, 'points.html', {
                     'graph': graph, 'date': DAY,
@@ -287,12 +285,9 @@ def points(request):
                 }
             )
         else:
-            print(f'{TS()} CALL_LOG: HttpResponseRedirect in views.points',
-                  file=sys.stderr)
             return HttpResponseRedirect('/')
     else:
         accu_stats_form2 = AccuStatsForm2()
-        print(f'{TS()} CALL_LOG: 2nd render in views.points', file=sys.stderr)
     return render(
         request, 'points.html', {
             'graph': graph, 'date': DAY,

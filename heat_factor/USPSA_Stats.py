@@ -324,14 +324,14 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             if points_scored > 0:
                 pct_points = round((points_scored / points_possible) * 100, 2)
             else:
-                pct_points = 'NaN'
+                pct_points = np.nan
 
             if totals['alphas'] > 0 and totals['charlies'] > 0:
                 alpha_charlie_ratio = (
                     round((totals['charlies'] / totals['alphas']) * 100, 2)
                 )
             else:
-                alpha_charlie_ratio = 'NaN'
+                alpha_charlie_ratio = np.nan
 
             if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
                 pct_errors = (
@@ -339,7 +339,7 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
                                 totals['ns']]) / round_count) * 100, 2)
                 )
             else:
-                pct_errors = 'NaN'
+                pct_errors = np.nan
 
             score_list = [
                 match_date, totals['alphas'],
