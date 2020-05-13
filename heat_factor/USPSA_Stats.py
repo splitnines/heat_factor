@@ -10,11 +10,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import requests
 from aiohttp import ClientSession
-import sys
-
-
-def TS():
-    return dt.datetime.now()
 
 
 """The following functions where converted from the practiscore javascipt code
@@ -457,11 +452,6 @@ def plot_stats(scores, shooter_name, mem_number, division):
     scores -- pandas dataframe containing the shooters scores for all matches
     shooter_name -- the shooters first and last name as a string object
     mem_number -- the shooters USPSA membership number"""
-
-    print(
-        f'{TS()} CALL_LOG: plot_stats called {shooter_name}, {mem_number}',
-        file=sys.stderr
-    )
 
     x = np.arange(len(scores['Match Date']))
 

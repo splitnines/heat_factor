@@ -1,5 +1,6 @@
 import re
 import datetime as dt
+import sys
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from .forms import (
@@ -10,6 +11,11 @@ from .classificationwhatif import ClassifactionWhatIf
 from .USPSA_Stats import (
     create_dataframe, get_match_links, plot_stats, check_mem_num
 )
+
+
+def sys_logger(app_name, *app_data):
+    """Poor excuse for a logging system"""
+    print(f'SYS_LOGGER: {app_name}, {app_data}', file=sys.stderr)
 
 
 def home(request):
@@ -53,6 +59,9 @@ def heat_factor(request):
        the rest of the program"""
 
     url = request.POST.get('p_url')
+
+    sys_logger('heat_factor', url)
+
     ps_regex = (
         re.compile(
             r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
@@ -116,6 +125,8 @@ def get_upped(request):
     division = request.POST.get('division')
     DAY = dt.datetime.now()
 
+    sys_logger('get_upped', mem_num, division)
+
     try:
         shooter = ClassifactionWhatIf(mem_num, division)
     except AttributeError:
@@ -177,10 +188,6 @@ def get_upped(request):
                 'date': DAY
             }
         )
-
-
-def TS():
-    return dt.datetime.now()
 
 
 def points(request):
@@ -247,9 +254,7 @@ def points(request):
 
     if type(match_links_json) == str:
         return render(
-            request, 'error.html', {
-                'message': match_links_json
-            }
+            request, 'error.html', {'message': match_links_json}
         )
 
     try:
@@ -261,12 +266,12 @@ def points(request):
         )
     except ValueError:
         return render(
-            request, 'error.html', {
-                'message': create_dataframe(
-                    match_links_json, match_date_range, delete_list, mem_num
-                )
-            }
+            request, 'error.html', {'message': create_dataframe(
+                match_links_json, match_date_range, delete_list, mem_num
+            )}
         )
+
+    sys_logger('points', shooter_fn, shooter_ln, mem_num, division)
 
     # check if dataframe is empty
     if scores_df.empty is True:
