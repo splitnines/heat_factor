@@ -305,8 +305,7 @@ def create_dataframe(
             for match_info in match_def['match_shooters']:
                 if (
                     'sh_id' in match_info and
-                    match_info['sh_id'].upper() == mem_num.upper() and
-                    division == match_info['sh_dvp']
+                    match_info['sh_id'].upper() == mem_num.upper()
                 ):
                     shooter_uuid = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']
@@ -315,48 +314,53 @@ def create_dataframe(
                 else:
                     continue
 
-            totals = calc_totals(match_scores_json, idx, shooter_uuid)
+                if division.lower() != match_info['sh_dvp'].lower():
+                    continue
 
-            round_count = rnd_count(totals)
+                totals = calc_totals(match_scores_json, idx, shooter_uuid)
 
-            points_possible = (round_count * 5)
+                round_count = rnd_count(totals)
 
-            points_scored = pts_scored(shooter_pf, totals)
+                points_possible = (round_count * 5)
 
-            if points_scored > 0:
-                pct_points = round((points_scored / points_possible) * 100, 2)
-            else:
-                pct_points = np.nan
+                points_scored = pts_scored(shooter_pf, totals)
 
-            if totals['alphas'] > 0 and totals['charlies'] > 0:
-                alpha_charlie_ratio = (
-                    round((totals['charlies'] / totals['alphas']) * 100, 2)
-                )
-            else:
-                alpha_charlie_ratio = np.nan
+                if points_scored > 0:
+                    pct_points = round(
+                        (points_scored / points_possible) * 100, 2
+                    )
+                else:
+                    pct_points = np.nan
 
-            if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
-                pct_errors = (
-                    round((sum([totals['deltas'], totals['mikes'],
-                                totals['ns']]) / round_count) * 100, 2)
-                )
-            else:
-                pct_errors = np.nan
+                if totals['alphas'] > 0 and totals['charlies'] > 0:
+                    alpha_charlie_ratio = (
+                        round((totals['charlies'] / totals['alphas']) * 100, 2)
+                    )
+                else:
+                    alpha_charlie_ratio = np.nan
 
-            score_list = [
-                match_date, totals['alphas'],
-                totals['charlies'] + totals['bravos'], totals['deltas'],
-                totals['ns'], totals['mikes'], totals['npm'], round_count,
-                points_possible, points_scored, pct_points,
-                alpha_charlie_ratio, pct_errors
-            ]
+                if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
+                    pct_errors = (
+                        round((sum([totals['deltas'], totals['mikes'],
+                                    totals['ns']]) / round_count) * 100, 2)
+                    )
+                else:
+                    pct_errors = np.nan
 
-            score_series = pd.Series(score_list, index=scores_df.columns)
-            scores_df = scores_df.append(score_series, ignore_index=True)
+                score_list = [
+                    match_date, totals['alphas'],
+                    totals['charlies'] + totals['bravos'], totals['deltas'],
+                    totals['ns'], totals['mikes'], totals['npm'], round_count,
+                    points_possible, points_scored, pct_points,
+                    alpha_charlie_ratio, pct_errors
+                ]
 
-            # limit total matches to plot to 50
-            if idx > 50:
-                break
+                score_series = pd.Series(score_list, index=scores_df.columns)
+                scores_df = scores_df.append(score_series, ignore_index=True)
+
+                # limit total matches to plot to 50
+                if idx > 50:
+                    break
 
     scores_df['Avg Pct Scored'] = (
         round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
@@ -446,7 +450,7 @@ def add_annotation(x_ax, y_ax):
         )
 
 
-def plot_stats(scores, shooter_name, mem_number):
+def plot_stats(scores, shooter_name, mem_number, division):
     """Returns a matplotlib .png object saved in memory
 
     Args:
@@ -505,12 +509,17 @@ def plot_stats(scores, shooter_name, mem_number):
         )
 
     plt.annotate(
-        f'Shooter Name: {shooter_name}', (1, 1), (-125, 20),
+        f'Shooter Name: {shooter_name}', (1, 1), (-125, 30),
         fontsize=7, xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
     plt.annotate(
-        f'USPSA#: {mem_number}', (1, 1), (-125, 10), fontsize=7,
+        f'USPSA#: {mem_number}', (1, 1), (-125, 20), fontsize=7,
+        xycoords='axes fraction', textcoords='offset points',
+        va='top'
+    )
+    plt.annotate(
+        f'Division: {division}', (1, 1), (-125, 10), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
     )

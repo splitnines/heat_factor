@@ -276,7 +276,9 @@ def points(request):
             }
         )
 
-    graph = plot_stats(scores_df, f'{shooter_fn} {shooter_ln}', mem_num)
+    graph = plot_stats(
+        scores_df, f'{shooter_fn} {shooter_ln}', mem_num, division
+    )
 
     if request.method == 'POST':
         accu_stats_form2 = AccuStatsForm2(request.POST)
