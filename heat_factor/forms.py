@@ -4,6 +4,18 @@ import datetime
 
 DAY = datetime.date.today()
 
+DIVISION_LIST = [
+    ('', ''),
+    ('Open', 'Open'),
+    ('Limited', 'Limited'),
+    ('Production', 'Production'),
+    ('Carry Optics', 'Carry Optics'),
+    ('PCC', 'PCC'),
+    ('Single Stack', 'Single Stack'),
+    ('Limited 10', 'Limited 10'),
+    ('Revolver', 'Revolver')
+]
+
 
 class PractiscoreUrlForm(forms.Form):
 
@@ -23,18 +35,6 @@ class GetUppedForm(forms.Form):
         widget=forms.TextInput(attrs={'size': '10'}),
         required=True,
     )
-
-    DIVISION_LIST = [
-        ('', ''),
-        ('Open', 'Open'),
-        ('Limited', 'Limited'),
-        ('Production', 'Production'),
-        ('Carry Optics', 'Carry Optics'),
-        ('PCC', 'PCC'),
-        ('Single Stack', 'Single Stack'),
-        ('Limited 10', 'Limited 10'),
-        ('Revolver', 'Revolver')
-    ]
 
     division = forms.CharField(
         label="Select USPSA Division",
@@ -63,6 +63,12 @@ class AccuStatsForm1(forms.Form):
         label="USPSA Membership Number",
         max_length=10,
         widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+    division = forms.CharField(
+        label="Select USPSA Division",
+        widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
 
@@ -99,6 +105,12 @@ class AccuStatsForm2(forms.Form):
         label="USPSA Membership Number",
         max_length=10,
         widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+    division = forms.CharField(
+        label="Select USPSA Division",
+        widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
 

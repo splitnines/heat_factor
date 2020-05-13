@@ -257,7 +257,9 @@ def pts_scored(pf, totals):
     return points - penalties
 
 
-def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
+def create_dataframe(
+    json_obj, match_date_range, delete_list, mem_num, division
+):
     """Returns the dataframe containing all the statistics and the shooters
        first and last name.
 
@@ -282,14 +284,13 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
     )
 
     for idx, match_def in enumerate(match_def_json):
-        match_date = (
-            dt.date.fromisoformat(match_def['match_date'])
-        )
+
+        match_date = dt.date.fromisoformat(match_def['match_date'])
+        form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
+
         if str(match_date) in delete_list:
             continue
-        form_end_date = (
-            dt.date.fromisoformat(match_date_range['end_date'])
-        )
+
         form_start_date = (
             dt.date.fromisoformat(match_date_range['start_date'])
         )
@@ -304,7 +305,8 @@ def create_dataframe(json_obj, match_date_range, delete_list, mem_num):
             for match_info in match_def['match_shooters']:
                 if (
                     'sh_id' in match_info and
-                    match_info['sh_id'].upper() == mem_num.upper()
+                    match_info['sh_id'].upper() == mem_num.upper() and
+                    division == match_info['sh_dvp']
                 ):
                     shooter_uuid = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']

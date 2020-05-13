@@ -189,6 +189,8 @@ def points(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     mem_num = request.POST.get('mem_num')
+    division = request.POST.get('division')
+
     DAY = dt.date.today()
 
     # perform check_mem_num here.  no point in moving forward if an
@@ -253,7 +255,8 @@ def points(request):
     try:
         scores_df, shooter_fn, shooter_ln = (
             create_dataframe(
-                match_links_json, match_date_range, delete_list, mem_num
+                match_links_json, match_date_range,
+                delete_list, mem_num, division
             )
         )
     except ValueError:
