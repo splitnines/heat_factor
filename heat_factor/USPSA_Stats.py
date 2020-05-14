@@ -1,13 +1,14 @@
+import asyncio
+import base64
+import datetime as dt
 import json
 import re
-import datetime as dt
-import asyncio
-from collections import deque, defaultdict
-import base64
+from collections import defaultdict, deque
 from io import BytesIO
-import pandas as pd
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import requests
 from aiohttp import ClientSession
 
@@ -15,13 +16,17 @@ from aiohttp import ClientSession
 """The following functions where converted from the practiscore javascipt code
 that decodes the AWS json files with the scores for paper targets.
 
-Returns the human consumable scores for paper targets.
+    Arguments:
+        score_field {int} -- the coded scores for paper targets in the AWS
+        json file
 
-Args:
-score_field -- this the coded scores for paper targets in the AWS json file"""
+    Returns:
+        int -- the human consumable scores for paper targets.
+    """
 
 
 def num_alphas(score_field):
+
     A_MASK = 0x0000000F
     A_MASK2 = 0x0000000F00000000
     A_SHIFT = 0
@@ -120,10 +125,14 @@ async def http_get(url, session):
 
 
 async def http_sess(links):
-    """Returns the AWS json files as a string object.
+    """Creates the async coroutines to fetch the match details from AWS
 
-    Args:
-    links -- the json object containing the shooters match uuids"""
+    Arguments:
+        links {json object} -- contains the PS AWS uuid for each match
+
+    Returns:
+        {str} -- the AWS json files as a string objects.
+    """
 
     def_tasks = deque()
     scores_tasks = deque()
@@ -411,7 +420,6 @@ def get_match_links(login_dict):
             shooter_ps_match_links = (
                 sess.get(
                     view_all_link.group(1), headers=headers
-                    # 'https://practiscore.com/associate/step2', headers=headers
                 )
             )
             sess.get('https://practiscore.com/logout', headers=headers)
