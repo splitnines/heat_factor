@@ -21,7 +21,7 @@ that decodes the AWS json files with the scores for paper targets.
         json file
 
     Returns:
-        int -- the human consumable scores for paper targets.
+        {int} -- the human consumable scores for paper targets.
     """
 
 
@@ -111,11 +111,15 @@ def num_npm(score_field):
 
 
 async def http_get(url, session):
-    """Returns the AWS response for each json file
+    """Performs the HTTP get request to the AWS server
 
-    Args:  url -- the individual url from the shooters list of matches
-           session -- the aiohttp session object """
+    Arguments:
+        url {str} -- the individual url from the shooters list of matches
+        session {object} -- the aiohttp session object
 
+    Returns:
+        [json object] -- the AWS response for each json file
+    """
     try:
         async with session.get(url) as response:
             assert response.status == 200
@@ -159,29 +163,33 @@ async def http_sess(links):
 
 
 def async_loop(func, *args):
-    """Calls the specified function with list of args and returns whatever
-       is received from the called function.
+    """Calls the specified function with list of args.
 
-    Args: func - name of async function to call and "place on the loop."
-          *args - list of arguments to pass to async function func"""
+    Arguments:
+        func {function} -- name of async function to call and "place on the
+                           loop.
 
+    Returns:
+        [object] -- returns whatever is received from the called function.
+    """
     # why do I have to use Selector???
-    # loop = asyncio.get_event_loop()
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
-
-    # match_def_data, match_scores_data
-    response = (
-        loop.run_until_complete(func(*args))
-    )
+    response = (loop.run_until_complete(func(*args)))
     loop.close()
 
-    # return match_def_data, match_scores_data
     return response
 
 
 def check_mem_num(mem_num):
+    """[summary]
 
+    Arguments:
+        mem_num {str} -- the users USPSA membership number (alphanumeric).
+
+    Raises:
+        ValueError: if membership number is not found.
+    """
     uspsa_org_response = requests.get(
         f'https://uspsa.org/classification/{mem_num}'
     ).text
@@ -191,12 +199,17 @@ def check_mem_num(mem_num):
 
 
 def calc_totals(match_scores, idx, shtr_uuid):
-    """Returns a dict with totals for each target.
+    """Calculates the total points for the given match.
 
-    Args: match_scores - json file with the shooters details from each match.
-          idx - used to align the two AWS json files with the scores.
-          shtr_uuid - the shooters uuid."""
+    Arguments:
+        match_scores {dict} -- json file with the shooters details from each
+                               match.
+        idx {int} -- used to align the two AWS json files with the scores.
+        shtr_uuid {str} -- the shooters uuid.
 
+    Returns:
+        [dict] -- dict with total points.
+    """
     totals = defaultdict(lambda: 0)
 
     for score in match_scores[idx]['match_scores']:
@@ -220,10 +233,14 @@ def calc_totals(match_scores, idx, shtr_uuid):
 
 
 def rnd_count(totals):
-    """Returns total round count for all matches.
+    """[summary]
 
-    Args: totals - dict containing points data."""
+    Arguments:
+        totals {dict} -- keys are target scoring zone, values are hits.
 
+    Returns:
+        [float] -- sum of total points for a given match.
+    """
     return sum(
         (
             totals['alphas'], totals['bravos'], totals['charlies'],
@@ -234,11 +251,15 @@ def rnd_count(totals):
 
 
 def pts_scored(pf, totals):
-    """Returns the total points scored.
+    """[summary]
 
-    Args: pf - str of shooters power factor (MAJOR or MINOR).
-          totals - dict containing points data."""
+    Arguments:
+        pf {str} -- the shooters power factor for the match
+        totals {dict} -- keys are target scoring zone, values are hits.
 
+    Returns:
+        [float] -- total points subtract penalites
+    """
     if pf == 'MINOR':
         points = sum(
             [
@@ -264,15 +285,22 @@ def pts_scored(pf, totals):
 def create_dataframe(
     json_obj, match_date_range, delete_list, mem_num, division
 ):
-    """Returns the dataframe containing all the statistics and the shooters
-       first and last name.
+    """Creates a pandas dataframe with the shooters scores for the timeframe
+       spescified  by match_date_range, excluding dates in delete_list.
 
-       Args:
-       json_obj -- the json object containing the shooters match uuids
-       match_date_range -- dict containing alternate start/end dates
-       deleate_list -- list containing dates to be omitted from plot
-       mem_num -- shooters USPSA membership number"""
+    Arguments:
+        json_obj {dict} -- json object from AWS server
+        match_date_range {dict} -- keys are start date and end date,
+                                   values datetime objects.
+        delete_list {list} -- contains a list of str dates to exclude from the
+                              plot.
+        mem_num {str} -- users USPSA membership number.
+        division {str} -- user selected division to plot
 
+    Returns:
+        [tuple] -- contains a pandas dataframe with the scores from all matchs.
+                   shooters first name {str} and last name {str}.
+    """
     match_def_data, match_scores_data = async_loop(http_sess, json_obj)
 
     match_def_json = (json.loads(i) for i in match_def_data)
@@ -376,11 +404,18 @@ def create_dataframe(
 
 
 def get_match_links(login_dict):
-    """Returns the shooters list of matches from practiscore in the form of
-    a json object.
+    """Logs into Practicescore.com and scrapes the links to each match the
+       shooter participated in.  These links are scraped from javascript
+       code in the HTML of the users Practiscore home page.
 
-    Args:
-    login_dict - dict containing the shooters practiscore login credentials"""
+    Arguments:
+        login_dict {dict} -- dict containing username and password used to log
+                             in to Practiscore.com
+
+    Returns:
+        [dict] -- json object containing the match link uuids for pulling
+                  match json files from AWS.
+    """
 
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -454,13 +489,17 @@ def add_annotation(x_ax, y_ax):
 
 
 def plot_stats(scores, shooter_name, mem_number, division):
-    """Returns a matplotlib .png object saved in memory
+    """[summary]
 
-    Args:
-    scores -- pandas dataframe containing the shooters scores for all matches
-    shooter_name -- the shooters first and last name as a string object
-    mem_number -- the shooters USPSA membership number"""
+    Arguments:
+        scores {oject} -- pandas dataframe
+        shooter_name {str} -- shooters name
+        mem_number {str} -- the shooters USPSA memebership number
+        division {str} -- the user inputed division name for the plot
 
+    Returns:
+        [object] -- matplotlib png in the form of a BytesIO base64 object.
+    """
     x = np.arange(len(scores['Match Date']))
 
     plt.figure(figsize=(14.5, 8))
