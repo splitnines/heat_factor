@@ -4,29 +4,13 @@ import numpy as np
 
 
 classification_dict = {
-    'GM': 95,
-    'M': 85,
-    'A': 75,
-    'B': 60,
-    'C': 40,
-    'D': 2,
-    'U': 0,
+    'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,
 }
 next_class_up = {
-    'M': 'GM',
-    'A': 'M',
-    'B': 'A',
-    'C': 'B',
-    'D': 'C',
+    'M': 'GM', 'A': 'M', 'B': 'A', 'C': 'B', 'D': 'C',
 }
 reverse_classification_dict = {
-    95: 'GM',
-    85: 'M',
-    75: 'A',
-    60: 'B',
-    40: 'C',
-    2: 'D',
-    0: 'U',
+    95: 'GM', 85: 'M', 75: 'A', 60: 'B', 40: 'C', 2: 'D', 0: 'U',
 }
 
 
