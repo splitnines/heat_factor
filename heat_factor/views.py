@@ -72,10 +72,10 @@ def heat_factor(request):
         match_def = get_it(url)
 
         if 'match_name' in match_def:
+            # heat_idx is a tuple containing the Heat Factor for each
+            # division in the match in the following order: Production, Open,
+            # Carry Optics, Limited, PCC, Single Stack
             heat_idx, match_name = run_it(match_def)
-            """heat_idx is a tuple containing the Heat Factor for each
-               division in the match in the following order: Production, Open,
-               Carry Optics, Limited, PCC, Single Stack"""
 
             graphic = graph_it(heat_idx, match_name)
 
@@ -134,36 +134,51 @@ def get_upped(request):
             request, 'get_upped.html',
             {
                 'response_text': '<font color=\"red\">2 Mikes, 2 '
-                'No-shoots:</font> No scores found for member '
+                'No-shoots:</font> Member number '
                 f'<font color=\"red\">{mem_num}</font> in '
-                f'<font color=\"red\">{division}</font> division. If '
+                f'<font color=\"red\">{division}</font> division.<br> If '
                 'your USPSA classifier scores are set to priviate this '
-                'tool won\'t work. If you don\'t have at least 3 '
+                'tool won\'t work.<br> If you don\'t have at least 3 '
                 'qualifing classifier scores on record this tool '
                 'won\'t work.', 'date': DAY
             }
         )
     if shooter.get_shooter_class() == 'GM':
-        shtr_class = shooter.get_shooter_class()
         return render(
             request, 'get_upped.html',
             {
                 'response_text': 'You\'re a <font color=\"blue\">'
-                f'{shtr_class}</font>.  Nowhere to go from here.',
+                f'{shooter.get_shooter_class()}</font>.  Nowhere to go from '
+                'here.',
                 'date': DAY
             }
         )
     if shooter.get_shooter_class() == 'U':
-        shtr_init_class = shooter.get_initial_classifaction()
+        try:
+            initial_list = shooter.get_initial()
+        except ValueError:
+            return render(
+                request, 'get_upped.html',
+                {
+                    'response_text': '<font color=\"red\">2 Mikes, 2 '
+                    'No-shoots:</font> Member number '
+                    f'<font color=\"red\">{mem_num}</font> in '
+                    f'<font color=\"red\">{division}</font> division.<br> If '
+                    'your USPSA classifier scores are set to priviate this '
+                    'tool won\'t work.<br> If you don\'t have at least 3 '
+                    'qualifing classifier scores on record this tool '
+                    'won\'t work.', 'date': DAY
+                }
+            )
+        resp = '<br>'.join(
+            [f'You need a score of <font color=\"green\">{i[1]}%</font> in '
+             'your next classifier to achieve an initial classification of '
+             f'<font color=\"green\">{i[0]}</font> class.'
+             for i in initial_list]
+        )
         return render(
-            request, 'get_upped.html',
-            {
-                'response_text': 'You need a score of '
-                f'<font color=\"green\">{str(shtr_init_class[0])}'
-                '%</font> in your next classifier to achieve an '
-                'initial classification of <font color=\"green\">'
-                f'{str(shtr_init_class[1])}</font> class.',
-                'date': DAY
+            request, 'get_upped.html', {
+                'response_text': resp, 'date': DAY
             }
         )
     if shooter.get_upped() > 100:
@@ -178,13 +193,29 @@ def get_upped(request):
             }
         )
     else:
+        try:
+            next_class_up = shooter.get_next_class()
+        except AttributeError:
+            return render(
+                request, 'get_upped.html',
+                {
+                    'response_text': '<font color=\"red\">2 Mikes, 2 '
+                    'No-shoots:</font> Member number '
+                    f'<font color=\"red\">{mem_num}</font> in '
+                    f'<font color=\"red\">{division}</font> division.<br> If '
+                    'your USPSA classifier scores are set to priviate this '
+                    'tool won\'t work.<br> If you don\'t have at least 3 '
+                    'qualifing classifier scores on record this tool '
+                    'won\'t work.', 'date': DAY
+                }
+            )
         return render(
             request, 'get_upped.html',
             {
                 'response_text': 'You need a score of '
                 f'<font color=\"green\">{str(shooter.get_upped())}'
                 '%</font> to make <font color=\"green\">'
-                f'{shooter.get_next_class()}</font> class.',
+                f'{next_class_up}</font> class.',
                 'date': DAY
             }
         )
