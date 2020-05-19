@@ -54,8 +54,8 @@ class ClassifactionWhatIf:
                          record raise ValueError, needs at least 3 scores.
 
         Returns:
-            [tuple] -- a tuple containing the class letter and percent needed
-                       on next classifier to receive an initial classification.
+            [dict] -- keys are the classification letter, values are the
+                      percent score needed to achieve that class.
         """
         score_sum, score_count = sum_scores(self.bs, self.division)
         if self.shooter_class == 'U':
@@ -240,13 +240,14 @@ def calc_initial(score_sum, score_count):
         score_count {int} -- count of valid scores on record.
 
     Returns:
-        [list] -- a list of tuples containing the class letter and percent
-                  needed to reach that class on thier classifier.
+        [dict] -- keys are the classification letter, values are the percent
+                  score needed to achieve that class.
     """
-    initial_list = []
+    initial_dict = {}
 
     for classification in classification_dict:
-        if len(initial_list) > 0 and initial_list[-1][-1] == 2.0:
+        if 2.0 in initial_dict.values():
+            # if len(initial_list) > 0 and initial_list[-1][-1] == 2.0:
             break
         if classification == 'U':
             continue
@@ -255,7 +256,8 @@ def calc_initial(score_sum, score_count):
                 ((score_sum + n) / (score_count + 1)
                  ) >= classification_dict[classification]
             ):
-                initial_list.append((classification, round(n, 4)))
+                # initial_list.append((classification, round(n, 4)))
+                initial_dict[classification] = round(n, 4)
                 break
 
-    return initial_list
+    return initial_dict

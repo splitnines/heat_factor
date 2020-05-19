@@ -155,7 +155,7 @@ def get_upped(request):
         )
     if shooter.get_shooter_class() == 'U':
         try:
-            initial_list = shooter.get_initial()
+            initial_dict = shooter.get_initial()
         except ValueError:
             return render(
                 request, 'get_upped.html',
@@ -170,15 +170,15 @@ def get_upped(request):
                     'won\'t work.', 'date': DAY
                 }
             )
-        resp = '<br>'.join(
-            [f'You need a score of <font color=\"green\">{i[1]}%</font> in '
-             'your next classifier to achieve an initial classification of '
-             f'<font color=\"green\">{i[0]}</font> class.'
-             for i in initial_list]
+        initial_calssification_html = '<br>'.join(
+            [f'You need a score of <font color=\"green\">{initial_dict[k]}%'
+             '</font> in your next classifier to achieve an initial '
+             f'classification of <font color=\"green\">{k}</font> class.'
+             for k in initial_dict]
         )
         return render(
             request, 'get_upped.html', {
-                'response_text': resp, 'date': DAY
+                'response_text': initial_calssification_html, 'date': DAY
             }
         )
     if shooter.get_upped() > 100:
@@ -298,7 +298,8 @@ def points(request):
     except ValueError:
         return render(
             request, 'error.html', {'message': create_dataframe(
-                match_links_json, match_date_range, delete_list, mem_num
+                match_links_json, match_date_range,
+                delete_list, mem_num, division
             )}
         )
 

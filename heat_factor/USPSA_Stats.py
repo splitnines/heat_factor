@@ -111,7 +111,7 @@ def num_npm(score_field):
 
 
 async def http_get(url, session):
-    """Performs the HTTP get request to the AWS server
+    """Perform the HTTP get request to the AWS server.
 
     Arguments:
         url {str} -- the individual url from the shooters list of matches
@@ -137,12 +137,10 @@ async def http_sess(links):
     Returns:
         {str} -- the AWS json files as a string objects.
     """
-
     def_tasks = deque()
     scores_tasks = deque()
 
     async with ClientSession() as session:
-
         for link in links:
             url1 = (
                 'https://s3.amazonaws.com/ps-scores/'
@@ -182,7 +180,7 @@ def async_loop(func, *args):
 
 
 def check_mem_num(mem_num):
-    """[summary]
+    """Checks that mem_num is a valid uspsa number.
 
     Arguments:
         mem_num {str} -- the users USPSA membership number (alphanumeric).
@@ -208,7 +206,7 @@ def calc_totals(match_scores, idx, shtr_uuid):
         shtr_uuid {str} -- the shooters uuid.
 
     Returns:
-        [dict] -- dict with total points.
+        [defaultdict] -- dict with total points.
     """
     totals = defaultdict(lambda: 0)
 
@@ -229,11 +227,12 @@ def calc_totals(match_scores, idx, shtr_uuid):
                         totals['ns'] += num_ns(ts)
                         totals['mikes'] += num_m(ts)
                         totals['npm'] += num_npm(ts)
+
     return totals
 
 
 def rnd_count(totals):
-    """[summary]
+    """Calculate round count.
 
     Arguments:
         totals {dict} -- keys are target scoring zone, values are hits.
@@ -241,17 +240,13 @@ def rnd_count(totals):
     Returns:
         [float] -- sum of total points for a given match.
     """
-    return sum(
-        (
-            totals['alphas'], totals['bravos'], totals['charlies'],
-            totals['deltas'], totals['ns'], totals['mikes'],
-            totals['npm']
-        )
-    )
+    return sum((totals['alphas'], totals['bravos'], totals['charlies'],
+                totals['deltas'], totals['ns'], totals['mikes'],
+                totals['npm']))
 
 
 def pts_scored(pf, totals):
-    """[summary]
+    """Calculate points based on power factor.
 
     Arguments:
         pf {str} -- the shooters power factor for the match
@@ -261,22 +256,14 @@ def pts_scored(pf, totals):
         [float] -- total points subtract penalites
     """
     if pf == 'MINOR':
-        points = sum(
-            [
-                (totals['alphas'] * 5), (totals['bravos'] * 3),
-                (totals['charlies'] * 3), (totals['deltas'])
-            ]
-        )
+        points = sum([(totals['alphas'] * 5), (totals['bravos'] * 3),
+                      (totals['charlies'] * 3), (totals['deltas'])])
         penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
 
         return points - penalties
 
-    points = sum(
-        [
-            (totals['alphas'] * 5), (totals['bravos'] * 4),
-            (totals['charlies'] * 4), (totals['deltas'] * 2)
-        ]
-    )
+    points = sum([(totals['alphas'] * 5), (totals['bravos'] * 4),
+                  (totals['charlies'] * 4), (totals['deltas'] * 2)])
     penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
 
     return points - penalties
@@ -316,7 +303,6 @@ def create_dataframe(
     )
 
     for idx, match_def in enumerate(match_def_json):
-
         match_date = dt.date.fromisoformat(match_def['match_date'])
         form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
 
@@ -386,7 +372,6 @@ def create_dataframe(
                     points_possible, points_scored, pct_points,
                     alpha_charlie_ratio, pct_errors
                 ]
-
                 score_series = pd.Series(score_list, index=scores_df.columns)
                 scores_df = scores_df.append(score_series, ignore_index=True)
 
@@ -413,25 +398,20 @@ def get_match_links(login_dict):
                              in to Practiscore.com
 
     Returns:
-        [dict] -- json object containing the match link uuids for pulling
-                  match json files from AWS.
+        [deque] -- json object containing the match link uuids for pulling
+                   match json files from AWS.
     """
-
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/80.0.3987.149 Safari/537.36'
     }
-
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
-        # 'success': r'https://practiscore\.com/associate/step2',
         'success': r'<a href=\"([\w:/\.\d]+)\"\sid=\"viewAllButton\"'
     }
-
     with requests.Session() as sess:
-
         login = sess.post(
             'https://practiscore.com/login', data=login_dict, headers=headers
         )
@@ -439,23 +419,18 @@ def get_match_links(login_dict):
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
             return 'Bad password.'
-
-        elif re.findall(login_status_strs['bad_email'], str(login.content)):
+        if re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
             return 'Bad email/username'
-
-        elif not re.findall(login_status_strs['success'], str(login.content)):
+        if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
             return f'"ViewAll" link not found.'
-
-        elif re.search(login_status_strs['success'], str(login.content)):
+        if re.search(login_status_strs['success'], str(login.content)):
             view_all_link = (
                 re.search(login_status_strs['success'], str(login.content))
             )
             shooter_ps_match_links = (
-                sess.get(
-                    view_all_link.group(1), headers=headers
-                )
+                sess.get(view_all_link.group(1), headers=headers)
             )
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
@@ -479,7 +454,6 @@ def get_match_links(login_dict):
 
 def add_annotation(x_ax, y_ax):
     """Adds labels to plot"""
-
     for xx, yy in zip(x_ax, y_ax):
         label = "{:.2f}".format(yy)
         plt.annotate(

@@ -1,11 +1,12 @@
+import base64
+import json
 import random
 import re
-import json
 from collections import defaultdict
 from io import BytesIO
-import base64
-import requests
+
 import matplotlib.pyplot as plt
+import requests
 
 
 def get_it(match_link):
@@ -52,8 +53,8 @@ def run_it(match_def):
     """Returns a list of floats and match_name string.
 
     Args:
-    match_def -- json object"""
-
+    match_def -- json object
+    """
     match_name = match_def['match_name']
 
     division_heat = {
@@ -64,7 +65,6 @@ def run_it(match_def):
         'PCC': [0, 0, 0, 0, ],
         'Single Stack': [0, 0, 0, 0, ],
     }
-
     division_count = defaultdict(lambda: 0)
 
     for shooter in match_def['match_shooters']:
@@ -130,12 +130,16 @@ def run_it(match_def):
 
 
 def graph_it(heat_idx, match_name):
-    """Returns as matplotlib graph saved as a BytesIO object
+    """Configure the matplotlib image, encodes the image into a BytesIO bytes
+       object.
 
-    Args:
-    heat_idx -- a list of floats
-    match_name -- sting"""
+    Arguments:
+        heat_idx {tuple} -- contains the heat factor number for each division.
+        match_name {str} -- the match name
 
+    Returns:
+        [bytes object] -- the bytes encoded png matplotlib image
+    """
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
 
     x = range(len(labels))
