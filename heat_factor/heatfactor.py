@@ -73,6 +73,7 @@ def run_it(match_def):
         'PCC': [0, 0, 0, 0, ],
         'Single Stack': [0, 0, 0, 0, ],
     }
+
     division_count = defaultdict(lambda: 0)
 
     for shooter in match_def['match_shooters']:
@@ -82,6 +83,7 @@ def run_it(match_def):
             'A': random.randrange(75, 84),
             'B': random.randrange(60, 74),
         }
+
         for division in division_heat:
             if 'sh_dvp' in shooter and 'sh_grd' in shooter:
 

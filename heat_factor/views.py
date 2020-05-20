@@ -27,7 +27,6 @@ def home(request):
     Returns:
         [object] -- HTTPResponse object
     """
-
     if request.method == 'POST':
         practiscore_url_form = PractiscoreUrlForm(request.POST)
         get_upped_form = GetUppedForm(request.POST)
@@ -238,9 +237,6 @@ def get_upped(request):
         )
 
 
-"""Returns a matplotlib .png to the points.html template"""
-
-
 def points(request):
     """Produces a chart showing the shooters match points plotted over time.
 
@@ -250,7 +246,6 @@ def points(request):
     Returns:
         [object] -- HTTPResponse object
     """
-
     username = request.POST.get('username')
     password = request.POST.get('password')
     mem_num = request.POST.get('mem_num')

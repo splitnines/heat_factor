@@ -465,7 +465,7 @@ def add_annotation(x_ax, y_ax):
 
 
 def plot_stats(scores, shooter_name, mem_number, division):
-    """[summary]
+    """Produces a matplotlib plot to be rendered to the browser.
 
     Arguments:
         scores {oject} -- pandas dataframe
