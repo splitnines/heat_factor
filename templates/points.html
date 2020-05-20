@@ -1,18 +1,19 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <p align="left"><a href="/">Return Home</a></p>
 <div style="background-color:lightblue">
-  <center>
-  <h2>Match Points Stats</h2>
-  </center>
+    <center>
+        <h2>Match Points Stats</h2>
+    </center>
 </div>
-  <center>
+<center>
     <img src="data:image/png;base64,{{ graph | safe }}">
-  </center>
-  <p align="right"><font size="2"> {{ date }} </font></p>
-  <hr>
-  <font color="red"><h5><b>The graph takes a few seconds to load, please be patient.<b></h5></font>
+</center>
+<p align="right">
+    <font size="2"> {{ date }} </font>
+</p>
+<hr>
+<font color="red">
+    <h5><b>The graph takes a few seconds to load, please be patient.<b></h5></font>
     <form action="/points/" method="POST">
       {% csrf_token %}
     <h5>

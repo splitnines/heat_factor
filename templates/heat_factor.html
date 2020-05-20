@@ -1,31 +1,23 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <p align="left"><a href="/">Return Home</a></p>
 <div style="background-color:lightblue">
-  <center>
-  <h2>USPSA Heat Factor by Division</h2>
-  </center>
+    <center>
+        <h2>USPSA Heat Factor by Division</h2>
+    </center>
 </div>
-  <center>
+<center>
     <img src="data:image/png;base64,{{ graphic | safe }}">
-  </center>
-  <p align="right"><font size="2"> {{ date }} </font></p>
-  <hr>
-  <h2>Methodology:</h2>
-  <p align="justify">
-    The Heat Factor App collects the classification information from the Match Breakdown section of a Practiscore.com match URL.  Each shooter is then given a rank based on thier classification.
-    <br>
-    The rankings that are used align with USPSA classifications:<br>
-    GM: 95-100<br>
-    M: 85-94<br>
-    A: 75-84<br>
-    B: 60-74<br>
-    C, D, U and X class shooters are omitted from the rankings<br>
-    <br>
-    The rank assigned to a shooter is randomly choosen from within the classification range.  For examle, an "M" class shooter can receive a rank within the 85-94 range.  This random assignment will cause the results to shift slightly each time the app is run for a given match.
-    <br>
-    Once the ranks have been assigned they are totaled per each division and divided by the total number of GM, M, A and B class shooters in the division.  This give the average classification of those shooters and the final results of the Heat Factor.
-  </p>
-  <hr>
-{% endblock content %}
+</center>
+<p align="right">
+    <font size="2"> {{ date }} </font>
+</p>
+<hr>
+<h2>Methodology:</h2>
+<p align="justify">
+    The Heat Factor App collects the classification information from the Match Breakdown section of a Practiscore.com match URL. Each shooter is then given a rank based on thier classification.
+    <br> The rankings that are used align with USPSA classifications:<br> GM: 95-100<br> M: 85-94<br> A: 75-84<br> B: 60-74<br> C, D, U and X class shooters are omitted from the rankings<br>
+    <br> The rank assigned to a shooter is randomly choosen from within the classification range. For examle, an "M" class shooter can receive a rank within the 85-94 range. This random assignment will cause the results to shift slightly each time the
+    app is run for a given match.
+    <br> Once the ranks have been assigned they are totaled per each division and divided by the total number of GM, M, A and B class shooters in the division. This give the average classification of those shooters and the final results of the Heat Factor.
+</p>
+<hr> {% endblock content %}

@@ -10,18 +10,21 @@ import requests
 
 
 def get_it(match_link):
-    """Returns a json object with the match info.
+    """Fetches the match data from AWS in the form of a json file.
 
-    Args:
-    match_link -- user provided url as a sting object"""
+    Arguments:
+        match_link {str} -- practiscore match url.
 
+    Returns:
+        [dict] -- json object with the match data from AWS.
+    """
     uuid_regex = re.compile(
         r'practiscore\.com/results/new/([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-'
         r'[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})$'
     )
     non_uuid_regex = re.compile(r'practiscore\.com/results/new/(\d+)$')
 
-    if re.search(non_uuid_regex, match_link):
+    if non_uuid_regex.search(match_link):
 
         match_html_text = requests.get(match_link).text
 
@@ -31,10 +34,10 @@ def get_it(match_link):
             '[0-9a-fA-F]{12})/match_def.json'
         )
 
-        if re.search(aws_uuid_regex, match_html_text):
+        if aws_uuid_regex.search(match_html_text):
             match_uuid = re.search(aws_uuid_regex, match_html_text)[1]
 
-    elif re.search(uuid_regex, match_link):
+    elif uuid_regex.search(match_link):
         match_uuid = re.search(uuid_regex, match_link)[1]
 
     try:
@@ -50,10 +53,15 @@ def get_it(match_link):
 
 
 def run_it(match_def):
-    """Returns a list of floats and match_name string.
+    """Calculates the heat index for each division and pulls the match name
+       from the json object.
 
-    Args:
-    match_def -- json object
+    Arguments:
+        match_def {dict} -- json object with the match data from AWS.
+
+    Returns:
+        [tuple, str] -- a tuple containing the heat index for each division
+                        and a str containing the match name.
     """
     match_name = match_def['match_name']
 
@@ -129,7 +137,7 @@ def run_it(match_def):
     return heat_idx, match_name
 
 
-def graph_it(heat_idx, match_name):
+def graph_it(match_def):
     """Configure the matplotlib image, encodes the image into a BytesIO bytes
        object.
 
@@ -140,6 +148,8 @@ def graph_it(heat_idx, match_name):
     Returns:
         [bytes object] -- the bytes encoded png matplotlib image
     """
+    heat_idx, match_name = run_it(match_def)
+
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
 
     x = range(len(labels))

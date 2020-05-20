@@ -14,7 +14,7 @@ from aiohttp import ClientSession
 
 
 """The following functions where converted from the practiscore javascipt code
-that decodes the AWS json files with the scores for paper targets.
+   that decodes the AWS json files with the scores for paper targets.
 
     Arguments:
         score_field {int} -- the coded scores for paper targets in the AWS
@@ -273,7 +273,7 @@ def create_dataframe(
     json_obj, match_date_range, delete_list, mem_num, division
 ):
     """Creates a pandas dataframe with the shooters scores for the timeframe
-       spescified  by match_date_range, excluding dates in delete_list.
+       spescified by match_date_range, excluding dates in delete_list.
 
     Arguments:
         json_obj {dict} -- json object from AWS server
@@ -406,11 +406,13 @@ def get_match_links(login_dict):
         'AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/80.0.3987.149 Safari/537.36'
     }
+
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
         'success': r'<a href=\"([\w:/\.\d]+)\"\sid=\"viewAllButton\"'
     }
+
     with requests.Session() as sess:
         login = sess.post(
             'https://practiscore.com/login', data=login_dict, headers=headers
@@ -424,7 +426,7 @@ def get_match_links(login_dict):
             return 'Bad email/username'
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
-            return f'"ViewAll" link not found.'
+            return '"ViewAll" link not found.'
         if re.search(login_status_strs['success'], str(login.content)):
             view_all_link = (
                 re.search(login_status_strs['success'], str(login.content))

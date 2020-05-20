@@ -1,18 +1,18 @@
 <!-- templates/base.html -->
-<!DOCTYPE html>
-
-{% load static %}
+<!DOCTYPE html> {% load static %}
 
 <html>
-    <head>
-        <title>Fun USPSA Tools</title>
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400" rel="stylesheet">
-        <link href="{% static 'css/base.css' %}" rel="stylesheet">
-        <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" >
-    </head>
-    <body>
-    {% block content %}
-    {% endblock content %}
+
+<head>
+    <title>Fun USPSA Tools</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400" rel="stylesheet">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon">
+</head>
+
+<body>
+    {% block content %} {% endblock content %}
     <b>Contact: <a href="mailto:heat.factor.app@gmail.com">Heat Factor App</a></b>
-    </body>
+</body>
+
 </html>

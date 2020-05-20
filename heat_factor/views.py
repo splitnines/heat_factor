@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from .forms import (
     PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
 )
-from .heatfactor import get_it, run_it, graph_it
+from .heatfactor import get_it, graph_it
 from .classificationwhatif import ClassifactionWhatIf
 from .USPSA_Stats import (
     create_dataframe, get_match_links, plot_stats, check_mem_num
@@ -19,7 +19,14 @@ def sys_logger(app_name, *app_data):
 
 
 def home(request):
-    """Display app home page/landing page"""
+    """Routes to site home/landing page.
+
+    Arguments:
+        request {object} -- HTTPRequest object
+
+    Returns:
+        [object] -- HTTPResponse object
+    """
 
     if request.method == 'POST':
         practiscore_url_form = PractiscoreUrlForm(request.POST)
@@ -55,9 +62,14 @@ def home(request):
 
 
 def heat_factor(request):
-    """get practiscore url from form, pass it to get_it fuction then run thru
-       the rest of the program"""
+    """Renders the Heat Factor graph for a given USPSA match link.
 
+    Arguments:
+        request {object} -- HTTPRequest object
+
+    Returns:
+        [object] -- HTTPResponse object
+    """
     url = request.POST.get('p_url')
 
     sys_logger('heat_factor', url)
@@ -68,35 +80,33 @@ def heat_factor(request):
         )
     )
     if re.search(ps_regex, url):
-
         match_def = get_it(url)
-
         if 'match_name' in match_def:
-            # heat_idx is a tuple containing the Heat Factor for each
-            # division in the match in the following order: Production, Open,
-            # Carry Optics, Limited, PCC, Single Stack
-            heat_idx, match_name = run_it(match_def)
-
-            graphic = graph_it(heat_idx, match_name)
+            graphic = graph_it(match_def)
 
             return render(
                 request, 'heat_factor.html', {
                     'graphic': graphic, 'date': dt.datetime.now()
                 }
             )
-
         elif match_def == 'problem downloading aws json file.':
             return render(request, 'error.html', {'message': match_def})
-
     else:
+
         # Redirect on bad_url detection
         return redirect('/bad_url/')
 
 
 def bad_url(request):
-    """this page is displayed when a bad URL is entered.  I don't like it this
-       way"""
+    """Routes to bad_url.html for heat_factor function.  When the user
+       provides an incorrect practiscore URL this function is called.
 
+    Arguments:
+        request {object} -- HTTPRequest object
+
+    Returns:
+        [object] -- HTTPResponse object
+    """
     if request.method == 'POST':
         practiscore_url_form = PractiscoreUrlForm(request.POST)
         if practiscore_url_form.is_valid():
@@ -119,8 +129,15 @@ def bad_url(request):
 
 def get_upped(request):
     """Creates a ClassifactionWhatIf object and calls various methods on that
-       object to produce responses."""
+       object to produce the percentage a shooter needs to move up a class or
+       for a new shooter to get an initial classification.
 
+    Arguments:
+        request {object} -- HTTPRequest object
+
+    Returns:
+        [object] -- HTTPResponse object
+    """
     mem_num = request.POST.get('mem_num')
     division = request.POST.get('division')
     DAY = dt.datetime.now()
@@ -221,8 +238,18 @@ def get_upped(request):
         )
 
 
+"""Returns a matplotlib .png to the points.html template"""
+
+
 def points(request):
-    """Returns a matplotlib .png to the points.html template"""
+    """Produces a chart showing the shooters match points plotted over time.
+
+    Arguments:
+        request {object} -- HTTPRequest object
+
+    Returns:
+        [object] -- HTTPResponse object
+    """
 
     username = request.POST.get('username')
     password = request.POST.get('password')
