@@ -231,7 +231,7 @@ def calc_totals(match_scores, idx, shtr_uuid):
     return totals
 
 
-def rnd_count(totals):
+def get_round_count(totals):
     """Calculate round count.
 
     Arguments:
@@ -245,7 +245,7 @@ def rnd_count(totals):
                 totals['npm']))
 
 
-def pts_scored(pf, totals):
+def get_points_scored(pf, totals):
     """Calculate points based on power factor.
 
     Arguments:
@@ -269,7 +269,7 @@ def pts_scored(pf, totals):
     return points - penalties
 
 
-def create_dataframe(
+def get_dataframe(
     json_obj, match_date_range, delete_list, mem_num, division
 ):
     """Creates a pandas dataframe with the shooters scores for the timeframe
@@ -337,11 +337,11 @@ def create_dataframe(
 
                 totals = calc_totals(match_scores_json, idx, shooter_uuid)
 
-                round_count = rnd_count(totals)
+                round_count = get_round_count(totals)
 
                 points_possible = (round_count * 5)
 
-                points_scored = pts_scored(shooter_pf, totals)
+                points_scored = get_points_scored(shooter_pf, totals)
 
                 if points_scored > 0:
                     pct_points = round(
@@ -372,6 +372,7 @@ def create_dataframe(
                     points_possible, points_scored, pct_points,
                     alpha_charlie_ratio, pct_errors
                 ]
+
                 score_series = pd.Series(score_list, index=scores_df.columns)
                 scores_df = scores_df.append(score_series, ignore_index=True)
 
@@ -464,7 +465,7 @@ def add_annotation(x_ax, y_ax):
         )
 
 
-def plot_stats(scores, shooter_name, mem_number, division):
+def get_graph(scores, shooter_name, mem_number, division):
     """Produces a matplotlib plot to be rendered to the browser.
 
     Arguments:

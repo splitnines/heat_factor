@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import requests
 
 
-def get_it(match_link):
+def get_match_def(match_link):
     """Fetches the match data from AWS in the form of a json file.
 
     Arguments:
@@ -47,12 +47,13 @@ def get_it(match_link):
                 'match_def.json').text)
         )
     except ValueError:
+
         return 'problem downloading aws json file.'
 
     return match_def
 
 
-def run_it(match_def):
+def get_heat_factor(match_def):
     """Calculates the heat index for each division and pulls the match name
        from the json object.
 
@@ -139,7 +140,7 @@ def run_it(match_def):
     return heat_idx, match_name
 
 
-def graph_it(match_def):
+def get_chart(match_def):
     """Configure the matplotlib image, encodes the image into a BytesIO bytes
        object.
 
@@ -150,7 +151,7 @@ def graph_it(match_def):
     Returns:
         [bytes object] -- the bytes encoded png matplotlib image
     """
-    heat_idx, match_name = run_it(match_def)
+    heat_idx, match_name = get_heat_factor(match_def)
 
     labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
 
@@ -180,7 +181,7 @@ def graph_it(match_def):
     image_png = buffer.getvalue()
     buffer.close()
 
-    graphic = base64.b64encode(image_png)
-    graphic = graphic.decode('utf-8')
+    chart = base64.b64encode(image_png)
+    chart = chart.decode('utf-8')
 
-    return graphic
+    return chart

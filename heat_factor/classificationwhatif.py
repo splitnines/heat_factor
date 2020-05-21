@@ -6,16 +6,18 @@ import numpy as np
 classification_dict = {
     'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,
 }
+
 next_class_up = {
     'M': 'GM', 'A': 'M', 'B': 'A', 'C': 'B', 'D': 'C',
 }
+
 reverse_classification_dict = {
     95: 'GM', 85: 'M', 75: 'A', 60: 'B', 40: 'C', 2: 'D', 0: 'U',
 }
 
 
-class ClassifactionWhatIf:
-    """Provides an interface to uspsa.org used to calculate the percent socre
+class ClassificationWhatIf:
+    """Provides an interface to uspsa.org used to calculate the percent score
        a shooter needs in thier next classifier to move up in classification.
     """
 
@@ -29,8 +31,8 @@ class ClassifactionWhatIf:
         self.division = division
 
         self.bs = http_get(self.mem_num, self.division)
-        self.current_pct = get_classifaction_pct(self.bs, self.division)
-        self.shooter_class = get_classifaction_letter(self.bs, self.division)
+        self.current_pct = get_classification_pct(self.bs, self.division)
+        self.shooter_class = get_classification_letter(self.bs, self.division)
 
     def get_upped(self):
         """
@@ -41,8 +43,10 @@ class ClassifactionWhatIf:
         score_sum, score_count = sum_scores(self.bs, self.division)
 
         return (
-            round((classification_dict[next_class_up[self.shooter_class]]
-                   * (score_count + 1)) - score_sum, 4)
+            round(
+                (classification_dict[next_class_up[self.shooter_class]]
+                 * (score_count + 1)) - score_sum, 4
+            )
         )
 
     def get_initial(self):
@@ -58,9 +62,12 @@ class ClassifactionWhatIf:
                       percent score needed to achieve that class.
         """
         score_sum, score_count = sum_scores(self.bs, self.division)
+
         if self.shooter_class == 'U':
             if score_count > 2:
+
                 return calc_initial(score_sum, score_count)
+
             raise ValueError('Not enough scores on record.')
 
     def get_shooter_class(self):
@@ -80,9 +87,11 @@ class ClassifactionWhatIf:
                      current class.
         """
         if self.shooter_class == 'U':
+
             raise AttributeError(
                 'Unclassified shooter.  Use method get_initial().'
             )
+
         return next_class_up[self.shooter_class]
 
 
@@ -102,6 +111,7 @@ def http_get(mem_num, division):
     """
     if division != 'PCC':
         division_search = division.title().replace(' ', '_')
+
     else:
         division_search = division.upper().replace(' ', '_')
 
@@ -110,6 +120,7 @@ def http_get(mem_num, division):
     bs = BeautifulSoup(http_resp.text, 'lxml')
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
+
         raise AttributeError
 
     return bs
@@ -129,6 +140,7 @@ def get_classifier_scores(bs, division):
     """
     if division != 'PCC':
         division_search = division.title().replace(' ', '_')
+
     else:
         division_search = division.upper().replace(' ', '_')
 
@@ -137,13 +149,14 @@ def get_classifier_scores(bs, division):
 
     for row in table_rows[1:]:
         if str(row.find_all('td')[3].text.strip()) == 'Y':
+
             yield (
                 str(row.find_all('td')[3].text.strip()),
                 float(str(row.find_all('td')[4].text.strip()))
             )
 
 
-def get_classifaction_pct(bs, division):
+def get_classification_pct(bs, division):
     """Retrieves shooters current classification percent.
 
     Arguments:
@@ -165,17 +178,21 @@ def get_classifaction_pct(bs, division):
         data = row.find_all('td')
 
         if [i.text.strip() for i in header][0] == division:
+
             classification_pct = (
                 [i.text.strip() for i in data][1].split(': ')[1]
             )
+
             if classification_pct == 'X':
+
                 raise AttributeError
+
             return float(classification_pct)
 
     return None
 
 
-def get_classifaction_letter(bs, division):
+def get_classification_letter(bs, division):
     """Retrieves shooters current classification percent.
 
     Arguments:
@@ -197,11 +214,15 @@ def get_classifaction_letter(bs, division):
         data = row.find_all('td')
 
         if [i.text.strip() for i in header][0] == division:
+
             classification_letter = (
                 [i.text.strip() for i in data][0].split(': ')[1]
             )
+
             if classification_letter == 'X':
+
                 raise AttributeError
+
             return classification_letter
 
     return None
@@ -223,6 +244,7 @@ def sum_scores(bs, division):
     score_count = 0
 
     for score in get_classifier_scores(bs, division):
+
         if score_count < 5:
             score_sum += score[1]
             score_count += 1
@@ -246,17 +268,18 @@ def calc_initial(score_sum, score_count):
     initial_dict = {}
 
     for classification in classification_dict:
+
         if 2.0 in initial_dict.values():
-            # if len(initial_list) > 0 and initial_list[-1][-1] == 2.0:
             break
+
         if classification == 'U':
             continue
+
         for n in np.arange(2.0, 100.0, 0.0001):
             if (
                 ((score_sum + n) / (score_count + 1)
                  ) >= classification_dict[classification]
             ):
-                # initial_list.append((classification, round(n, 4)))
                 initial_dict[classification] = round(n, 4)
                 break
 
