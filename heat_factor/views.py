@@ -89,7 +89,7 @@ def heat_factor(request):
         try:
             match_def = get_match_def(url)
 
-        except ValueError:
+        except Exception:
 
             return render(request, 'error.html',
                           {'message': 'problem downloading aws json file.'})
@@ -162,7 +162,7 @@ def get_upped(request):
     try:
         shooter = ClassificationWhatIf(mem_num, division)
 
-    except AttributeError:
+    except Exception:
 
         return render(
             request, 'get_upped.html',
@@ -193,7 +193,7 @@ def get_upped(request):
         try:
             initial_dict = shooter.get_initial()
 
-        except ValueError:
+        except Exception:
 
             return render(
                 request, 'get_upped.html',
@@ -237,7 +237,7 @@ def get_upped(request):
         try:
             next_class_up = shooter.get_next_class()
 
-        except AttributeError:
+        except Exception:
 
             return render(
                 request, 'get_upped.html',
@@ -281,12 +281,10 @@ def points(request):
 
     DAY = dt.date.today()
 
-    # perform check_mem_num here.  no point in moving forward if an
-    # invalid USPSA membership number is provided.
     try:
         check_mem_num(mem_num)
 
-    except ValueError:
+    except Exception:
 
         return render(
             request, 'error.html', {
@@ -355,13 +353,13 @@ def points(request):
             )
         )
 
-    except ValueError:
+    except Exception:
 
         return render(
-            request, 'error.html', {'message': get_dataframe(
-                match_links_json, match_date_range,
-                delete_list, mem_num, division
-            )}
+            request, 'error.html', {
+                'message':
+                'Unspecified exception received from get_dataframe()'
+            }
         )
 
     sys_logger('points', shooter_fn, shooter_ln, mem_num, division)

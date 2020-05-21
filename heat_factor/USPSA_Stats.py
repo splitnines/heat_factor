@@ -128,7 +128,7 @@ async def http_get(url, session):
 
     except Exception:
 
-        return f'Error downloading {url}'
+        raise Exception(f'Error downloading {url}')
 
 
 async def http_sess(links):
@@ -190,7 +190,7 @@ def check_mem_num(mem_num):
         mem_num {str} -- the users USPSA membership number (alphanumeric).
 
     Raises:
-        ValueError: if membership number is not found.
+        Exception: if membership number is not found.
     """
     uspsa_org_response = requests.get(
         f'https://uspsa.org/classification/{mem_num}'
@@ -199,7 +199,7 @@ def check_mem_num(mem_num):
     oops_re = re.compile('Oops!')
 
     if oops_re.search(uspsa_org_response):
-        raise ValueError
+        raise Exception
 
 
 def calc_totals(match_scores, idx, shtr_uuid):
@@ -296,7 +296,12 @@ def get_dataframe(
         [tuple] -- contains a pandas dataframe with the scores from all matchs.
                    shooters first name {str} and last name {str}.
     """
-    match_def_data, match_scores_data = async_loop(http_sess, json_obj)
+    try:
+        match_def_data, match_scores_data = async_loop(http_sess, json_obj)
+
+    except Exception:
+
+        raise Exception
 
     match_def_json = (json.loads(i) for i in match_def_data)
     match_scores_json = [json.loads(i) for i in match_scores_data]

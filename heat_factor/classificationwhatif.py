@@ -68,7 +68,7 @@ class ClassificationWhatIf:
 
                 return calc_initial(score_sum, score_count)
 
-            raise ValueError('Not enough scores on record.')
+            raise Exception('Not enough scores on record.')
 
     def get_shooter_class(self):
         """
@@ -88,7 +88,7 @@ class ClassificationWhatIf:
         """
         if self.shooter_class == 'U':
 
-            raise AttributeError(
+            raise Exception(
                 'Unclassified shooter.  Use method get_initial().'
             )
 

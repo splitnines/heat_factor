@@ -49,9 +49,9 @@ def get_match_def(match_link):
                 f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
                 'match_def.json').text)
         )
-    except ValueError:
+    except Exception:
 
-        raise ValueError('problem downloading aws json file.')
+        raise Exception('problem downloading aws json file.')
 
     return match_def
 
