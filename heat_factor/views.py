@@ -85,9 +85,14 @@ def heat_factor(request):
         )
     )
     if re.search(ps_regex, url):
-        # todo: rewite this as a try block, change alternate return statement
-        # of get_match_def to raise ValueError
-        match_def = get_match_def(url)
+
+        try:
+            match_def = get_match_def(url)
+
+        except ValueError:
+
+            return render(request, 'error.html',
+                          {'message': 'problem downloading aws json file.'})
 
         if 'match_name' in match_def:
             chart = get_chart(match_def)
@@ -97,9 +102,7 @@ def heat_factor(request):
                     'chart': chart, 'date': dt.datetime.now()
                 }
             )
-        elif match_def == 'problem downloading aws json file.':
 
-            return render(request, 'error.html', {'message': match_def})
     else:
 
         # Redirect on bad_url detection

@@ -15,6 +15,9 @@ def get_match_def(match_link):
     Arguments:
         match_link {str} -- practiscore match url.
 
+    Raises:
+        ValueError: if there was a problem pulling the AWS files.
+
     Returns:
         [dict] -- json object with the match data from AWS.
     """
@@ -48,7 +51,7 @@ def get_match_def(match_link):
         )
     except ValueError:
 
-        return 'problem downloading aws json file.'
+        raise ValueError('problem downloading aws json file.')
 
     return match_def
 

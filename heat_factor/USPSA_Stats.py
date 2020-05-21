@@ -218,6 +218,7 @@ def calc_totals(match_scores, idx, shtr_uuid):
 
     for score in match_scores[idx]['match_scores']:
         for stage_score in score['stage_stagescores']:
+
             if re.match(shtr_uuid, stage_score['shtr']):
 
                 totals['alphas'] += stage_score['poph']
