@@ -123,8 +123,11 @@ async def http_get(url, session):
     try:
         async with session.get(url) as response:
             assert response.status == 200
+
             return await response.text()
+
     except Exception:
+
         return f'Error downloading {url}'
 
 
@@ -142,6 +145,7 @@ async def http_sess(links):
 
     async with ClientSession() as session:
         for link in links:
+
             url1 = (
                 'https://s3.amazonaws.com/ps-scores/'
                 f"production/{link['matchId']}/match_def.json"
@@ -191,8 +195,10 @@ def check_mem_num(mem_num):
     uspsa_org_response = requests.get(
         f'https://uspsa.org/classification/{mem_num}'
     ).text
-    oops = re.compile('Oops!')
-    if oops.search(uspsa_org_response):
+
+    oops_re = re.compile('Oops!')
+
+    if oops_re.search(uspsa_org_response):
         raise ValueError
 
 
@@ -212,14 +218,14 @@ def calc_totals(match_scores, idx, shtr_uuid):
 
     for score in match_scores[idx]['match_scores']:
         for stage_score in score['stage_stagescores']:
-
             if re.match(shtr_uuid, stage_score['shtr']):
+
                 totals['alphas'] += stage_score['poph']
                 totals['mikes'] += stage_score['popm']
 
                 if 'ts' in stage_score:
-
                     for ts in stage_score['ts']:
+
                         totals['alphas'] += num_alphas(ts)
                         totals['bravos'] += num_bravos(ts)
                         totals['charlies'] += num_charlies(ts)
@@ -256,6 +262,7 @@ def get_points_scored(pf, totals):
         [float] -- total points subtract penalites
     """
     if pf == 'MINOR':
+
         points = sum([(totals['alphas'] * 5), (totals['bravos'] * 3),
                       (totals['charlies'] * 3), (totals['deltas'])])
         penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
@@ -303,6 +310,7 @@ def get_dataframe(
     )
 
     for idx, match_def in enumerate(match_def_json):
+
         match_date = dt.date.fromisoformat(match_def['match_date'])
         form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
 
@@ -321,18 +329,23 @@ def get_dataframe(
             match_date = match_def['match_date']
 
             for match_info in match_def['match_shooters']:
+
                 if (
                     'sh_id' in match_info and
                     match_info['sh_id'].upper() == mem_num.upper()
                 ):
+
                     shooter_uuid = match_info['sh_uid']
                     shooter_fname = match_info['sh_fn']
                     shooter_lname = match_info['sh_ln']
                     shooter_pf = match_info['sh_pf'].upper()
+
                 else:
+
                     continue
 
                 if division.lower() != match_info['sh_dvp'].lower():
+
                     continue
 
                 totals = calc_totals(match_scores_json, idx, shooter_uuid)
@@ -344,25 +357,34 @@ def get_dataframe(
                 points_scored = get_points_scored(shooter_pf, totals)
 
                 if points_scored > 0:
+
                     pct_points = round(
                         (points_scored / points_possible) * 100, 2
                     )
+
                 else:
+
                     pct_points = np.nan
 
                 if totals['alphas'] > 0 and totals['charlies'] > 0:
+
                     alpha_charlie_ratio = (
                         round((totals['charlies'] / totals['alphas']) * 100, 2)
                     )
+
                 else:
+
                     alpha_charlie_ratio = np.nan
 
                 if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
+
                     pct_errors = (
                         round((sum([totals['deltas'], totals['mikes'],
                                     totals['ns']]) / round_count) * 100, 2)
                     )
+
                 else:
+
                     pct_errors = np.nan
 
                 score_list = [
@@ -384,6 +406,7 @@ def get_dataframe(
         round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
                .sum()) * 100, 2)
     )
+
     scores_df.sort_values(by=['Match Date'], inplace=True)
 
     return scores_df, shooter_fname, shooter_lname
@@ -421,20 +444,29 @@ def get_match_links(login_dict):
 
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
+
             return 'Bad password.'
+
         if re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
+
             return 'Bad email/username'
+
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
+
             return '"ViewAll" link not found.'
+
         if re.search(login_status_strs['success'], str(login.content)):
+
             view_all_link = (
                 re.search(login_status_strs['success'], str(login.content))
             )
+
             shooter_ps_match_links = (
                 sess.get(view_all_link.group(1), headers=headers)
             )
+
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
 
@@ -445,10 +477,12 @@ def get_match_links(login_dict):
     )
 
     match_links_json = deque()
+
     my_epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(match_link_raw_data.group(1))
 
     for match_link_info in raw_match_links:
+
         if dt.date.fromisoformat(match_link_info['date']) >= my_epoch:
             match_links_json.append(match_link_info)
 
@@ -480,18 +514,22 @@ def get_graph(scores, shooter_name, mem_number, division):
     x = np.arange(len(scores['Match Date']))
 
     plt.figure(figsize=(14.5, 8))
+
     plt.plot(
         x, scores['Pct Points'], label='Percent Points',
         linestyle='solid', marker='o', markersize=6, linewidth=3
     )
+
     plt.plot(
         x, scores['Avg Pct Scored'], label='Average Percent Points',
         color='black', linestyle='dashed',  linewidth=3
     )
+
     plt.plot(
         x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c',
         linestyle='solid', marker='o', markersize=6, linewidth=3
     )
+
     plt.bar(
         x, scores['Errors'], label='Errors', color='rosybrown', width=0.50,
         linewidth=1.15, edgecolor='gray'
@@ -509,6 +547,7 @@ def get_graph(scores, shooter_name, mem_number, division):
         bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2,
         borderaxespad=0.
     )
+
     plt.grid(linestyle='--', linewidth='0.25')
     plt.margins(x=0.01)
 
@@ -527,26 +566,31 @@ def get_graph(scores, shooter_name, mem_number, division):
         fontsize=7, xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
+
     plt.annotate(
         f'USPSA#: {mem_number}', (1, 1), (-125, 20), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
     )
+
     plt.annotate(
         f'Division: {division}', (1, 1), (-125, 10), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
     )
+
     plt.annotate(
         f'Total Round Count: {str(scores["Round Count"].sum())}',
         (0, 0), (0, -92), xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
+
     plt.annotate(
         f'Average Percent Points: {str(scores["Avg Pct Scored"].iloc[-1])}',
         (0, 0), (0, -80), xycoords='axes fraction', textcoords='offset points',
         va='top'
     )
+
     plt.tight_layout()
 
     buffer = BytesIO()
