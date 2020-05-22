@@ -20,9 +20,22 @@
       {{ accu_stats_form2.as_p }}
     </h5>
       <br>
-      <input type="submit" value="Points Stats">
+      <input id="Button1" type="submit" value="Points Stats" style="background-color: #cfcfcf; font-size: 18px">
     </form>
     <br>
  <hr>
+ <script type="text/javascript" language="javascript">
+
+    window.onload = function () {
+      document.getElementById("Button1").onmouseover = function () {
+        this.style.backgroundColor = "#ededed";
+      }
+
+      document.getElementById("Button1").onmouseout = function () {
+        this.style.backgroundColor = "#cfcfcf";
+      }
+    }
+
+    </script>
 
 {% endblock content %}
