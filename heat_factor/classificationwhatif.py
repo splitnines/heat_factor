@@ -40,12 +40,12 @@ class ClassificationWhatIf:
             [float] -- the percent needed for a shooter to move up a
                        classification level.
         """
-        score_sum, score_count = sum_scores(self.bs, self.division)
+        scores = get_scores(self.bs, self.division)
 
         return (
             round(
                 (classification_dict[next_class_up[self.shooter_class]]
-                 * (score_count + 1)) - score_sum, 4
+                 * (scores['count'] + 1)) - scores['sum'], 4
             )
         )
 
@@ -61,12 +61,13 @@ class ClassificationWhatIf:
             [dict] -- keys are the classification letter, values are the
                       percent score needed to achieve that class.
         """
-        score_sum, score_count = sum_scores(self.bs, self.division)
+        scores = get_scores(self.bs, self.division)
 
         if self.shooter_class == 'U':
-            if score_count > 2:
 
-                return calc_initial(score_sum, score_count)
+            if scores['count'] > 2:
+
+                return calc_initial(scores['sum'], scores['count'])
 
             raise Exception('Not enough scores on record.')
 
@@ -228,7 +229,7 @@ def get_classification_letter(bs, division):
     return None
 
 
-def sum_scores(bs, division):
+def get_scores(bs, division):
     """Calculate the sum of the shooters most recent valid classifier scores.
 
     Arguments:
@@ -236,20 +237,23 @@ def sum_scores(bs, division):
         division {str} -- uspsa division
 
     Returns:
-        [tuple] -- a tuple with a float representing the sum of valid scores
-                   on record and an int containing the count of valid scores
-                   on record.
+        [dict] -- with 2 keys, a float representing the sum of valid scores
+                  on record and an int containing the count of valid scores
+                  on record.
     """
-    score_sum = 0
-    score_count = 0
+    scores = {
+        'sum': 0,
+        'count': 0,
+    }
 
     for score in get_classifier_scores(bs, division):
 
-        if score_count < 5:
-            score_sum += score[1]
-            score_count += 1
+        if scores['count'] < 5:
 
-    return score_sum, score_count
+            scores['sum'] += score[1]
+            scores['count'] += 1
+
+    return scores
 
 
 def calc_initial(score_sum, score_count):
