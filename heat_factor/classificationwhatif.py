@@ -241,10 +241,7 @@ def get_scores(bs, division):
                   on record and an int containing the count of valid scores
                   on record.
     """
-    scores = {
-        'sum': 0,
-        'count': 0,
-    }
+    scores = {'sum': 0, 'count': 0}
 
     for score in get_classifier_scores(bs, division):
 
