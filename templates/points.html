@@ -13,29 +13,38 @@
 </p>
 <hr>
 <font color="red">
-    <h5><b>The graph takes a few seconds to load, please be patient.<b></h5></font>
-    <form action="/points/" method="POST">
-      {% csrf_token %}
-    <h5>
-      {{ accu_stats_form2.as_p }}
-    </h5>
-      <br>
-      <input id="Button1" type="submit" value="Points Stats" style="background-color: #cfcfcf; font-size: 16px">
-    </form>
-    <br>
- <hr>
- <script type="text/javascript" language="javascript">
+    <h5><b>The graph takes a few seconds to load, please be patient.<b></h5>
+</font>
+<form action="/points/" method="POST">
+  {% csrf_token %}
+  <h5>
+    {{ accu_stats_form2.as_p }}
+  </h5>
+  <br>
+  <input class="btn" type="submit" value="Points Stats" style="background-color: #cfcfcf; font-size: 14px">
+</form>
+<br>
+<hr>
+<script type="text/javascript" language="javascript">
 
-    window.onload = function () {
-      document.getElementById("Button1").onmouseover = function () {
-        this.style.backgroundColor = "#ededed";
-      }
+  window.onload = function () {
+    var elms = document.getElementsByTagName('input');
 
-      document.getElementById("Button1").onmouseout = function () {
-        this.style.backgroundColor = "#cfcfcf";
+    // search for element with class btn
+    for (var i = 0; i < elms.length; i++) {
+      if (elms[i].getAttribute('class') === 'btn') {
+
+        elms[i].onmouseover = function () {
+          this.style.backgroundColor = '#ededed';
+        }
+
+        elms[i].onmouseout = function () {
+          this.style.backgroundColor = '#cfcfcf';
+        }
       }
     }
+  }
 
-    </script>
+</script>
 
 {% endblock content %}
