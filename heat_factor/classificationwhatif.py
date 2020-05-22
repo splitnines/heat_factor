@@ -54,8 +54,8 @@ class ClassificationWhatIf:
            unclassified shooter.
 
         Raises:
-            ValueError: if the member number does not have enough scores on
-                         record raise ValueError, needs at least 3 scores.
+            Exception: if the member number does not have enough scores on
+                       record raise ValueError, needs at least 3 scores.
 
         Returns:
             [dict] -- keys are the classification letter, values are the
@@ -111,9 +111,11 @@ def http_get(mem_num, division):
         [object] -- the BeautifulSoup object with the data from uspsa.org
     """
     if division != 'PCC':
+
         division_search = division.title().replace(' ', '_')
 
     else:
+
         division_search = division.upper().replace(' ', '_')
 
     http_resp = requests.get(f'https://uspsa.org/classification/{mem_num}')
@@ -122,7 +124,7 @@ def http_get(mem_num, division):
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
 
-        raise AttributeError
+        raise Exception
 
     return bs
 
@@ -165,8 +167,8 @@ def get_classification_pct(bs, division):
         division {str} -- uspsa division
 
     Raises:
-        AttributeError: if member number is no longer active the class on
-                        uspsa.org is set to 'X'.
+        Exception: if member number is no longer active the class on
+                   uspsa.org is set to 'X'.
 
     Returns:
         [float] -- current classification percent for member/division combo.
@@ -186,7 +188,7 @@ def get_classification_pct(bs, division):
 
             if classification_pct == 'X':
 
-                raise AttributeError
+                raise Exception
 
             return float(classification_pct)
 
@@ -201,8 +203,8 @@ def get_classification_letter(bs, division):
         division {str} -- uspsa division
 
     Raises:
-        AttributeError: if member number is no longer active the class on
-                        uspsa.org is set to 'X'.
+        Exception: if member number is no longer active the class on
+                   uspsa.org is set to 'X'.
 
     Returns:
         [str] -- the shooters current classification letter.
@@ -222,7 +224,7 @@ def get_classification_letter(bs, division):
 
             if classification_letter == 'X':
 
-                raise AttributeError
+                raise Exception
 
             return classification_letter
 
