@@ -111,9 +111,11 @@ def get_heat_factor(match_def):
 
     for division in division_heat:
 
-        heat_idx[division] = round(
-            sum(division_heat[division]) / division_count[division], 2
-        )
+        if sum(division_heat[division]) > 0 and division_count[division] > 0:
+
+            heat_idx[division] = round(
+                sum(division_heat[division]) / division_count[division], 2
+            )
 
     return heat_idx
 
