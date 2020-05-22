@@ -64,11 +64,8 @@ def get_heat_factor(match_def):
         match_def {dict} -- json object with the match data from AWS.
 
     Returns:
-        [tuple, str] -- a tuple containing the heat index for each division
-                        and a str containing the match name.
+        [dict] -- dict containing the heat index for each division as an int.
     """
-    match_name = match_def['match_name']
-
     division_heat = {
         'Production': [0, 0, 0, 0, ],
         'Limited': [0, 0, 0, 0, ],
@@ -107,40 +104,18 @@ def get_heat_factor(match_def):
                     division_heat[division][3] += class_weights['B']
                     division_count[division] += 1
 
-    # tuple with the heat index for each division or 0
-    heat_idx = (
-        round(
-            sum(division_heat['Production'])
-            / division_count['Production'], 2
-        ) if division_count['Production'] > 0 else 0,
+    heat_idx = {
+        'Production': 0, 'Limited': 0, 'Carry Optics': 0,
+        'Open': 0, 'PCC': 0, 'Single Stack': 0,
+    }
 
-        round(
-            sum(division_heat['Open']) /
-            division_count['Open'], 2
-        ) if division_count['Open'] > 0 else 0,
+    for division in division_heat:
 
-        round(
-            sum(division_heat['Carry Optics']) /
-            division_count['Carry Optics'], 2
-        ) if division_count['Carry Optics'] > 0 else 0,
+        heat_idx[division] = round(
+            sum(division_heat[division]) / division_count[division], 2
+        )
 
-        round(
-            sum(division_heat['Limited']) /
-            division_count['Limited'], 2
-        ) if division_count['Limited'] > 0 else 0,
-
-        round(
-            sum(division_heat['PCC']) /
-            division_count['PCC'], 2
-        ) if division_count['PCC'] > 0 else 0,
-
-        round(
-            sum(division_heat['Single Stack']) /
-            division_count['Single Stack'], 2
-        ) if division_count['Single Stack'] > 0 else 0,
-    )
-
-    return heat_idx, match_name
+    return heat_idx
 
 
 def get_chart(match_def):
@@ -154,15 +129,20 @@ def get_chart(match_def):
     Returns:
         [bytes object] -- the bytes encoded png matplotlib image
     """
-    heat_idx, match_name = get_heat_factor(match_def)
+    heat_idx = get_heat_factor(match_def)
 
-    labels = ['Production', 'Open', 'CO', 'Limited', 'PCC', 'SS']
+    match_name = match_def['match_name']
+
+    labels = list(heat_idx.keys())
 
     x = range(len(labels))
+    y = list(heat_idx.values())
+
     width = 0.3
 
-    fig, ax = plt.subplots()
-    rects = ax.bar(x, heat_idx, width, label='Heat Factor')
+    fig, ax = plt.subplots(figsize=(9, 6))
+
+    rects = ax.bar(x, y, width, label='Heat Factor')
     ax.set_ylabel('Heat Factor')
     ax.set_title(match_name)
     ax.set_xticks(x)
