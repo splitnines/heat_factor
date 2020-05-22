@@ -11,7 +11,7 @@
         {{ practiscore_url_form.as_p }}
     </h3>
     <br>
-    <input type="submit" value="Heat Factor">
+    <input id="Button1" type="submit" value="Heat Factor" style="background-color: #cfcfcf; font-size: 18px">
 </form>
 <br>
 <hr>
@@ -27,7 +27,7 @@
         {{ get_upped_form.as_p }}
     </h3>
     <br>
-    <input type="submit" value="Get Upped">
+    <input id="Button2" type="submit" value="Get Upped" style="background-color: #cfcfcf; font-size: 18px">
 </form>
 <br>
 <div style="background-color:lightblue">
@@ -38,7 +38,7 @@
 <p>Enter your Practiscore username/email and password and your USPSA membership number to get a graph that plots your accuracy/points in matches over time. This is a good tool for those of us who have accuracy/points as our weakness. You can track progress
     based on when you implemmented gear changes or training changes. Matches prior to 2019-01-01 will not be included. A maximum of 50 matches will be graphed. It only works for USPSA matches (maybe IPSC, but I haven't tested it).
     <br><br>
-    <font color="red"><b>The graph takes a few seconds to load, please be patient.<b></font>
+    <font color="red "><b>The graph takes a few seconds to load, please be patient.<b></font>
 </p>
         <form action="/points/" method="POST">
           {% csrf_token %}
@@ -46,9 +46,34 @@
           {{ accu_stats_form1.as_p }}
         </h3>
           <br>
-          <input type="submit" value="Points Stats">
+          <input id="Button3" type="submit" value="Points Stats" style="background-color: #cfcfcf; font-size: 18px">
         </form>
         <br>
     <hr>
+    <script type="text/javascript" language="javascript">
+
+        window.onload = function () {
+            document.getElementById("Button1").onmouseover = function () {
+                this.style.backgroundColor = "#ededed";
+            }
+            document.getElementById("Button2").onmouseover = function () {
+                this.style.backgroundColor = "#ededed";
+            }
+            document.getElementById("Button3").onmouseover = function () {
+                this.style.backgroundColor = "#ededed";
+            }
+
+            document.getElementById("Button1").onmouseout = function () {
+                this.style.backgroundColor = "#cfcfcf";
+            }
+            document.getElementById("Button2").onmouseout = function () {
+                this.style.backgroundColor = "#cfcfcf";
+            }
+            document.getElementById("Button3").onmouseout = function () {
+                this.style.backgroundColor = "#cfcfcf";
+            }
+        }
+
+    </script>
 
 {% endblock content %}
