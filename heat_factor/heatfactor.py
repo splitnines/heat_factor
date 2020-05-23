@@ -82,20 +82,23 @@ def get_heat_factor(match_def):
 
     for shooter in match_def['match_shooters']:
 
+        if 'sh_grd' not in shooter or shooter['sh_dvp'] not in division_heat:
+            continue
+
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'G':
-            division_heat[shooter['sh_dvp']] += random.randrange(95, 100)
+            division_heat[shooter['sh_dvp']][0] += random.randrange(95, 100)
             division_count[shooter['sh_dvp']] += 1
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'M':
-            division_heat[shooter['sh_dvp']] += random.randrange(85, 94)
+            division_heat[shooter['sh_dvp']][1] += random.randrange(85, 94)
             division_count[shooter['sh_dvp']] += 1
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'A':
-            division_heat[shooter['sh_dvp']] += random.randrange(75, 84)
+            division_heat[shooter['sh_dvp']][2] += random.randrange(75, 84)
             division_count[shooter['sh_dvp']] += 1
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'B':
-            division_heat[shooter['sh_dvp']] += random.randrange(60, 74)
+            division_heat[shooter['sh_dvp']][3] += random.randrange(60, 74)
             division_count[shooter['sh_dvp']] += 1
 
     heat_idx = defaultdict(int)
