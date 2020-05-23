@@ -188,6 +188,7 @@ def get_upped(request):
                 'date': DAY
             }
         )
+
     if shooter.get_shooter_class() == 'U':
 
         try:
@@ -208,6 +209,7 @@ def get_upped(request):
                     'won\'t work.', 'date': DAY
                 }
             )
+
         initial_calssification_html = '<br>'.join(
             [f'You need a score of <font color=\"green\">{initial_dict[k]}%'
              '</font> in your next classifier to achieve an initial '
@@ -220,6 +222,7 @@ def get_upped(request):
                 'response_text': initial_calssification_html, 'date': DAY
             }
         )
+
     if shooter.get_upped() > 100:
 
         return render(
@@ -232,6 +235,7 @@ def get_upped(request):
                 'date': DAY
             }
         )
+
     else:
 
         try:
@@ -297,17 +301,19 @@ def points(request):
         if type(request.POST.get('delete_match')) == str else ''
     )
 
-    shooter_end_date = (request.POST.get('shooter_end_date')
-                        if type(request.POST.get('shooter_end_date')) ==
-                        str else '')
+    shooter_end_date = (
+        request.POST.get('shooter_end_date')
+        if type(request.POST.get('shooter_end_date')) == str else ''
+    )
 
-    shooter_start_date = (request.POST.get('shooter_start_date')
-                          if type(request.POST.get('shooter_start_date')) ==
-                          str else '')
+    shooter_start_date = (
+        request.POST.get('shooter_start_date')
+        if type(request.POST.get('shooter_start_date')) == str else ''
+    )
 
     login_data = {
         'username': username,
-        'password': password
+        'password': password,
     }
 
     # Set the default date range
@@ -330,9 +336,11 @@ def points(request):
         match_date_range['start_date'] = shooter_start_date
 
     delete_list = []
+
     for ex_match in delete_match.replace(' ', '').split(','):
 
         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', ex_match):
+
             delete_list.append(ex_match)
 
     match_links_json = get_match_links(login_data)
