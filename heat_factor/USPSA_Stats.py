@@ -164,7 +164,7 @@ async def http_sess(links):
         )
 
 
-def async_loop(func, *args):
+def event_loop(func, *args):
     """Calls the specified function with list of args.
 
     Arguments:
@@ -297,7 +297,7 @@ def get_dataframe(
                    shooters first name {str} and last name {str}.
     """
     try:
-        match_def_data, match_scores_data = async_loop(http_sess, json_obj)
+        match_def_data, match_scores_data = event_loop(http_sess, json_obj)
 
     except Exception:
 
