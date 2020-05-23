@@ -8,3 +8,5 @@ heat_factor/classificationwhatif_old.py
 .vscode/launch.json
 .vscode/settings.json
 .vscode/settings.json
+.vscode/*
+.vscode/
