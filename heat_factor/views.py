@@ -416,6 +416,6 @@ def error(request):
     return render(request, 'error.html')
 
 
-def corvid_da(request):
+def covid_da(request):
 
     return render(request, 'COVID-19_data_analysis.html')

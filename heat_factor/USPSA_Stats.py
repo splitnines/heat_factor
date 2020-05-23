@@ -214,7 +214,7 @@ def calc_totals(match_scores, idx, shtr_uuid):
     Returns:
         [defaultdict] -- dict with total points.
     """
-    totals = defaultdict(lambda: 0)
+    totals = defaultdict(int)
 
     for score in match_scores[idx]['match_scores']:
         for stage_score in score['stage_stagescores']:
