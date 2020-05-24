@@ -298,17 +298,17 @@ def points(request):
 
     delete_match = (
         request.POST.get('delete_match')
-        if type(request.POST.get('delete_match')) == str else ''
+        if isinstance(request.POST.get('delete_match'), str) else ''
     )
 
     shooter_end_date = (
         request.POST.get('shooter_end_date')
-        if type(request.POST.get('shooter_end_date')) == str else ''
+        if isinstance(request.POST.get('shooter_end_date'), str) else ''
     )
 
     shooter_start_date = (
         request.POST.get('shooter_start_date')
-        if type(request.POST.get('shooter_start_date')) == str else ''
+        if isinstance(request.POST.get('shooter_start_date'), str) else ''
     )
 
     login_data = {
@@ -324,7 +324,7 @@ def points(request):
 
     if (
         shooter_end_date != '' and shooter_end_date <
-            str(dt.date.fromisoformat(str(dt.date.today())))
+            str(dt.date.fromisoformat(str(DAY)))
     ):
         match_date_range['end_date'] = shooter_end_date
 

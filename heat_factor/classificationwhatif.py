@@ -18,7 +18,7 @@ reverse_classification_dict = {
 
 class ClassificationWhatIf:
     """Provides an interface to uspsa.org used to calculate the percent score
-       a shooter needs in thier next classifier to move up in classification.
+       a shooter needs in their next classifier to move up in classification.
     """
 
     def __init__(self, mem_num, division):
