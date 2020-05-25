@@ -1,7 +1,6 @@
+import numpy as np
 import requests
 from bs4 import BeautifulSoup
-import numpy as np
-
 
 classification_dict = {
     'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,

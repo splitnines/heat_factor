@@ -1,16 +1,16 @@
-import re
 import datetime as dt
+import re
 import sys
-from django.shortcuts import render, redirect
+
 from django.http import HttpResponseRedirect
-from .forms import (
-    PractiscoreUrlForm, GetUppedForm, AccuStatsForm1, AccuStatsForm2
-)
-from .heatfactor import get_match_def, get_chart
+from django.shortcuts import redirect, render
+
 from .classificationwhatif import ClassificationWhatIf
-from .USPSA_Stats import (
-    get_dataframe, get_match_links, get_graph, check_mem_num
-)
+from .forms import (AccuStatsForm1, AccuStatsForm2, GetUppedForm,
+                    PractiscoreUrlForm)
+from .heatfactor import get_chart, get_match_def
+from .USPSA_Stats import (check_mem_num, get_dataframe, get_graph,
+                          get_match_links)
 
 
 def sys_logger(app_name, *app_data):
