@@ -347,7 +347,6 @@ def points(request):
 
     del password, login_data
 
-    # if type(match_links_json) == str:
     if isinstance(match_links_json, str):
 
         return render(
