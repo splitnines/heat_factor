@@ -18,7 +18,7 @@ from aiohttp import ClientSession
 
     Arguments:
         score_field {int} -- the coded scores for paper targets in the AWS
-        json file
+                             json file
 
     Returns:
         {int} -- the human consumable scores for paper targets.
@@ -206,7 +206,7 @@ def calc_totals(match_scores, idx, shtr_uuid):
     """Calculates the total points for the given match.
 
     Arguments:
-        match_scores {dict} -- json file with the shooters details from each
+        match_scores {list} -- json file with the shooters details from each
                                match.
         idx {int} -- used to align the two AWS json files with the scores.
         shtr_uuid {str} -- the shooters uuid.
@@ -358,7 +358,7 @@ def get_dataframe(
 
                 round_count = get_round_count(totals)
 
-                points_possible = (round_count * 5)
+                points_possible = round_count * 5
 
                 points_scored = get_points_scored(shooter_pf, totals)
 

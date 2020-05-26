@@ -37,7 +37,7 @@ def home(request):
         if (
             practiscore_url_form.is_valid() and
             get_upped_form.is_valid() and
-                accu_stats_form1.is_valid()
+            accu_stats_form1.is_valid()
         ):
 
             return render(
@@ -51,19 +51,20 @@ def home(request):
         else:
 
             return HttpResponseRedirect('/')
-    else:
+
+    if request.method == 'GET':
 
         practiscore_url_form = PractiscoreUrlForm()
         get_upped_form = GetUppedForm()
         accu_stats_form1 = AccuStatsForm1()
 
-    return render(
-        request, 'home.html', {
-            'practiscore_url_form': practiscore_url_form,
-            'get_upped_form': get_upped_form,
-            'accu_stats_form1': accu_stats_form1,
-        }
-    )
+        return render(
+            request, 'home.html', {
+                'practiscore_url_form': practiscore_url_form,
+                'get_upped_form': get_upped_form,
+                'accu_stats_form1': accu_stats_form1,
+            }
+        )
 
 
 def heat_factor(request):
@@ -132,14 +133,15 @@ def bad_url(request):
         else:
 
             return HttpResponseRedirect('/')
-    else:
+
+    if request.method == 'GET':
         practiscore_url_form = PractiscoreUrlForm()
 
-    return render(
-        request, 'bad_url.html', {
-            'practiscore_url_form': practiscore_url_form
-        }
-    )
+        return render(
+            request, 'bad_url.html', {
+                'practiscore_url_form': practiscore_url_form
+            }
+        )
 
 
 def get_upped(request):
@@ -400,7 +402,7 @@ def points(request):
 
             return HttpResponseRedirect('/')
 
-    else:
+    if request.method == 'GET':
         accu_stats_form2 = AccuStatsForm2()
 
     return render(
