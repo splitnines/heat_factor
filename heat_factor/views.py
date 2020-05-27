@@ -30,21 +30,17 @@ def home(request):
     """
     if request.method == 'POST':
 
-        practiscore_url_form = PractiscoreUrlForm(request.POST)
-        get_upped_form = GetUppedForm(request.POST)
-        accu_stats_form1 = AccuStatsForm1(request.POST)
-
         if (
-            practiscore_url_form.is_valid() and
-            get_upped_form.is_valid() and
-            accu_stats_form1.is_valid()
+            PractiscoreUrlForm(request.POST).is_valid() and
+            GetUppedForm(request.POST).is_valid() and
+            AccuStatsForm1(request.POST).is_valid()
         ):
 
             return render(
                 request, 'home.html', {
-                    'practiscore_url_form': practiscore_url_form,
-                    'get_upped_form': get_upped_form,
-                    'accu_stats_form1': accu_stats_form1,
+                    'practiscore_url_form': PractiscoreUrlForm(request.POST),
+                    'get_upped_form': GetUppedForm(request.POST),
+                    'accu_stats_form1': AccuStatsForm1(request.POST),
                 }
             )
 
@@ -54,15 +50,11 @@ def home(request):
 
     if request.method == 'GET':
 
-        practiscore_url_form = PractiscoreUrlForm()
-        get_upped_form = GetUppedForm()
-        accu_stats_form1 = AccuStatsForm1()
-
         return render(
             request, 'home.html', {
-                'practiscore_url_form': practiscore_url_form,
-                'get_upped_form': get_upped_form,
-                'accu_stats_form1': accu_stats_form1,
+                'practiscore_url_form': PractiscoreUrlForm(),
+                'get_upped_form': GetUppedForm(),
+                'accu_stats_form1': AccuStatsForm1(),
             }
         )
 
@@ -121,13 +113,12 @@ def bad_url(request):
         [object] -- HTTPResponse object
     """
     if request.method == 'POST':
-        practiscore_url_form = PractiscoreUrlForm(request.POST)
 
-        if practiscore_url_form.is_valid():
+        if PractiscoreUrlForm(request.POST).is_valid():
 
             return render(
                 request, 'bad_url.html', {
-                    'practiscore_url_form': practiscore_url_form
+                    'practiscore_url_form': PractiscoreUrlForm(request.POST)
                 }
             )
         else:
@@ -135,11 +126,10 @@ def bad_url(request):
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-        practiscore_url_form = PractiscoreUrlForm()
 
         return render(
             request, 'bad_url.html', {
-                'practiscore_url_form': practiscore_url_form
+                'practiscore_url_form': PractiscoreUrlForm()
             }
         )
 
@@ -169,14 +159,16 @@ def get_upped(request):
         return render(
             request, 'get_upped.html',
             {
-                'response_text': '<font color=\"red\">2 Mikes, 2 '
+                'response_text':
+                '<font color=\"red\">2 Mikes, 2 '
                 'No-shoots:</font> Member number '
                 f'<font color=\"red\">{mem_num}</font> in '
                 f'<font color=\"red\">{division}</font> division.<br> If '
                 'your USPSA classifier scores are set to priviate this '
                 'tool won\'t work.<br> If you don\'t have at least 3 '
                 'qualifing classifier scores on record this tool '
-                'won\'t work.', 'date': DAY
+                'won\'t work.',
+                'date': DAY
             }
         )
     if shooter.get_shooter_class() == 'GM':
@@ -184,7 +176,8 @@ def get_upped(request):
         return render(
             request, 'get_upped.html',
             {
-                'response_text': 'You\'re a <font color=\"blue\">'
+                'response_text':
+                'You\'re a <font color=\"blue\">'
                 f'{shooter.get_shooter_class()}</font>.  Nowhere to go from '
                 'here.',
                 'date': DAY
@@ -201,14 +194,16 @@ def get_upped(request):
             return render(
                 request, 'get_upped.html',
                 {
-                    'response_text': '<font color=\"red\">2 Mikes, 2 '
+                    'response_text':
+                    '<font color=\"red\">2 Mikes, 2 '
                     'No-shoots:</font> Member number '
                     f'<font color=\"red\">{mem_num}</font> in '
                     f'<font color=\"red\">{division}</font> division.<br> If '
                     'your USPSA classifier scores are set to priviate this '
                     'tool won\'t work.<br> If you don\'t have at least 3 '
                     'qualifing classifier scores on record this tool '
-                    'won\'t work.', 'date': DAY
+                    'won\'t work.',
+                    'date': DAY
                 }
             )
 
@@ -230,7 +225,8 @@ def get_upped(request):
         return render(
             request, 'get_upped.html',
             {
-                'response_text': 'You can not move up in your next '
+                'response_text':
+                'You can not move up in your next '
                 'classifier because you need a score greater than '
                 '<font color=\"red\">100%</font>. Enjoy '
                 f'{shooter.get_shooter_class()} class',
@@ -248,21 +244,24 @@ def get_upped(request):
             return render(
                 request, 'get_upped.html',
                 {
-                    'response_text': '<font color=\"red\">2 Mikes, 2 '
+                    'response_text':
+                    '<font color=\"red\">2 Mikes, 2 '
                     'No-shoots:</font> Member number '
                     f'<font color=\"red\">{mem_num}</font> in '
                     f'<font color=\"red\">{division}</font> division.<br> If '
                     'your USPSA classifier scores are set to priviate this '
                     'tool won\'t work.<br> If you don\'t have at least 3 '
                     'qualifing classifier scores on record this tool '
-                    'won\'t work.', 'date': DAY
+                    'won\'t work.',
+                    'date': DAY
                 }
             )
 
         return render(
             request, 'get_upped.html',
             {
-                'response_text': 'You need a score of '
+                'response_text':
+                'You need a score of '
                 f'<font color=\"green\">{str(shooter.get_upped())}'
                 '%</font> to make <font color=\"green\">'
                 f'{next_class_up}</font> class.',
@@ -388,14 +387,13 @@ def points(request):
     )
 
     if request.method == 'POST':
-        accu_stats_form2 = AccuStatsForm2(request.POST)
 
-        if accu_stats_form2.is_valid():
+        if AccuStatsForm2(request.POST).is_valid():
 
             return render(
                 request, 'points.html', {
                     'graph': graph, 'date': DAY,
-                    'accu_stats_form2': accu_stats_form2,
+                    'accu_stats_form2': AccuStatsForm2(request.POST),
                 }
             )
         else:
@@ -403,12 +401,11 @@ def points(request):
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-        accu_stats_form2 = AccuStatsForm2()
 
         return render(
             request, 'points.html', {
                 'graph': graph, 'date': DAY,
-                'accu_stats_form2': accu_stats_form2,
+                'accu_stats_form2': AccuStatsForm2(),
             }
         )
 
