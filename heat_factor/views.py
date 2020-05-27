@@ -405,11 +405,11 @@ def points(request):
     if request.method == 'GET':
         accu_stats_form2 = AccuStatsForm2()
 
-    return render(
-        request, 'points.html', {
-            'graph': graph, 'date': DAY,
-            'accu_stats_form2': accu_stats_form2,
-        }
+        return render(
+            request, 'points.html', {
+                'graph': graph, 'date': DAY,
+                'accu_stats_form2': accu_stats_form2,
+            }
     )
 
 
