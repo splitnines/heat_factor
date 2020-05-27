@@ -408,6 +408,8 @@ def get_dataframe(
                 if idx > 50:
                     break
 
+                break
+
     scores_df['Avg Pct Scored'] = (
         round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
                .sum()) * 100, 2)
