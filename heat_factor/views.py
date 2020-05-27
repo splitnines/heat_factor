@@ -410,7 +410,7 @@ def points(request):
                 'graph': graph, 'date': DAY,
                 'accu_stats_form2': accu_stats_form2,
             }
-    )
+        )
 
 
 def error(request):
