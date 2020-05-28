@@ -31,7 +31,7 @@ input[type=submit] {
     border-radius: 7px;
     color: #fefefe;
     background: rgba(0, 0, 0, 0.8);
-    font-size: 1.0rem;
+    font-size: 1.05rem;
     text-transform: capitalize;
     cursor: pointer;
     outline: none;
