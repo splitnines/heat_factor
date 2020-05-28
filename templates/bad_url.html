@@ -1,16 +1,19 @@
 {% extends "base.html" %} {% block content %}
 <p align="left"><a href="/">Return Home</a></p>
-<hr>
+<hr />
 <h3>
-    <font color="red">Bad URL, please enter a valid Practiscore.com match URL.</font>
+    <font color="red"
+        >Bad URL, please enter a valid Practiscore.com match URL.</font
+    >
 </h3>
 <form action="/heat_factor/" method="post">
     {% csrf_token %}
     <h3>
         {{ practiscore_url_form.as_p }}
     </h3>
-    <br>
-    <input type="submit" value="Heat Factor">
+    <br />
+    <input class="btn" type="submit" value="Make Ready" />
 </form>
-<br>
-<hr> {% endblock content %}
+<br />
+<hr />
+{% endblock content %}
