@@ -24,3 +24,15 @@ header h1 a {
     display: flex;
     padding-top: 2rem;
 }
+
+input[type=submit] {
+    padding: 0.25rem 0.5rem;
+    border: 3px solid #fefefe;
+    border-radius: 7px;
+    color: #fefefe;
+    background: rgba(0, 0, 0, 0.8);
+    font-size: 1.05rem;
+    text-transform: capitalize;
+    cursor: pointer;
+    outline: none;
+}
