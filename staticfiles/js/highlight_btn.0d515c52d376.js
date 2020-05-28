@@ -4,7 +4,7 @@ window.onload = function () {
     const elms = document.getElementsByTagName("input");
 
     // search for element with class "colorbtn"
-    for (let i = 0; i < elms.length; i++) {
+    for (const i = 0; i < elms.length; i++) {
         if (elms[i].getAttribute("class") === "btn") {
             elms[i].onmouseover = function () {
                 this.style.backgroundColor = "rgba(0, 0, 0, 0.9)";

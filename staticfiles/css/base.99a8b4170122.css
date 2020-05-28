@@ -26,9 +26,9 @@ header h1 a {
 }
 
 input[type=submit] {
-    padding: 0.5rem 0.65rem;
+    padding: 0.25rem 0.5rem;
     border: 5px solid #fefefe;
-    border-radius: 15px;
+    border-radius: 10px;
     color: #fefefe;
     background: rgba(0, 0, 0, 0.4);
     font-size: 1.0rem;
