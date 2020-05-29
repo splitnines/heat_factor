@@ -85,3 +85,8 @@ header h1 a {
     outline: none;
     font-family: 'Source Sans Pro', sans-serif;
 }
+
+.plot {
+    max-width: 100%;
+    max-height: auto;
+}

@@ -12,3 +12,11 @@ window.onload = function () {
         };
     }
 };
+
+function fitPlotToScreen() {
+    const plot = document.querySelector('plot');
+    if (plot.width >= (window.innerWidth - 10)) {
+        plot.style.width = auto
+    }
+}
+fitPlotToScreen()

@@ -554,7 +554,7 @@ def get_graph(scores, shooter_name, mem_number, division):
 
     plt.legend(
         bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2,
-        borderaxespad=0.
+        borderaxespad=0., fontsize=8
     )
 
     plt.grid(axis='y', alpha=0.6, linewidth='0.25')
