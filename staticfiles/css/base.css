@@ -3,6 +3,54 @@
 body {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 18px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: rgb(173, 216, 230)
+}
+
+.stripe {
+    color: rgba(0, 0, 0, 1.0);
+    background-color: rgba(173, 216, 230, 1.0);
+}
+
+.home {
+    color: rgba(15, 195, 255, 0.6);
+}
+
+.home:hover {
+    color: rgba(15, 195, 255, 1.0);
+}
+
+input[type="text"] {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    outline: none;
+    font-size: 1.0rem;
+    font-weight: 700;
+    border-radius: 15px;
+    padding: 0.28rem 0.4rem;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+input[type="password"] {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    outline: none;
+    font-size: 1.0rem;
+    font-weight: 700;
+    border-radius: 15px;
+    padding: 0.28rem 0.4rem;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+select {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    outline: none;
+    font-size: 1.0rem;
+    font-weight: 700;
+    border-radius: 15px;
+    padding: 0.2rem 0.4rem;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 header {
@@ -25,14 +73,14 @@ header h1 a {
     padding-top: 2rem;
 }
 
-input[type=submit] {
-    padding: 0.4rem 0.65rem;
-    border: 2px solid rgba(0, 0, 0, 0.9);
+.btn {
+    padding: 0.2rem 0.6rem;
+    border: 0px solid rgba(0, 0, 0, 0.9);
     border-radius: 15px;
-    color: #fefefe;
-    background: rgba(0, 0, 0, 0.4);
-    font-size: 1.0rem;
-    text-transform: capitalize;
+    color: rgba(0, 0, 0, 1.0);
+    background-color: rgba(173, 216, 230, 0.4);
+    font-size: 1.25rem;
+    font-weight: 600;
     cursor: pointer;
     outline: none;
     font-family: 'Source Sans Pro', sans-serif;

@@ -1,8 +1,10 @@
 {% extends "base.html" %} {% block content %}
-<p align="left"><a href="/">Return Home</a></p>
-<hr>
-<h3>An error occured:
+<p align="left"><a class="home" href="/">Return Home</a></p>
+<hr />
+<h3>
+    An error occured:
     <font color="red">{{ message }}</font>
 </h3>
-<br>
-<hr> {% endblock content %}
+<br />
+<hr />
+{% endblock content %}

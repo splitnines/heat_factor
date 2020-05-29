@@ -521,31 +521,32 @@ def get_graph(scores, shooter_name, mem_number, division):
     """
     x = np.arange(len(scores['Match Date']))
 
+    plt.style.use('dark_background')
     plt.figure(figsize=(14.5, 8))
 
     plt.plot(
-        x, scores['Pct Points'], label='Percent Points',
-        linestyle='solid', marker='o', markersize=6, linewidth=3
+        x, scores['Pct Points'], label='Percent Points', color='#39bcf0',
+        linestyle='solid', marker='o', markersize=4, linewidth=2
     )
 
     plt.plot(
         x, scores['Avg Pct Scored'], label='Average Percent Points',
-        color='black', linestyle='dashed',  linewidth=3
+        color='#d3d3d3', linestyle='dashed',  linewidth=2
     )
 
     plt.plot(
-        x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='c',
-        linestyle='solid', marker='o', markersize=6, linewidth=3
+        x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='#2b2d9c',
+        linestyle='solid', marker='o', markersize=4, linewidth=2
     )
 
     plt.bar(
-        x, scores['Errors'], label='Errors', color='rosybrown', width=0.50,
-        linewidth=1.15, edgecolor='gray'
+        x, scores['Errors'], label='Errors', color='#3d3d3d', width=0.50,
+        linewidth=1.15, edgecolor='#5f5f5f'
     )
 
-    plt.title('Percent of Match Points Scored')
-    plt.ylabel('Percent')
-    plt.xlabel('Date of Match')
+    plt.title('Percent of Match Points Scored', fontsize=16)
+    plt.ylabel('Percent', fontsize=14)
+    plt.xlabel('Date of Match', fontsize=12, labelpad=10)
     plt.ylim([0, 100])
     plt.yticks(np.arange(0, 110, 10))
     plt.xticks(x, scores['Match Date'], rotation=90)
@@ -556,7 +557,7 @@ def get_graph(scores, shooter_name, mem_number, division):
         borderaxespad=0.
     )
 
-    plt.grid(linestyle='--', linewidth='0.25')
+    plt.grid(axis='y', alpha=0.6, linewidth='0.25')
     plt.margins(x=0.01)
 
     add_annotation(x, scores['Pct Points'])
@@ -566,7 +567,8 @@ def get_graph(scores, shooter_name, mem_number, division):
         label4 = "{:.2f}".format(y_errors)
         plt.annotate(
             label4, (x_errors, 1.0), textcoords='offset points',
-            xytext=(0.1, 0), ha='center', fontsize=8, rotation=90
+            color='#ff0000', xytext=(0.1, 0), ha='center', fontsize=8,
+            rotation=90
         )
 
     plt.annotate(

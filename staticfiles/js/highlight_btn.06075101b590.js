@@ -4,11 +4,11 @@ window.onload = function () {
 
     for (let i = 0; i < elms.length; i++) {
         elms[i].onmouseover = function () {
-            this.style.backgroundColor = "rgba(173, 216, 230, 1.0)";
+            this.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
         };
 
         elms[i].onmouseout = function () {
-            this.style.backgroundColor = "rgba(173, 216, 230, 0.4)";
+            this.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
         };
     }
 };

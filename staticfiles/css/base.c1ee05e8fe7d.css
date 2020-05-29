@@ -4,20 +4,11 @@ body {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 18px;
     background-color: rgba(0, 0, 0, 0.9);
-    color: rgb(173, 216, 230)
+    color: rgba(173, 216, 230, 1.0);
 }
 
-.stripe {
-    color: rgba(0, 0, 0, 1.0);
-    background-color: rgba(173, 216, 230, 1.0);
-}
-
-.home {
-    color: rgba(15, 195, 255, 0.6);
-}
-
-.home:hover {
-    color: rgba(15, 195, 255, 1.0);
+.blk {
+    color: rgba(0, 0, 0, 1.0)
 }
 
 input[type="text"] {
@@ -73,14 +64,28 @@ header h1 a {
     padding-top: 2rem;
 }
 
+/* input[type=submit] {
+    padding: 0.4rem 0.65rem;
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    border-radius: 15px;
+    color: rgba(173, 216, 230, 1.0);
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 1.0rem;
+    text-transform: capitalize;
+    cursor: pointer;
+    outline: none;
+    font-family: 'Source Sans Pro', sans-serif;
+} */
+
 .btn {
-    padding: 0.2rem 0.6rem;
+    padding: 0.4rem 0.65rem;
     border: 0px solid rgba(0, 0, 0, 0.9);
     border-radius: 15px;
-    color: rgba(0, 0, 0, 1.0);
-    background-color: rgba(173, 216, 230, 0.4);
-    font-size: 1.25rem;
-    font-weight: 600;
+    color: rgba(173, 216, 230, 1.0);
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 1.0rem;
+    font-weight: 500;
+    text-transform: capitalize;
     cursor: pointer;
     outline: none;
     font-family: 'Source Sans Pro', sans-serif;

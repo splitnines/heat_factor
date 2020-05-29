@@ -8,7 +8,7 @@ window.onload = function () {
         };
 
         elms[i].onmouseout = function () {
-            this.style.backgroundColor = "rgba(173, 216, 230, 0.4)";
+            this.style.backgroundColor = "rgba(173, 216, 230, 0.2)";
         };
     }
 };
