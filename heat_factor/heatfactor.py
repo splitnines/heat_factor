@@ -136,7 +136,7 @@ def get_chart(match_def):
 
     rects = ax.bar(x, y, width, label='Heat Factor', color='#add8e6')
     ax.set_ylabel('Heat Factor', fontsize=14)
-    ax.set_title(match_def['match_name'], fontsize=16)
+    ax.set_title(match_def['match_name'], fontsize=14)
     ax.set_xticks(x)
     ax.set_xticklabels(heat_idx.keys(), fontsize=12)
     ax.grid(axis='y', alpha=0.6, linewidth=0.25)
