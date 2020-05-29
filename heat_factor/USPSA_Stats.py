@@ -549,7 +549,7 @@ def get_graph(scores, shooter_name, mem_number, division):
     plt.xlabel('Date of Match', fontsize=12, labelpad=10)
     plt.ylim([0, 100])
     plt.yticks(np.arange(0, 110, 10))
-    plt.xticks(x, scores['Match Date'], rotation=90)
+    plt.xticks(x, scores['Match Date'], rotation=90, fontsize=8)
     plt.subplots_adjust(left=0, right=1)
 
     plt.legend(

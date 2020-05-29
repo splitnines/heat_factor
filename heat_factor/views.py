@@ -279,6 +279,9 @@ def points(request):
     Returns:
         [object] -- HTTPResponse object
     """
+    # I need to refactor this function to put the POST/GET variables into
+    # a dict, pass the dict to USPSA_Stats.py and get an image in return.
+    # Then pass the image to the points.html template.
     username = request.POST.get('username')
     password = request.POST.get('password')
     mem_num = request.POST.get('mem_num')
