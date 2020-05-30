@@ -14,7 +14,93 @@ import requests
 from aiohttp import ClientSession
 
 
-"""The following functions where converted from the practiscore javascipt code
+def uspsastats(form_data: dict) -> BinaryIO:
+    """Takes the HTML form data passed from views.py and calls the functions
+       to produce an image file to be rendered back to the HTML template via
+       views.py.
+
+       This is a helper function that is being used to remove the logic
+       from the views.py layer that should be in the API layer.
+
+       This is the "main" function/interface for the module.
+
+    Arguments:
+        form_data {dict} -- contains the form data passed from the HTML form
+                            to views.py
+
+    Raises:
+        Exception: USPSA membership number not found.
+        Exception: Passes Exception message from get_match_links(),
+                   3 possible Exceptions.
+        Exception: Dataframe creation failed.
+        Exception: Image creation failed.
+
+    Returns:
+        BinaryIO -- a matplotlib image file in a ByteIO data stream
+    """
+    today = dt.date.today()
+
+    try:
+        # call check_mem_num() function
+        check_mem_num(form_data['mem_num'])
+
+    except Exception:
+
+        raise Exception('USPSA membership number not found.')
+
+    try:
+        # call get_match_links() function
+        match_links_json = get_match_links(form_data)
+
+    except Exception as e:
+
+        raise Exception(e)
+
+    match_date_range = {
+        'end_date': str(dt.date.fromisoformat(str(today))),
+        'start_date': '2019-01-01',
+    }
+
+    if (
+        form_data['shooter_end_date'] != '' and
+        form_data['shooter_end_date'] < str(dt.date.fromisoformat(str(today)))
+    ):
+        match_date_range['end_date'] = form_data['shooter_end_date']
+
+    if (
+        form_data['shooter_start_date'] != '' and
+        form_data['shooter_start_date'] > match_date_range['start_date'] and
+        form_data['shooter_start_date'] < match_date_range['end_date']
+    ):
+        match_date_range['start_date'] = form_data['shooter_start_date']
+
+    delete_list = []
+    for delete in form_data['delete_match'].replace(' ', '').split(','):
+        if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
+            delete_list.append(delete)
+
+    try:
+        # call get_dataframe() function
+        scores_df, shooter_fn, shooter_ln = get_dataframe(
+            match_links_json, match_date_range, delete_list,
+            form_data['mem_num'], form_data['division']
+        )
+
+    except Exception:
+        raise Exception('Dataframe creation failed.')
+
+    try:
+        # call get_graph() function
+        return get_graph(
+            scores_df, f'{shooter_fn} {shooter_ln}',
+            form_data['mem_num'], form_data['division']
+        )
+
+    except Exception:
+        raise Exception('Image creation failed.')
+
+
+"""The following functions were converted from the practiscore javascipt code
    that decodes the AWS json files with the scores for paper targets.
 
     Arguments:
@@ -111,161 +197,6 @@ def num_npm(score_field):
     )
 
 
-def uspsastats(form_data: dict) -> BinaryIO:
-    """Takes the HTML form data passed to views.py and calls the functions
-       to produce an image file to be rendered back to the HTML template.
-
-       This is a helper function that is being used to remove the logic
-       from the views.py layer that should be in the API layer.
-
-    Arguments:
-        form_data {dict} -- contains the form data passed from the HTML form
-                            to views.py
-
-    Raises:
-        Exception: USPSA membership number not found.
-        Exception: Passes Exception message from get_match_links(),
-                   3 possible Exceptions.
-        Exception: Dataframe creation failed.
-        Exception: Image creation failed.
-
-    Returns:
-        BinaryIO -- a matplotlib image file in a ByteIO data stream
-    """
-    today = dt.date.today()
-
-    try:
-        # call check_mem_num() function
-        check_mem_num(form_data['mem_num'])
-
-    except Exception:
-        raise Exception('USPSA membership number not found.')
-
-    try:
-        # call get_match_links() function
-        match_links_json = get_match_links(form_data)
-
-    except Exception as e:
-        raise Exception(e)
-
-    match_date_range = {
-        'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': '2019-01-01',
-    }
-
-    if (
-        form_data['shooter_end_date'] != '' and
-        form_data['shooter_end_date'] < str(dt.date.fromisoformat(str(today)))
-    ):
-        match_date_range['end_date'] = form_data['shooter_end_date']
-
-    if (
-        form_data['shooter_start_date'] != '' and
-        form_data['shooter_start_date'] > match_date_range['start_date'] and
-        form_data['shooter_start_date'] < match_date_range['end_date']
-    ):
-        match_date_range['start_date'] = form_data['shooter_start_date']
-
-    delete_list = []
-
-    for delete in form_data['delete_match'].replace(' ', '').split(','):
-        if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
-            delete_list.append(delete)
-
-    try:
-        # call get_dataframe() function
-        scores_df, shooter_fn, shooter_ln = (
-            get_dataframe(
-                match_links_json, match_date_range,
-                delete_list, form_data['mem_num'], form_data['division']
-            )
-        )
-    except Exception:
-        raise Exception('Dataframe creation failed.')
-
-    try:
-        # call get_graph() function
-        return get_graph(
-            scores_df, f'{shooter_fn} {shooter_ln}', form_data['mem_num'],
-            form_data['division']
-        )
-    except Exception:
-        raise Exception('Image creation failed.')
-
-
-async def http_get(url, session):
-    """Perform the HTTP get request to the AWS server.
-
-    Arguments:
-        url {str} -- the individual url from the shooters list of matches
-        session {object} -- the aiohttp session object
-
-    Returns:
-        [json object] -- the AWS response for each json file
-    """
-    try:
-        async with session.get(url) as response:
-            assert response.status == 200
-
-            return await response.text()
-
-    except Exception:
-
-        raise Exception(f'Error downloading {url}')
-
-
-async def http_sess(links):
-    """Creates the async coroutines to fetch the match details from AWS
-
-    Arguments:
-        links {json object} -- contains the PS AWS uuid for each match
-
-    Returns:
-        {str} -- the AWS json files as a string objects.
-    """
-    def_tasks = deque()
-    scores_tasks = deque()
-
-    async with ClientSession() as session:
-        for link in links:
-
-            url1 = (
-                'https://s3.amazonaws.com/ps-scores/'
-                f"production/{link['matchId']}/match_def.json"
-            )
-            def_tasks.append(asyncio.create_task(http_get(url1, session)))
-
-            url2 = (
-                'https://s3.amazonaws.com/ps-scores/'
-                f"production/{link['matchId']}/match_scores.json"
-            )
-            scores_tasks.append(asyncio.create_task(http_get(url2, session)))
-
-        return (
-            (x for x in await asyncio.gather(*def_tasks)),
-            (x for x in await asyncio.gather(*scores_tasks))
-        )
-
-
-def event_loop(func, *args):
-    """Calls the specified function with list of args.
-
-    Arguments:
-        func {function} -- name of async function to call and "place on the
-                           loop.
-
-    Returns:
-        [object] -- returns whatever is received from the called function.
-    """
-    # why do I have to use Selector???
-    loop = asyncio.SelectorEventLoop()
-    asyncio.set_event_loop(loop)
-    response = (loop.run_until_complete(func(*args)))
-    loop.close()
-
-    return response
-
-
 def check_mem_num(mem_num):
     """Checks that mem_num is a valid uspsa number.
 
@@ -283,228 +214,6 @@ def check_mem_num(mem_num):
 
     if oops_re.search(uspsa_org_response):
         raise Exception
-
-
-def calc_totals(match_scores, idx, shtr_uuid):
-    """Calculates the total points for the given match.
-
-    Arguments:
-        match_scores {list} -- json file with the shooters details from each
-                               match.
-        idx {int} -- used to align the two AWS json files with the scores.
-        shtr_uuid {str} -- the shooters uuid.
-
-    Returns:
-        [defaultdict] -- dict with total points.
-    """
-    totals = defaultdict(int)
-
-    for score in match_scores[idx]['match_scores']:
-        for stage_score in score['stage_stagescores']:
-
-            if re.match(shtr_uuid, stage_score['shtr']):
-
-                totals['alphas'] += stage_score['poph']
-                totals['mikes'] += stage_score['popm']
-
-                if 'ts' in stage_score:
-                    for ts in stage_score['ts']:
-
-                        totals['alphas'] += num_alphas(ts)
-                        totals['bravos'] += num_bravos(ts)
-                        totals['charlies'] += num_charlies(ts)
-                        totals['deltas'] += num_deltas(ts)
-                        totals['ns'] += num_ns(ts)
-                        totals['mikes'] += num_m(ts)
-                        totals['npm'] += num_npm(ts)
-
-    return totals
-
-
-def get_round_count(totals):
-    """Calculate round count.
-
-    Arguments:
-        totals {dict} -- keys are target scoring zone, values are hits.
-
-    Returns:
-        [float] -- sum of total points for a given match.
-    """
-    return sum((totals['alphas'], totals['bravos'], totals['charlies'],
-                totals['deltas'], totals['ns'], totals['mikes'],
-                totals['npm']))
-
-
-def get_points_scored(pf, totals):
-    """Calculate points based on power factor.
-
-    Arguments:
-        pf {str} -- the shooters power factor for the match
-        totals {dict} -- keys are target scoring zone, values are hits.
-
-    Returns:
-        [float] -- total points subtract penalites
-    """
-    if pf == 'MINOR':
-
-        points = sum([(totals['alphas'] * 5), (totals['bravos'] * 3),
-                      (totals['charlies'] * 3), (totals['deltas'])])
-        penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
-
-        return points - penalties
-
-    points = sum([(totals['alphas'] * 5), (totals['bravos'] * 4),
-                  (totals['charlies'] * 4), (totals['deltas'] * 2)])
-    penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
-
-    return points - penalties
-
-
-def get_dataframe(
-    json_obj, match_date_range, delete_list, mem_num, division
-):
-    """Creates a pandas dataframe with the shooters scores for the timeframe
-       spescified by match_date_range, excluding dates in delete_list.
-
-    Arguments:
-        json_obj {dict} -- json object from AWS server
-        match_date_range {dict} -- keys are start date and end date,
-                                   values datetime objects.
-        delete_list {list} -- contains a list of str dates to exclude from the
-                              plot.
-        mem_num {str} -- users USPSA membership number.
-        division {str} -- user selected division to plot
-
-    Returns:
-        [tuple] -- contains a pandas dataframe with the scores from all matchs.
-                   shooters first name {str} and last name {str}.
-    """
-    try:
-        # call event_loop() - spawns the async http gets from the AWS S3
-        # API server
-        match_def_data, match_scores_data = event_loop(http_sess, json_obj)
-
-    except Exception:
-
-        raise Exception
-
-    match_def_json = (json.loads(i) for i in match_def_data)
-    match_scores_json = [json.loads(i) for i in match_scores_data]
-
-    scores_df = pd.DataFrame(
-        columns=[
-            'Match Date', 'Total Alphas', 'Total Charlies', 'Total Deltas',
-            'Total No-shoots', 'Total Mikes', 'Total NPM', 'Round Count',
-            'Points Poss.', 'Points Scored', 'Pct Points', 'A/C Ratio',
-            'Errors'
-        ]
-    )
-
-    for idx, match_def in enumerate(match_def_json):
-
-        match_date = dt.date.fromisoformat(match_def['match_date'])
-        form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
-
-        if str(match_date) in delete_list:
-            continue
-
-        form_start_date = (
-            dt.date.fromisoformat(match_date_range['start_date'])
-        )
-
-        if match_date <= form_end_date and match_date >= form_start_date:
-
-            if match_def['match_subtype'] != 'uspsa':
-                continue
-
-            match_date = match_def['match_date']
-
-            for match_info in match_def['match_shooters']:
-
-                if (
-                    'sh_id' in match_info and
-                    match_info['sh_id'].upper() == mem_num.upper()
-                ):
-
-                    shooter_uuid = match_info['sh_uid']
-                    shooter_fname = match_info['sh_fn']
-                    shooter_lname = match_info['sh_ln']
-                    shooter_pf = match_info['sh_pf'].upper()
-
-                else:
-
-                    continue
-
-                if division.lower() != match_info['sh_dvp'].lower():
-
-                    continue
-                # call calc_totals() function
-                totals = calc_totals(match_scores_json, idx, shooter_uuid)
-
-                # call get_round_count() function
-                round_count = get_round_count(totals)
-
-                points_possible = round_count * 5
-
-                # call get_points_scored() function
-                points_scored = get_points_scored(shooter_pf, totals)
-
-                if points_scored > 0:
-
-                    pct_points = round(
-                        (points_scored / points_possible) * 100, 2
-                    )
-
-                else:
-
-                    pct_points = np.nan
-
-                if totals['alphas'] > 0 and totals['charlies'] > 0:
-
-                    alpha_charlie_ratio = (
-                        round((totals['charlies'] / totals['alphas']) * 100, 2)
-                    )
-
-                else:
-
-                    alpha_charlie_ratio = np.nan
-
-                if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
-
-                    pct_errors = (
-                        round((sum([totals['deltas'], totals['mikes'],
-                                    totals['ns']]) / round_count) * 100, 2)
-                    )
-
-                else:
-
-                    pct_errors = np.nan
-
-                score_list = [
-                    match_date, totals['alphas'],
-                    totals['charlies'] + totals['bravos'], totals['deltas'],
-                    totals['ns'], totals['mikes'], totals['npm'], round_count,
-                    points_possible, points_scored, pct_points,
-                    alpha_charlie_ratio, pct_errors
-                ]
-
-                score_series = pd.Series(score_list, index=scores_df.columns)
-                scores_df = scores_df.append(score_series, ignore_index=True)
-
-                # limit total matches to plot to 50
-                if idx > 50:
-                    break
-
-                break
-
-    scores_df['Avg Pct Scored'] = (
-        round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
-               .sum()) * 100, 2)
-    )
-
-    scores_df.sort_values(by=['Match Date'], inplace=True)
-
-    return scores_df, shooter_fname, shooter_lname
 
 
 def get_match_links(form_dict):
@@ -577,16 +286,302 @@ def get_match_links(form_dict):
     )
 
     match_links_json = deque()
-
-    my_epoch = dt.date.fromisoformat('2019-01-01')
+    epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(match_link_raw_data.group(1))
 
     for match_link_info in raw_match_links:
-
-        if dt.date.fromisoformat(match_link_info['date']) >= my_epoch:
+        if dt.date.fromisoformat(match_link_info['date']) >= epoch:
             match_links_json.append(match_link_info)
 
     return match_links_json
+
+
+async def http_get(url, session):
+    """Perform the HTTP get request to the AWS server.
+
+    Arguments:
+        url {str} -- the individual url from the shooters list of matches
+        session {object} -- the aiohttp session object
+
+    Returns:
+        [json object] -- the AWS response for each json file
+    """
+    try:
+        async with session.get(url) as response:
+            assert response.status == 200
+
+            return await response.text()
+
+    except Exception:
+
+        raise Exception(f'Error downloading {url}')
+
+
+async def http_sess(links):
+    """Creates the async coroutines to fetch the match details from AWS
+
+    Arguments:
+        links {json object} -- contains the PS AWS uuid for each match
+
+    Returns:
+        {str} -- the AWS json files as a string objects.
+    """
+    def_tasks = deque()
+    scores_tasks = deque()
+
+    async with ClientSession() as session:
+        for link in links:
+            url1 = (
+                'https://s3.amazonaws.com/ps-scores/'
+                f"production/{link['matchId']}/match_def.json"
+            )
+            def_tasks.append(asyncio.create_task(http_get(url1, session)))
+
+            url2 = (
+                'https://s3.amazonaws.com/ps-scores/'
+                f"production/{link['matchId']}/match_scores.json"
+            )
+            scores_tasks.append(asyncio.create_task(http_get(url2, session)))
+
+        return (
+            (x for x in await asyncio.gather(*def_tasks)),
+            (x for x in await asyncio.gather(*scores_tasks))
+        )
+
+
+def event_loop(func, *args):
+    """Calls the specified function with list of args.
+
+    Arguments:
+        func {function} -- name of async function to call and "place on the
+                           loop.
+
+    Returns:
+        [object] -- returns whatever is received from the called function.
+    """
+    # why do I have to use Selector???
+    loop = asyncio.SelectorEventLoop()
+    asyncio.set_event_loop(loop)
+    response = (loop.run_until_complete(func(*args)))
+    loop.close()
+
+    return response
+
+
+def calc_totals(match_scores, idx, shtr_uuid):
+    """Calculates the total points for the given match.
+
+    Arguments:
+        match_scores {list} -- json file with the shooters details from each
+                               match.
+        idx {int} -- used to align the two AWS json files with the scores.
+        shtr_uuid {str} -- the shooters uuid.
+
+    Returns:
+        [defaultdict] -- dict with total points.
+    """
+    totals = defaultdict(int)
+
+    for score in match_scores[idx]['match_scores']:
+        for stage_score in score['stage_stagescores']:
+
+            if re.match(shtr_uuid, stage_score['shtr']):
+
+                totals['alphas'] += stage_score['poph']
+                totals['mikes'] += stage_score['popm']
+
+                if 'ts' in stage_score:
+                    for ts in stage_score['ts']:
+
+                        totals['alphas'] += num_alphas(ts)
+                        totals['bravos'] += num_bravos(ts)
+                        totals['charlies'] += num_charlies(ts)
+                        totals['deltas'] += num_deltas(ts)
+                        totals['ns'] += num_ns(ts)
+                        totals['mikes'] += num_m(ts)
+                        totals['npm'] += num_npm(ts)
+
+    return totals
+
+
+def get_round_count(totals):
+    """Calculate round count.
+
+    Arguments:
+        totals {dict} -- keys are target scoring zone, values are hits.
+
+    Returns:
+        [float] -- sum of total points for a given match.
+    """
+    return sum((totals['alphas'], totals['bravos'], totals['charlies'],
+                totals['deltas'], totals['ns'], totals['mikes'],
+                totals['npm']))
+
+
+def get_points_scored(pf, totals):
+    """Calculate points based on power factor.
+
+    Arguments:
+        pf {str} -- the shooters power factor for the match
+        totals {dict} -- keys are target scoring zone, values are hits.
+
+    Returns:
+        [float] -- total points subtract penalites
+    """
+    if pf == 'MINOR':
+        points = sum([(totals['alphas'] * 5), (totals['bravos'] * 3),
+                      (totals['charlies'] * 3), (totals['deltas'])])
+        penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
+
+        return points - penalties
+
+    points = sum([(totals['alphas'] * 5), (totals['bravos'] * 4),
+                  (totals['charlies'] * 4), (totals['deltas'] * 2)])
+    penalties = sum([(totals['ns'] * 10), (totals['mikes'] * 10)])
+
+    return points - penalties
+
+
+def get_dataframe(
+    json_obj, match_date_range, delete_list, mem_num, division
+):
+    """Creates a pandas dataframe with the shooters scores for the timeframe
+       spescified by match_date_range, excluding dates in delete_list.
+
+    Arguments:
+        json_obj {dict} -- json object from AWS server
+        match_date_range {dict} -- keys are start date and end date,
+                                   values datetime objects.
+        delete_list {list} -- contains a list of str dates to exclude from the
+                              plot.
+        mem_num {str} -- users USPSA membership number.
+        division {str} -- user selected division to plot
+
+    Returns:
+        [tuple] -- contains a pandas dataframe with the scores from all matchs.
+                   shooters first name {str} and last name {str}.
+    """
+    try:
+        # call event_loop() - spawns the async http gets from the AWS S3
+        # API server
+        match_def_data, match_scores_data = event_loop(http_sess, json_obj)
+
+    except Exception:
+
+        raise Exception
+
+    match_def_json = (json.loads(i) for i in match_def_data)
+    match_scores_json = [json.loads(i) for i in match_scores_data]
+
+    scores_df = pd.DataFrame(columns=[
+        'Match Date', 'Total Alphas', 'Total Charlies', 'Total Deltas',
+        'Total No-shoots', 'Total Mikes', 'Total NPM', 'Round Count',
+        'Points Poss.', 'Points Scored', 'Pct Points', 'A/C Ratio',
+        'Errors']
+    )
+
+    for idx, match_def in enumerate(match_def_json):
+
+        match_date = dt.date.fromisoformat(match_def['match_date'])
+        form_end_date = dt.date.fromisoformat(match_date_range['end_date'])
+
+        if str(match_date) in delete_list:
+            continue
+
+        form_start_date = (
+            dt.date.fromisoformat(match_date_range['start_date'])
+        )
+
+        if match_date <= form_end_date and match_date >= form_start_date:
+            if match_def['match_subtype'] != 'uspsa':
+                continue
+
+            match_date = match_def['match_date']
+
+            for match_info in match_def['match_shooters']:
+                if (
+                    'sh_id' in match_info and
+                    match_info['sh_id'].upper() == mem_num.upper()
+                ):
+
+                    shooter_uuid = match_info['sh_uid']
+                    shooter_fname = match_info['sh_fn']
+                    shooter_lname = match_info['sh_ln']
+                    shooter_pf = match_info['sh_pf'].upper()
+
+                else:
+
+                    continue
+
+                if division.lower() != match_info['sh_dvp'].lower():
+
+                    continue
+
+                # call calc_totals() function
+                totals = calc_totals(match_scores_json, idx, shooter_uuid)
+
+                # call get_round_count() function
+                round_count = get_round_count(totals)
+
+                points_possible = round_count * 5
+
+                # call get_points_scored() function
+                points_scored = get_points_scored(shooter_pf, totals)
+
+                if points_scored > 0:
+
+                    pct_points = round(
+                        (points_scored / points_possible) * 100, 2
+                    )
+
+                else:
+
+                    pct_points = np.nan
+
+                if totals['alphas'] > 0 and totals['charlies'] > 0:
+                    alpha_charlie_ratio = (
+                        round((totals['charlies'] / totals['alphas']) * 100, 2)
+                    )
+
+                else:
+
+                    alpha_charlie_ratio = np.nan
+
+                if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
+                    pct_errors = (
+                        round((sum([totals['deltas'], totals['mikes'],
+                                    totals['ns']]) / round_count) * 100, 2)
+                    )
+
+                else:
+
+                    pct_errors = np.nan
+
+                score_list = [
+                    match_date, totals['alphas'],
+                    totals['charlies'] + totals['bravos'], totals['deltas'],
+                    totals['ns'], totals['mikes'], totals['npm'], round_count,
+                    points_possible, points_scored, pct_points,
+                    alpha_charlie_ratio, pct_errors
+                ]
+
+                score_series = pd.Series(score_list, index=scores_df.columns)
+                scores_df = scores_df.append(score_series, ignore_index=True)
+
+                # limit total matches to plot to 50
+                if idx > 50:
+                    break
+
+                break
+
+    scores_df['Avg Pct Scored'] = (
+        round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
+               .sum()) * 100, 2)
+    )
+
+    scores_df.sort_values(by=['Match Date'], inplace=True)
+
+    return scores_df, shooter_fname, shooter_lname
 
 
 def add_annotation(x_ax, y_ax):
