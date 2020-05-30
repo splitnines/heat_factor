@@ -1,3 +1,5 @@
+onload = "location.reload();"
+
 function timeStamp() {
     var today = new Date();
 

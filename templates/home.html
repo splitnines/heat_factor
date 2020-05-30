@@ -6,7 +6,7 @@
 </div>
 <p>Provides a classification-like number for a division at a match. Copy-n-paste a Practiscore match URL to see the
     "Heat Factor" of each division in that match.</p>
-<form action="/heat_factor/" method="POST">
+<form name="myForm" action="/heat_factor/" method="POST">
     {% csrf_token %}
     <h3>
         {{ practiscore_url_form.as_p }}

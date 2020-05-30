@@ -304,12 +304,10 @@ def points(request):
         request.POST.get('delete_match')
         if isinstance(request.POST.get('delete_match'), str) else ''
     )
-
     shooter_end_date = (
         request.POST.get('shooter_end_date')
         if isinstance(request.POST.get('shooter_end_date'), str) else ''
     )
-
     shooter_start_date = (
         request.POST.get('shooter_start_date')
         if isinstance(request.POST.get('shooter_start_date'), str) else ''
@@ -342,9 +340,7 @@ def points(request):
     delete_list = []
 
     for ex_match in delete_match.replace(' ', '').split(','):
-
         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', ex_match):
-
             delete_list.append(ex_match)
 
     match_links_json = get_match_links(login_data)
@@ -390,7 +386,6 @@ def points(request):
     )
 
     if request.method == 'POST':
-
         if AccuStatsForm2(request.POST).is_valid():
 
             return render(
