@@ -9,8 +9,7 @@ from .classificationwhatif import ClassificationWhatIf
 from .forms import (AccuStatsForm1, AccuStatsForm2, GetUppedForm,
                     PractiscoreUrlForm)
 from .heatfactor import get_chart, get_match_def
-from .USPSA_Stats import (check_mem_num, get_dataframe, get_graph,
-                          get_match_links)
+from .uspsastats import uspsastats
 
 
 def sys_logger(app_name, *app_data):
@@ -271,141 +270,70 @@ def get_upped(request):
 
 
 def points(request):
-    """Produces a chart showing the shooters match points plotted over time.
+    """Handles the interface between the HTML template containing the user
+       supplied data and the backend API interface that produces an image
 
     Arguments:
-        request {object} -- HTTPRequest object
+        request {[object]} -- HTTPRequest object containing the form data
+                              from the HTML template
 
     Returns:
-        [object] -- HTTPResponse object
+        [object] -- HTTPResponse object containing either the matplotlib
+                    BytesIO image or an Exception
     """
-    # I need to refactor this function to put the POST/GET variables into
-    # a dict, pass the dict to USPSA_Stats.py and get an image in return.
-    # Then pass the image to the points.html template.
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    mem_num = request.POST.get('mem_num')
-    division = request.POST.get('division')
-
-    DAY = dt.date.today()
-
-    try:
-        check_mem_num(mem_num)
-
-    except Exception:
-
-        return render(
-            request, 'error.html', {
-                'message': f'{mem_num} is not a valid USPSA membership number'
-            }
-        )
-
-    delete_match = (
-        request.POST.get('delete_match')
-        if isinstance(request.POST.get('delete_match'), str) else ''
-    )
-    shooter_end_date = (
-        request.POST.get('shooter_end_date')
-        if isinstance(request.POST.get('shooter_end_date'), str) else ''
-    )
-    shooter_start_date = (
-        request.POST.get('shooter_start_date')
-        if isinstance(request.POST.get('shooter_start_date'), str) else ''
-    )
-
-    login_data = {
-        'username': username,
-        'password': password,
+    form_data = {
+        'username': request.POST.get('username'),
+        'password': request.POST.get('password'),
+        'mem_num': request.POST.get('mem_num'),
+        'division': request.POST.get('division'),
+        'delete_match': (
+            request.POST.get('delete_match')
+            if isinstance(request.POST.get('delete_match'), str) else ''
+        ),
+        'shooter_end_date': (
+            request.POST.get('shooter_end_date')
+            if isinstance(request.POST.get('shooter_end_date'), str) else ''
+        ),
+        'shooter_start_date': (
+            request.POST.get('shooter_start_date')
+            if isinstance(request.POST.get('shooter_start_date'), str) else ''
+        ),
     }
 
-    # Set the default date range
-    match_date_range = {
-        'end_date': str(dt.date.fromisoformat(str(DAY))),
-        'start_date': '2019-01-01',
-    }
-
-    if (
-        shooter_end_date != '' and shooter_end_date <
-            str(dt.date.fromisoformat(str(DAY)))
-    ):
-        match_date_range['end_date'] = shooter_end_date
-
-    if (
-        shooter_start_date != '' and
-        shooter_start_date > match_date_range['start_date'] and
-            shooter_start_date < match_date_range['end_date']
-    ):
-        match_date_range['start_date'] = shooter_start_date
-
-    delete_list = []
-
-    for ex_match in delete_match.replace(' ', '').split(','):
-        if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', ex_match):
-            delete_list.append(ex_match)
-
-    match_links_json = get_match_links(login_data)
-
-    del password, login_data
-
-    if isinstance(match_links_json, str):
-
-        return render(
-            request, 'error.html', {'message': match_links_json}
-        )
+    sys_logger('points', form_data['mem_num'], form_data['division'])
 
     try:
-        scores_df, shooter_fn, shooter_ln = (
-            get_dataframe(
-                match_links_json, match_date_range,
-                delete_list, mem_num, division
-            )
-        )
+        image = uspsastats(form_data)
 
-    except Exception:
-
+    except Exception as e:
         return render(
             request, 'error.html', {
-                'message':
-                'Unspecified exception received from get_dataframe()'
+                'message': f'{e}'
             }
         )
-
-    sys_logger('points', shooter_fn, shooter_ln, mem_num, division)
-
-    # check if dataframe is empty
-    if scores_df.empty is True:
-
-        return render(
-            request, 'error.html', {
-                'message': f'no matches found for {mem_num}'
-            }
-        )
-
-    graph = get_graph(
-        scores_df, f'{shooter_fn} {shooter_ln}', mem_num, division
-    )
 
     if request.method == 'POST':
         if AccuStatsForm2(request.POST).is_valid():
+            context = {
+                'graph': image,
+                'date': dt.datetime.now(),
+                'accu_stats_form2': AccuStatsForm2(),
+            }
 
-            return render(
-                request, 'points.html', {
-                    'graph': graph, 'date': DAY,
-                    'accu_stats_form2': AccuStatsForm2(request.POST),
-                }
-            )
+            return render(request, 'points.html', context)
+
         else:
 
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
+        context = {
+            'graph': image,
+            'date': dt.datetime.now(),
+            'accu_stats_form2': AccuStatsForm2(),
+        }
 
-        return render(
-            request, 'points.html', {
-                'graph': graph, 'date': DAY,
-                'accu_stats_form2': AccuStatsForm2(),
-            }
-        )
+        return render(request, 'points.html', context)
 
 
 def error(request):

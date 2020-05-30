@@ -12,5 +12,5 @@ heat_factor/classificationwhatif_old.py
 .vscode/
 heat_factor/README.md
 README.md
-heat_factor/uspsastats.py
-heat_factor/views_new.py
+heat_factor/views_bak.py
+heat_factor/USPSA_Stats.py
