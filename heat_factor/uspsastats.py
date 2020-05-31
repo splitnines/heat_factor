@@ -213,6 +213,7 @@ def check_mem_num(mem_num):
     oops_re = re.compile('Oops!')
 
     if oops_re.search(uspsa_org_response):
+
         raise Exception
 
 
@@ -222,17 +223,17 @@ def get_match_links(form_dict):
        code in the HTML of the users Practiscore home page.
 
     Arguments:
-        login_dict {dict} -- dict containing username and password used to log
-                             in to Practiscore.com
+        form_dict {dict} -- dict containing username and password used to log
+                            in to Practiscore.com
 
     Returns:
-        [deque] -- json object containing the match link uuids for pulling
-                   match json files from AWS.
+        [deque] -- list of json object containing the match link uuids for
+                   pulling match json files from AWS.
     """
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/80.0.3987.149 Safari/537.36'
+        'Chrome/83.0.4103.61 Safari/537.36'
     }
 
     login_status_strs = {
@@ -449,13 +450,15 @@ def get_dataframe(
        spescified by match_date_range, excluding dates in delete_list.
 
     Arguments:
-        json_obj {dict} -- json object from AWS server
-        match_date_range {dict} -- keys are start date and end date,
-                                   values datetime objects.
-        delete_list {list} -- contains a list of str dates to exclude from the
-                              plot.
-        mem_num {str} -- users USPSA membership number.
-        division {str} -- user selected division to plot
+        json_obj {list} -- list of dicts/json containing the match data
+        match_date_range {dict} -- contains the data range to plot
+        delete_list {list} -- a list of dates to *not* plot
+        mem_num {str} -- the shooters USPSA membership number, used to search
+                         the match data.
+        division {str} -- the USPSA division the user wants to plot.
+
+    Raises:
+        Exception: passes exceptions back to views.py
 
     Returns:
         [tuple] -- contains a pandas dataframe with the scores from all matchs.
@@ -604,7 +607,7 @@ def get_graph(scores, shooter_name, mem_number, division):
         division {str} -- the user inputed division name for the plot
 
     Returns:
-        [object] -- matplotlib png in the form of a BytesIO base64 object.
+        [object] -- matplotlib png in the form of a BytesIO stream object.
     """
     x = np.arange(len(scores['Match Date']))
 
