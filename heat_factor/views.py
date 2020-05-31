@@ -19,7 +19,7 @@ def sys_logger(app_name, *app_data):
 
 
 def home(request):
-    """Routes to site home/landing page.
+    """Routes to site home page template.
 
     Arguments:
         request {object} -- HTTPRequest object
@@ -35,13 +35,13 @@ def home(request):
             AccuStatsForm1(request.POST).is_valid()
         ):
 
-            return render(
-                request, 'home.html', {
-                    'practiscore_url_form': PractiscoreUrlForm(request.POST),
-                    'get_upped_form': GetUppedForm(request.POST),
-                    'accu_stats_form1': AccuStatsForm1(request.POST),
-                }
-            )
+            forms = {
+                'practiscore_url_form': PractiscoreUrlForm(request.POST),
+                'get_upped_form': GetUppedForm(request.POST),
+                'accu_stats_form1': AccuStatsForm1(request.POST),
+            }
+
+            return render(request, 'home.html', forms)
 
         else:
 
@@ -49,13 +49,13 @@ def home(request):
 
     if request.method == 'GET':
 
-        return render(
-            request, 'home.html', {
-                'practiscore_url_form': PractiscoreUrlForm(),
-                'get_upped_form': GetUppedForm(),
-                'accu_stats_form1': AccuStatsForm1(),
-            }
-        )
+        forms = {
+            'practiscore_url_form': PractiscoreUrlForm(),
+            'get_upped_form': GetUppedForm(),
+            'accu_stats_form1': AccuStatsForm1(),
+        }
+
+        return render(request, 'home.html', forms)
 
 
 def heat_factor(request):
@@ -115,22 +115,22 @@ def bad_url(request):
 
         if PractiscoreUrlForm(request.POST).is_valid():
 
-            return render(
-                request, 'bad_url.html', {
-                    'practiscore_url_form': PractiscoreUrlForm(request.POST)
-                }
-            )
+            forms = {
+                'practiscore_url_form': PractiscoreUrlForm(request.POST),
+            }
+
+            return render(request, 'bad_url.html', forms)
         else:
 
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
 
-        return render(
-            request, 'bad_url.html', {
-                'practiscore_url_form': PractiscoreUrlForm()
-            }
-        )
+        forms = {
+            'practiscore_url_form': PractiscoreUrlForm(),
+        }
+
+        return render(request, 'bad_url.html', forms)
 
 
 def get_upped(request):
