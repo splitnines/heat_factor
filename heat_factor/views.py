@@ -112,20 +112,18 @@ def bad_url(request):
         [object] -- HTTPResponse object
     """
     if request.method == 'POST':
-
         if PractiscoreUrlForm(request.POST).is_valid():
-
             forms = {
                 'practiscore_url_form': PractiscoreUrlForm(request.POST),
             }
 
             return render(request, 'bad_url.html', forms)
+
         else:
 
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-
         forms = {
             'practiscore_url_form': PractiscoreUrlForm(),
         }
@@ -170,7 +168,6 @@ def get_upped(request):
         return render(request, 'get_upped.html', exception_content)
 
     if shooter.get_shooter_class() == 'GM':
-
         content = {
             'response_text': f"""
                 You\'re a <font color=\"red\">{shooter.get_shooter_class()}
@@ -180,7 +177,6 @@ def get_upped(request):
         return render(request, 'get_upped.html', content)
 
     if shooter.get_shooter_class() == 'U':
-
         try:
             initial_dict = shooter.get_initial()
 
@@ -194,7 +190,6 @@ def get_upped(request):
              classification of <font color=\"green\">{k}</font> class."""
              for k in initial_dict]
         )
-
         content = {
             'response_text': initial_calssification_html,
             'date': DAY,
@@ -203,7 +198,6 @@ def get_upped(request):
         return render(request, 'get_upped.html', content)
 
     if shooter.get_upped() > 100:
-
         content = {
             'response_text': f"""
                 You can not move up in your next classifier because you need
@@ -216,7 +210,6 @@ def get_upped(request):
         return render(request, 'get_upped.html', content)
 
     else:
-
         try:
             next_class_up = shooter.get_next_class()
 
