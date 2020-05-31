@@ -141,7 +141,6 @@ def get_upped(request):
     """
     mem_num = request.POST.get('mem_num')
     division = request.POST.get('division')
-    # DAY = dt.datetime.now()
 
     sys_logger('get_upped', mem_num, division)
 
