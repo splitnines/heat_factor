@@ -150,12 +150,7 @@ def get_upped(request):
 
     sys_logger('get_upped', mem_num, division)
 
-    try:
-        shooter = ClassificationWhatIf(mem_num, division)
-
-    except Exception:
-
-        content = {
+    exception_content = {
             'response_text': f"""
                 <font color=\"red\">2 Mikes, 2 No-shoots:</font> Member number
                 <font color=\"red\">{mem_num}</font> in
@@ -167,7 +162,12 @@ def get_upped(request):
             'date': DAY
         }
 
-        return render(request, 'get_upped.html', content)
+    try:
+        shooter = ClassificationWhatIf(mem_num, division)
+
+    except Exception:
+
+        return render(request, 'get_upped.html', exception_content)
 
     if shooter.get_shooter_class() == 'GM':
 
@@ -186,20 +186,7 @@ def get_upped(request):
 
         except Exception:
 
-            content = {
-                'response_text': f"""
-                    <font color=\"red\">2 Mikes, 2 No-shoots:</font>
-                    Member number <font color=\"red\">{mem_num}</font> in
-                    <font color=\"red\">{division}</font> division.<br> If
-                    your USPSA classifier scores are set to priviate this
-                    tool won\'t work.<br> Also, if you don\'t have at least 3
-                    qualifing classifier scores on record this tool won\'t
-                    work.
-                    """,
-                'date': DAY
-            }
-
-            return render(request, 'get_upped.html', content)
+            return render(request, 'get_upped.html', exception_content)
 
         initial_calssification_html = '<br>'.join(
             [f"""You need a score of <font color=\"green\">{initial_dict[k]}%
@@ -235,20 +222,7 @@ def get_upped(request):
 
         except Exception:
 
-            content = {
-                'response_text': f"""
-                    <font color=\"red\">2 Mikes, 2 No-shoots:</font>
-                    Member number <font color=\"red\">{mem_num}</font> in
-                    <font color=\"red\">{division}</font> division.<br> If
-                    your USPSA classifier scores are set to priviate this
-                    tool won\'t work.<br> Also, if you don\'t have at least 3
-                    qualifing classifier scores on record this tool won\'t
-                    work.
-                    """,
-                'date': DAY
-            }
-
-            return render(request, 'get_upped.html', content)
+            return render(request, 'get_upped.html', exception_content)
 
         content = {
             'response_text': f"""
