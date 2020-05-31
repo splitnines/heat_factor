@@ -28,12 +28,9 @@ def home(request):
         [object] -- HTTPResponse object
     """
     if request.method == 'POST':
-
-        if (
-            PractiscoreUrlForm(request.POST).is_valid() and
-            GetUppedForm(request.POST).is_valid() and
-            AccuStatsForm1(request.POST).is_valid()
-        ):
+        if (PractiscoreUrlForm(request.POST).is_valid() and
+                GetUppedForm(request.POST).is_valid() and
+                AccuStatsForm1(request.POST).is_valid()):
 
             forms = {
                 'practiscore_url_form': PractiscoreUrlForm(request.POST),
@@ -71,13 +68,13 @@ def heat_factor(request):
 
     sys_logger('heat_factor', url)
 
+    # This regex and following "if" block needs to be moved to heatfactor.py
     ps_regex = (
         re.compile(
             r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
         )
     )
     if re.search(ps_regex, url):
-
         try:
             match_def = get_match_def(url)
 
@@ -86,14 +83,14 @@ def heat_factor(request):
             return render(request, 'error.html',
                           {'message': 'problem downloading aws json file.'})
 
+        #  This "if" block needs to be refactored into heatfactor.py
         if 'match_name' in match_def:
-            chart = get_chart(match_def)
+            content = {
+                'chart': get_chart(match_def),
+                'date': dt.datetime.now(),
+            }
 
-            return render(
-                request, 'heat_factor.html', {
-                    'chart': chart, 'date': dt.datetime.now()
-                }
-            )
+            return render(request, 'heat_factor.html', content)
 
     else:
 
@@ -144,7 +141,7 @@ def get_upped(request):
     """
     mem_num = request.POST.get('mem_num')
     division = request.POST.get('division')
-    DAY = dt.datetime.now()
+    # DAY = dt.datetime.now()
 
     sys_logger('get_upped', mem_num, division)
 
@@ -157,7 +154,7 @@ def get_upped(request):
                 tool won\'t work.<br> Also, if you don\'t have at least 3
                 qualifing classifier scores on record this tool won\'t work.
                 """,
-            'date': DAY
+            'date': dt.datetime.now()
         }
 
     try:
@@ -192,7 +189,7 @@ def get_upped(request):
         )
         content = {
             'response_text': initial_calssification_html,
-            'date': DAY,
+            'date': dt.datetime.now(),
         }
 
         return render(request, 'get_upped.html', content)
@@ -204,7 +201,7 @@ def get_upped(request):
                 a score greater than <font color=\"red\">100%</font>. Enjoy
                 {shooter.get_shooter_class()} class.
             """,
-            'date': DAY
+            'date': dt.datetime.now(),
         }
 
         return render(request, 'get_upped.html', content)
@@ -223,7 +220,7 @@ def get_upped(request):
                 {str(shooter.get_upped())}%</font> to make
                 <font color=\"red\">{next_class_up}</font> class.
             """,
-            'date': DAY
+            'date': dt.datetime.now(),
         }
 
         return render(request, 'get_upped.html', content)
