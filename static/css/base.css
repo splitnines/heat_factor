@@ -86,6 +86,10 @@ header h1 a {
     font-family: 'Source Sans Pro', sans-serif;
 }
 
+.btn:hover {
+    background-color: rgba(173, 216, 230, 1.0);
+}
+
 .plot {
     max-width: 100%;
     max-height: 100%;
