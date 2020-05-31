@@ -185,9 +185,9 @@ def get_upped(request):
             return render(request, 'get_upped.html', exception_content)
 
         initial_calssification_html = '<br>'.join(
-            [f"""You need a score of <font color=\"green\">{initial_dict[k]}%
+            [f"""You need a score of <font color=\"red\">{initial_dict[k]}%
              </font> in your next classifier to achieve an initial
-             classification of <font color=\"green\">{k}</font> class."""
+             classification of <font color=\"red\">{k}</font> class."""
              for k in initial_dict]
         )
         content = {
