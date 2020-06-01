@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from .classificationwhatif import ClassificationWhatIf
 from .forms import (AccuStatsForm1, AccuStatsForm2, GetUppedForm,
                     PractiscoreUrlForm)
-from .heatfactor import get_chart, get_match_def
+from .heatfactor import heatfactor
 from .uspsastats import uspsastats
 
 
@@ -62,40 +62,32 @@ def heat_factor(request):
         request {object} -- HTTPRequest object
 
     Returns:
-        [object] -- HTTPResponse object
+        [dict] -- renders the content to the url in the form of a dict
+                  containing the matplotlib image and the data.
     """
-    url = request.POST.get('p_url')
+    try:
+        chart = heatfactor(request.POST.get('p_url'))
+        sys_logger('heat_factor', request.POST.get('p_url'))
 
-    sys_logger('heat_factor', url)
+    except Exception as e:
 
-    # This regex and following "if" block needs to be moved to heatfactor.py
-    ps_regex = (
-        re.compile(
-            r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
-        )
-    )
-    if re.search(ps_regex, url):
-        try:
-            match_def = get_match_def(url)
-
-        except Exception:
-
-            return render(request, 'error.html',
-                          {'message': 'problem downloading aws json file.'})
-
-        #  This "if" block needs to be refactored into heatfactor.py
-        if 'match_name' in match_def:
-            content = {
-                'chart': get_chart(match_def),
-                'date': dt.datetime.now(),
+        if re.match('Error downloading AWS S3 json file.', e.args[0]):
+            exception_content = {
+                'message': e.args[0]
             }
 
-            return render(request, 'heat_factor.html', content)
+            return render(request, 'error.html', exception_content)
 
-    else:
+        elif re.match('Bad URL.', e.args[0]):
 
-        # Redirect on bad_url detection
-        return redirect('/bad_url/')
+            return redirect('/bad_url/')
+
+    content = {
+        'chart': chart,
+        'date': dt.datetime.now(),
+    }
+
+    return render(request, 'heat_factor.html', content)
 
 
 def bad_url(request):

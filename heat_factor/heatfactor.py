@@ -9,6 +9,38 @@ import matplotlib.pyplot as plt
 import requests
 
 
+def heatfactor(url):
+    """Main interface function.  Provides a standard interface to client
+       software.
+
+    Arguments:
+        url {[type]} -- [description]
+
+    Raises:
+        Exception: Error downloading AWS S3 json file.
+        Exception: Bad URL.
+
+    Returns:
+        [object] -- matplotlib image
+    """
+    ps_url_re = re.compile(
+        r'^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
+    )
+
+    if ps_url_re.search(url):
+        try:
+            chart = get_chart(get_match_def(url))
+
+        except Exception:
+
+            raise Exception('Error downloading AWS S3 json file.')
+
+        return chart
+    else:
+
+        raise Exception('Bad URL.')
+
+
 def get_match_def(match_link):
     """Fetches the match data from AWS in the form of a json file.
 
@@ -53,7 +85,7 @@ def get_match_def(match_link):
 
     except Exception:
 
-        raise Exception('problem downloading aws json file.')
+        raise Exception('Error downloading AWS S3 json file.')
 
     return match_def
 
