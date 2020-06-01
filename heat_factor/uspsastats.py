@@ -5,7 +5,6 @@ import json
 import re
 from collections import defaultdict, deque
 from io import BytesIO
-from typing import BinaryIO
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,15 +13,12 @@ import requests
 from aiohttp import ClientSession
 
 
-def uspsastats(form_data: dict) -> BinaryIO:
+def uspsastats(form_data):
     """Takes the HTML form data passed from views.py and calls the functions
        to produce an image file to be rendered back to the HTML template via
        views.py.
 
-       This is a helper function that is being used to remove the logic
-       from the views.py layer that should be in the API layer.
-
-       This is the "main" function/interface for the module.
+       This is the main function/interface for the module.
 
     Arguments:
         form_data {dict} -- contains the form data passed from the HTML form
@@ -36,7 +32,7 @@ def uspsastats(form_data: dict) -> BinaryIO:
         Exception: Image creation failed.
 
     Returns:
-        BinaryIO -- a matplotlib image file in a ByteIO data stream
+        BytesIO -- a matplotlib image file in a BytesIO data stream
     """
     today = dt.date.today()
 
