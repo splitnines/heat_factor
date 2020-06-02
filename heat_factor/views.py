@@ -92,7 +92,9 @@ def heat_factor(request):
 
 def bad_url(request):
     """Routes to bad_url.html for heat_factor function.  When the user
-       provides an incorrect practiscore URL this function is called.
+       provides an incorrect practiscore URL this function is called.  This
+       acts as a backup to the javascript function doing form validation
+       at the browser.
 
     Arguments:
         request {object} -- HTTPRequest object
@@ -254,34 +256,34 @@ def points(request):
         image = uspsastats(form_data)
 
     except Exception as e:
-        return render(
-            request, 'error.html', {
-                'message': f'{e}'
-            }
-        )
+        exception_content = {
+            'message': e.args[0],
+        }
+
+        return render(request, 'error.html', exception_content)
 
     if request.method == 'POST':
         if AccuStatsForm2(request.POST).is_valid():
-            context = {
+            content = {
                 'graph': image,
                 'date': dt.datetime.now(),
                 'accu_stats_form2': AccuStatsForm2(),
             }
 
-            return render(request, 'points.html', context)
+            return render(request, 'points.html', content)
 
         else:
 
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-        context = {
+        content = {
             'graph': image,
             'date': dt.datetime.now(),
             'accu_stats_form2': AccuStatsForm2(),
         }
 
-        return render(request, 'points.html', context)
+        return render(request, 'points.html', content)
 
 
 def error(request):
