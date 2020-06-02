@@ -29,14 +29,14 @@ class PractiscoreUrlForm(forms.Form):
 
 class GetUppedForm(forms.Form):
 
-    mem_num = forms.CharField(
+    mem_num_1 = forms.CharField(
         label="USPSA Membership Number",
         max_length=10,
         widget=forms.TextInput(attrs={'size': '10'}),
         required=True,
     )
 
-    division = forms.CharField(
+    division_1 = forms.CharField(
         label="Select USPSA Division",
         widget=forms.Select(choices=DIVISION_LIST),
         required=True,

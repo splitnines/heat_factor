@@ -1,14 +1,14 @@
 function timeStamp() {
-    var today = new Date();
+    const today = new Date();
 
-    var ts = today.toDateString() + ' ';
+    let ts = today.toDateString() + ' ';
     ts += today.getHours() + ':' + today.getMinutes() + ':';
     ts += today.getSeconds();
 
     return ts;
 };
 
-var el = document.getElementById('date');
+const el = document.getElementById('date');
 
 if (el) {
     el.textContent = timeStamp();

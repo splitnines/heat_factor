@@ -131,8 +131,8 @@ def get_upped(request):
     Returns:
         [object] -- HTTPResponse object
     """
-    mem_num = request.POST.get('mem_num')
-    division = request.POST.get('division')
+    mem_num = request.POST.get('mem_num_1')
+    division = request.POST.get('division_1')
 
     sys_logger('get_upped', mem_num, division)
 
