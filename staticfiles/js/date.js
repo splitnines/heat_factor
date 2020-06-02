@@ -9,4 +9,7 @@ function timeStamp() {
 };
 
 var el = document.getElementById('date');
-el.textContent = timeStamp();
+
+if (el) {
+    el.textContent = timeStamp();
+}

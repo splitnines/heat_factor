@@ -11,5 +11,6 @@ function timeStamp() {
 var el = document.getElementById('date');
 
 if (el) {
+
     el.textContent = timeStamp();
 }
