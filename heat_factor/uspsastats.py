@@ -580,6 +580,10 @@ def get_dataframe(
 
     scores_df.sort_values(by=['Match Date'], inplace=True)
 
+    # for tesing purposes, dumping the dataframe to a csv file
+    # path = 'C:\\Users\\rickey\\Desktop\\db_proj\\scores.csv'
+    # scores_df.to_csv(path, index=False)
+
     return scores_df, shooter_fname, shooter_lname
 
 
