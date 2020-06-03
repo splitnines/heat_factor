@@ -618,17 +618,14 @@ def get_graph(scores, shooter_name, mem_number, division):
         x, scores['Pct Points'], label='Percent Points', color='#39bcf0',
         linestyle='solid', marker='o', markersize=4, linewidth=2
     )
-
     plt.plot(
         x, scores['Avg Pct Scored'], label='Average Percent Points',
         color='#d3d3d3', linestyle='dashed',  linewidth=2
     )
-
     plt.plot(
         x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='#2b2d9c',
         linestyle='solid', marker='o', markersize=4, linewidth=2
     )
-
     plt.bar(
         x, scores['Errors'], label='Errors', color='#3d3d3d', width=0.50,
         linewidth=1.15, edgecolor='#5f5f5f'
@@ -666,25 +663,21 @@ def get_graph(scores, shooter_name, mem_number, division):
         fontsize=7, xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
-
     plt.annotate(
         f'USPSA#: {mem_number}', (1, 1), (-125, 20), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
     )
-
     plt.annotate(
         f'Division: {division}', (1, 1), (-125, 10), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
     )
-
     plt.annotate(
         f'Total Round Count: {str(scores["Round Count"].sum())}',
         (0, 0), (0, -92), xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
-
     plt.annotate(
         f'Average Percent Points: {str(scores["Avg Pct Scored"].iloc[-1])}',
         (0, 0), (0, -80), xycoords='axes fraction', textcoords='offset points',
