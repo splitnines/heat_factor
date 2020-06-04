@@ -45,7 +45,6 @@ def home(request):
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-
         forms = {
             'practiscore_url_form': PractiscoreUrlForm(),
             'get_upped_form': GetUppedForm(),
