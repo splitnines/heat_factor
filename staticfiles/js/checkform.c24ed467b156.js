@@ -27,7 +27,7 @@ function enableSubmit() {
 
     document.getElementById('heatfactor').disabled = false;
 
-    msg.innerHTML = '<br />'
+    msg.textContent = ' '
 }
 
 function displayMessage() {

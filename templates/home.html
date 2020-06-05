@@ -1,56 +1,66 @@
 {% extends "base.html" %} {% block content %}
-<div class='stripe'>
+<div class="stripe">
     <center>
         <h2>USPSA Heat Factor by Division</h2>
     </center>
 </div>
-<p>Provides a classification-like number for a division at a match. Copy-n-paste a Practiscore match URL to see the
-    "Heat Factor" of each division in that match.</p>
-<form name="myForm" id="heatfactor" action="/heat_factor/" method="POST"
- onSubmit="return checkform()">
+<p>
+    Provides a classification-like number for a division at a match.
+    Copy-n-paste a Practiscore match URL to see the "Heat Factor" of each
+    division in that match.
+</p>
+<!-- <form name="myForm" id="heatfactor" action="/heat_factor/" method="POST"
+ onSubmit="return checkform()"> -->
+<form name="myForm" action="/heat_factor/" method="POST">
     {% csrf_token %}
     <h3>
         {{ practiscore_url_form.as_p }}
     </h3>
-    <br>
-    <input class="btn" type="submit" value="Make Ready">
+    <br />
+    <input class="btn" id="heatfactor" type="submit" value="Make Ready" />
+    <div class="cf_msg" id="checkform"><br /></div>
 </form>
-<br>
-<hr>
-<div class='stripe'>
+<div class="stripe">
     <center>
         <h2>Classifaction Calculator</h2>
     </center>
 </div>
-<p>Enter your USPSA membership number and a division you shoot and this will tell what percentage you need on your next
-    classifier to move up a class.</p>
+<p>
+    Enter your USPSA membership number and a division you shoot and this will
+    tell what percentage you need on your next classifier to move up a class.
+</p>
 <form action="/get_upped/" method="POST">
     {% csrf_token %}
     <h3>
         {{ get_upped_form.as_p }}
     </h3>
-    <br>
-    <input class="btn" type="submit" value="Make Ready">
+    <br />
+    <input class="btn" type="submit" value="Make Ready" />
 </form>
-<br>
-<div class='stripe'>
+<br />
+<div class="stripe">
     <center>
         <h2>Match Points Report</h2>
     </center>
 </div>
-<p>Enter your Practiscore username/email and password and your USPSA membership number to get a graph that plots your accuracy/points in matches over time. This is a good tool for those of us who have accuracy/points as our weakness. You can track progress based on when you implemmented gear changes or training changes. Matches prior to 2019-01-01 will not be included. A maximum of 50 matches will be graphed. It only works for USPSA matches (maybe IPSC, but I haven't tested it).
-    <br><br>
-    <font color="red "><b>The graph takes a few seconds to load.<b></font>
+<p>
+    Enter your Practiscore username/email and password and your USPSA membership
+    number to get a graph that plots your accuracy/points in matches over time.
+    This is a good tool for those of us who have accuracy/points as our
+    weakness. You can track progress based on when you implemmented gear changes
+    or training changes. Matches prior to 2019-01-01 will not be included. A
+    maximum of 50 matches will be graphed. It only works for USPSA matches
+    (maybe IPSC, but I haven't tested it). <br /><br />
 </p>
-<form action="/points/" method="POST">
+<form id="points" action="/points/" method="POST">
     {% csrf_token %}
     <h3>
         {{ accu_stats_form1.as_p }}
     </h3>
-    <br>
-    <input class="btn" type="submit" value="Make Ready">
+    <br />
+    <input class="btn" type="submit" value="Make Ready" />
 </form>
-<br>
-<hr>
+<div class="pts_msg" id="message"><br /></div>
+<hr />
 
 {% endblock content %}

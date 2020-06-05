@@ -1,28 +1,25 @@
 {% extends "base.html" %} {% block content %}
 <p align="left"><a class="home" href="/">Return Home</a></p>
 <div class="stripe">
-  <center>
-    <h2>Match Points Stats</h2>
-  </center>
+    <center>
+        <h2>Match Points Stats</h2>
+    </center>
 </div>
 <center>
-  <img class="plot" src="data:image/png;base64,{{ graph | safe }}">
+    <img class="plot" src="data:image/png;base64,{{ graph | safe }}" />
 </center>
 <p align="right">
-  <font size="2" id="date"> {{ date }} </font>
+    <font size="2" id="date"> {{ date }} </font>
 </p>
-<hr>
-<font color="red">
-  <h5><b>The graph takes a few seconds to load.<b></h5>
-</font>
-<form action="/points/" method="POST">
-  {% csrf_token %}
-  <h5>
-    {{ accu_stats_form2.as_p }}
-  </h5>
-  <br>
-  <input class="btn" type="submit" value="Make Ready">
+<hr />
+<form id="points" action="/points/" method="POST">
+    {% csrf_token %}
+    <font size="3">
+        {{ accu_stats_form2.as_p }}
+    </font>
+    <br />
+    <input class="btn" type="submit" value="Make Ready" />
 </form>
-<br>
-<hr>
+<div class="pts_msg" id="message"><br /></div>
+<hr />
 {% endblock content %}

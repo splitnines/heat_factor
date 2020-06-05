@@ -22,19 +22,7 @@ function checkForm() {
 }
 
 function enableSubmit() {
-
-    let msg = document.getElementById('checkform');
-
     document.getElementById('heatfactor').disabled = false;
-
-    msg.innerHTML = '<br />'
-}
-
-function displayMessage() {
-
-    let msg = document.getElementById('message');
-    msg.textContent = 'The image takes a few seconds to load.'
-
 }
 
 const heatFactor = document.getElementById('id_p_url');
@@ -45,10 +33,4 @@ if (heatFactor) {
 
 if (heatFactor) {
     heatFactor.addEventListener('focus', enableSubmit, false);
-}
-
-const points = document.getElementById('points');
-
-if (points) {
-    points.addEventListener('submit', displayMessage, false);
 }
