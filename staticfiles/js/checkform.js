@@ -14,7 +14,6 @@ function checkForm() {
 
     }
 
-
     return false;
 }
 
@@ -37,6 +36,7 @@ function displaySpinner() {
 }
 
 function padZero(num) {
+
     return (num < 10 ? '0' : '') + num
 }
 
@@ -57,8 +57,6 @@ function timeStamp() {
 const heatFactor = document.getElementById('id_p_url');
 if (heatFactor) {
     heatFactor.addEventListener('blur', checkForm, false);
-}
-if (heatFactor) {
     heatFactor.addEventListener('focus', enableSubmit, false);
 }
 
@@ -68,8 +66,8 @@ if (points) {
     points.addEventListener('submit', displaySpinner, false);
 }
 
+// replace backend generated date with frontend generated date
 const date = document.getElementById('date');
-
 if (date) {
     date.textContent = timeStamp();
 }

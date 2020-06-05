@@ -59,6 +59,9 @@ if (heatFactor) {
     heatFactor.addEventListener('blur', checkForm, false);
     heatFactor.addEventListener('focus', enableSubmit, false);
 }
+// if (heatFactor) {
+//     heatFactor.addEventListener('focus', enableSubmit, false);
+// }
 
 // adds spinner to page while waiting for scores to load
 const points = document.getElementById('points');
