@@ -23,6 +23,7 @@ function enableSubmit() {
 
     let msg = document.getElementById('checkform');
     document.getElementById('heatfactor').disabled = false;
+    document.forms["myForm"].reset();
     msg.innerHTML = '<br />';
 }
 
