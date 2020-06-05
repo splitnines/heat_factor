@@ -30,13 +30,11 @@ function enableSubmit() {
 }
 
 
-function displaySpinner() {
+// function displayMessage() {
 
-    let spinner = document.getElementById('spinner');
-    spinner.innerHTML = '<br />';
-    spinner.setAttribute('class', 'loading');
-
-}
+//     let msg = document.getElementById('message');
+//     msg.textContent = 'The image takes a few seconds to load.'
+// }
 
 const heatFactor = document.getElementById('id_p_url');
 if (heatFactor) {
@@ -46,7 +44,7 @@ if (heatFactor) {
     heatFactor.addEventListener('focus', enableSubmit, false);
 }
 
-const points = document.getElementById('points');
-if (points) {
-    points.addEventListener('submit', displaySpinner, false);
-}
+// const points = document.getElementById('points');
+// if (points) {
+//     points.addEventListener('submit', displayMessage, false);
+// }

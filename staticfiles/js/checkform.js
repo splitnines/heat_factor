@@ -30,10 +30,12 @@ function enableSubmit() {
 }
 
 
-function displayMessage() {
+function displaySpinner() {
 
-    let msg = document.getElementById('message');
-    msg.textContent = 'The image takes a few seconds to load.'
+    let spinner = document.getElementById('spinner');
+    spinner.innerHTML = '<br />';
+    spinner.setAttribute('class', 'loading');
+
 }
 
 const heatFactor = document.getElementById('id_p_url');
@@ -46,5 +48,5 @@ if (heatFactor) {
 
 const points = document.getElementById('points');
 if (points) {
-    points.addEventListener('submit', displayMessage, false);
+    points.addEventListener('submit', displaySpinner, false);
 }
