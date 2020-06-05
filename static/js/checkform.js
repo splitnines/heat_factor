@@ -35,6 +35,22 @@ function displaySpinner() {
 
 }
 
+function padZero(num) {
+    return (num < 10 ? '0' : '') + num
+}
+
+
+function timeStamp() {
+    const today = new Date();
+
+    let ts = today.toDateString() + ' ';
+    ts += padZero(today.getHours()) + ':';
+    ts += padZero(today.getMinutes()) + ':';
+    ts += padZero(today.getSeconds());
+
+    return ts;
+};
+
 
 // form validation and button manipulation based on URL input
 const heatFactor = document.getElementById('id_p_url');
@@ -49,4 +65,10 @@ if (heatFactor) {
 const points = document.getElementById('points');
 if (points) {
     points.addEventListener('submit', displaySpinner, false);
+}
+
+const date = document.getElementById('date');
+
+if (date) {
+    date.textContent = timeStamp();
 }
