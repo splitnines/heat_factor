@@ -7,7 +7,7 @@ function timeStamp() {
     const today = new Date();
 
     let ts = today.toDateString() + ' ';
-    ts += pad0(today.getHours()) + ':' + pad0(today.getMinutes()) + ':';
+    ts += today.getHours() + ':' + pad0(today.getMinutes()) + ':';
     ts += pad0(today.getSeconds());
 
     return ts;
