@@ -7,13 +7,10 @@ function checkForm() {
         '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$', 'g'
     );
 
-    // const my_form = document.forms["myForm"];
-
     if (!ps_url_re.test(this.value)) {
 
         document.getElementById('heatfactor').disabled = true;
         msg.textContent = 'Bad URL, please enter a valid Practiscore.com match URL.';
-        // my_form.reset();
 
     }
 
@@ -26,7 +23,7 @@ function enableSubmit() {
 
     let msg = document.getElementById('checkform');
     document.getElementById('heatfactor').disabled = false;
-    msg.innerHTML = '<br />'
+    msg.innerHTML = '<br />';
 }
 
 
@@ -38,6 +35,8 @@ function displaySpinner() {
 
 }
 
+
+// form validation and button manipulation based on URL input
 const heatFactor = document.getElementById('id_p_url');
 if (heatFactor) {
     heatFactor.addEventListener('blur', checkForm, false);
@@ -46,6 +45,7 @@ if (heatFactor) {
     heatFactor.addEventListener('focus', enableSubmit, false);
 }
 
+// adds spinner to page while waiting for scores to load
 const points = document.getElementById('points');
 if (points) {
     points.addEventListener('submit', displaySpinner, false);
