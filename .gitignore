@@ -1,7 +1,6 @@
-heat_factor/USPSA_Stats_org.py
 db.sqlite3
-heat_factor_project/__pycache__
-heat_factor_project/__pycache__/\*
+heat_factor/__pycache__
+heat_factor/__pycache__/\*
 heat_factor/classificationwhatif_ref.py
 heat_factor/Test membership numbers.txt
 heat_factor/classificationwhatif_old.py
@@ -11,6 +10,4 @@ heat_factor/classificationwhatif_old.py
 .vscode/*
 .vscode/
 heat_factor/README.md
-README.md
-heat_factor/views_bak.py
-heat_factor/USPSA_Stats.py
+./README.md
