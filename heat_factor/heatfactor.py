@@ -61,7 +61,6 @@ def get_match_def(match_link):
     non_uuid_re = re.compile(r'practiscore\.com/results/new/(\d+)$')
 
     if non_uuid_re.search(match_link):
-
         match_html_text = requests.get(match_link).text
 
         aws_uuid_re = re.compile(
@@ -136,7 +135,6 @@ def get_heat_factor(match_def):
     heat_idx = defaultdict(int)
 
     for division in division_heat:
-
         if sum(division_heat[division]) > 0 and division_count[division] > 0:
 
             heat_idx[division] = round(
