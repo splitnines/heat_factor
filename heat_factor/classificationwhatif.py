@@ -63,7 +63,6 @@ class ClassificationWhatIf:
         scores = get_scores(self.bs, self.division)
 
         if self.shooter_class == 'U':
-
             if scores['count'] > 2:
 
                 return calc_initial(scores['sum'], scores['count'])
@@ -110,11 +109,9 @@ def http_get(mem_num, division):
         [object] -- the BeautifulSoup object with the data from uspsa.org
     """
     if division != 'PCC':
-
         division_search = division.title().replace(' ', '_')
 
     else:
-
         division_search = division.upper().replace(' ', '_')
 
     http_resp = requests.get(f'https://uspsa.org/classification/{mem_num}')
@@ -180,7 +177,6 @@ def get_classification_pct(bs, division):
         data = row.find_all('td')
 
         if [i.text.strip() for i in header][0] == division:
-
             classification_pct = (
                 [i.text.strip() for i in data][1].split(': ')[1]
             )
@@ -216,7 +212,6 @@ def get_classification_letter(bs, division):
         data = row.find_all('td')
 
         if [i.text.strip() for i in header][0] == division:
-
             classification_letter = (
                 [i.text.strip() for i in data][0].split(': ')[1]
             )
@@ -245,7 +240,6 @@ def get_scores(bs, division):
     scores = {'sum': 0, 'count': 0}
 
     for score in get_classifier_scores(bs, division):
-
         if scores['count'] < 5:
 
             scores['sum'] += score[1]
@@ -270,7 +264,6 @@ def calc_initial(score_sum, score_count):
     initial_dict = {}
 
     for classification in classification_dict:
-
         if 2.0 in initial_dict.values():
             break
 
