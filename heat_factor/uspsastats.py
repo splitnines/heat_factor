@@ -37,7 +37,6 @@ def uspsastats(form_data):
     today = dt.date.today()
 
     try:
-        # call check_mem_num() function
         check_mem_num(form_data['mem_num'])
 
     except Exception:
@@ -45,7 +44,6 @@ def uspsastats(form_data):
         raise Exception('USPSA membership number not found.')
 
     try:
-        # call get_match_links() function
         match_links_json = get_match_links(form_data)
 
     except Exception as e:
@@ -76,7 +74,6 @@ def uspsastats(form_data):
             delete_list.append(delete)
 
     try:
-        # call get_dataframe() function
         scores_df, shooter_fn, shooter_ln = get_dataframe(
             match_links_json, match_date_range, delete_list,
             form_data['mem_num'], form_data['division']
@@ -86,7 +83,7 @@ def uspsastats(form_data):
         raise Exception('Dataframe creation failed.')
 
     try:
-        # call get_graph() function
+
         return get_graph(
             scores_df, f'{shooter_fn} {shooter_ln}',
             form_data['mem_num'], form_data['division']
