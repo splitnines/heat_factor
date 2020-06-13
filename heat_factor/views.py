@@ -7,9 +7,10 @@ from django.shortcuts import redirect, render
 
 from .classificationwhatif import ClassificationWhatIf
 from .forms import (AccuStatsForm1, AccuStatsForm2, GetUppedForm,
-                    PractiscoreUrlForm)
+                    PractiscoreUrlForm, PPSForm1, PPSForm2)
 from .heatfactor import heatfactor
 from .uspsastats import uspsastats
+from .pointspersecond import pointspersec
 
 
 def sys_logger(app_name, *app_data):
@@ -28,14 +29,18 @@ def home(request):
         [object] -- HTTPResponse object
     """
     if request.method == 'POST':
-        if (PractiscoreUrlForm(request.POST).is_valid() and
-                GetUppedForm(request.POST).is_valid() and
-                AccuStatsForm1(request.POST).is_valid()):
+        if (
+            PractiscoreUrlForm(request.POST).is_valid() and
+            GetUppedForm(request.POST).is_valid() and
+            AccuStatsForm1(request.POST).is_valid() and
+            PPSForm1(request.POST).is_valid()
+        ):
 
             forms = {
                 'practiscore_url_form': PractiscoreUrlForm(request.POST),
                 'get_upped_form': GetUppedForm(request.POST),
                 'accu_stats_form1': AccuStatsForm1(request.POST),
+                'pps_form1': PPSForm1(request.POST),
             }
 
             return render(request, 'home.html', forms)
@@ -49,6 +54,7 @@ def home(request):
             'practiscore_url_form': PractiscoreUrlForm(),
             'get_upped_form': GetUppedForm(),
             'accu_stats_form1': AccuStatsForm1(),
+            'pps_form1': PPSForm1(),
         }
 
         return render(request, 'home.html', forms)
@@ -283,6 +289,73 @@ def points(request):
         }
 
         return render(request, 'points.html', content)
+
+
+def pps(request):
+    """Handles the interface between the HTML template containing the user
+       supplied data and the backend API interface that produces an image
+
+    Arguments:
+        request {[object]} -- HTTPRequest object containing the form data
+                              from the HTML template
+
+    Returns:
+        [object] -- HTTPResponse object containing either the matplotlib
+                    BytesIO image or an Exception
+    """
+    form_data = {
+        'username': request.POST.get('username'),
+        'password': request.POST.get('password'),
+        'mem_num': request.POST.get('mem_num'),
+        'division': request.POST.get('division'),
+        'delete_match': (
+            request.POST.get('delete_match')
+            if isinstance(request.POST.get('delete_match'), str) else ''
+        ),
+        'end_date': (
+            request.POST.get('end_date')
+            if isinstance(request.POST.get('end_date'), str) else ''
+        ),
+        'start_date': (
+            request.POST.get('start_date')
+            if isinstance(request.POST.get('start_date'), str) else ''
+        ),
+    }
+
+    sys_logger('pps', form_data['mem_num'], form_data['division'])
+
+    try:
+        image = pointspersec(form_data)
+
+    except Exception as e:
+        exception_content = {
+            'message': e.args[0],
+        }
+
+        return render(request, 'error.html', exception_content)
+
+    if request.method == 'POST':
+        if PPSForm2(request.POST).is_valid():
+            content = {
+                'image': image,
+                'date': dt.datetime.now(),
+                'pps_form2': PPSForm2(),
+            }
+
+            return render(request, 'pps.html', content)
+
+        else:
+
+            return HttpResponseRedirect('/')
+
+    if request.method == 'GET':
+        content = {
+            'image': image,
+            'date': dt.datetime.now(),
+            'pps_form2': PPSForm2(),
+        }
+
+        return render(request, 'pps.html', content)
 
 
 def error(request):

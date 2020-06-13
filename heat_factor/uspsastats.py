@@ -506,11 +506,9 @@ def get_dataframe(
                     shooter_pf = match_info['sh_pf'].upper()
 
                 else:
-
                     continue
 
                 if division.lower() != match_info['sh_dvp'].lower():
-
                     continue
 
                 # call calc_totals() function

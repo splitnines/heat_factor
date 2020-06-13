@@ -135,3 +135,97 @@ class AccuStatsForm2(forms.Form):
         ),
         required=False,
     )
+
+
+class PPSForm1(forms.Form):
+
+    username = forms.CharField(
+        label="Practiscore username/email",
+        max_length=50,
+        widget=forms.TextInput(attrs={'size': '50'}),
+        required=True,
+    )
+
+    password = forms.CharField(
+        label="Practiscore password",
+        max_length=32,
+        widget=forms.PasswordInput(attrs={'size': '32'}),
+        required=True,
+    )
+
+    mem_num = forms.CharField(
+        label="USPSA Membership Number",
+        max_length=10,
+        widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+    division = forms.CharField(
+        label="Select USPSA Division",
+        widget=forms.Select(choices=DIVISION_LIST),
+        required=True,
+    )
+
+    end_date = forms.DateField(
+        initial=datetime.date.fromisoformat(str(DAY)),
+        widget=forms.HiddenInput(),
+        required=False,
+    )
+
+    start_date = forms.DateField(
+        initial=datetime.date.fromisoformat('2017-01-01'),
+        widget=forms.HiddenInput(),
+        required=False,
+    )
+
+
+class PPSForm2(forms.Form):
+
+    username = forms.CharField(
+        label="Practiscore username/email",
+        max_length=50,
+        widget=forms.TextInput(attrs={'size': '50'}),
+        required=True,
+    )
+
+    password = forms.CharField(
+        label="Practiscore password",
+        max_length=32,
+        widget=forms.PasswordInput(attrs={'size': '32'}),
+        required=True,
+    )
+
+    mem_num = forms.CharField(
+        label="USPSA Membership Number",
+        max_length=10,
+        widget=forms.TextInput(attrs={'size': '10'}),
+        required=True,
+    )
+
+    division = forms.CharField(
+        label="Select USPSA Division",
+        widget=forms.Select(choices=DIVISION_LIST),
+        required=True,
+    )
+
+    end_date = forms.DateField(
+        initial=datetime.date.fromisoformat(str(DAY)),
+        required=False,
+    )
+
+    start_date = forms.DateField(
+        initial=datetime.date.fromisoformat('2017-01-01'),
+        required=False,
+    )
+
+    delete_match = forms.CharField(
+        label="Exclude Dates",
+        max_length=60,
+        widget=forms.TextInput(
+            attrs={
+                'size': '32',
+                'placeholder': 'Example: 2020-03-15, 2019-09-22'
+            }
+        ),
+        required=False,
+    )

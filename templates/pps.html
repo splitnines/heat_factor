@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %}
+<p align="left"><a class="home" href="/">Return Home</a></p>
+<div class="stripe">
+    <center>
+        <h2>Match Points Stats</h2>
+    </center>
+</div>
+<center>
+    <img class="plot" src="data:image/png;base64,{{ image | safe }}" />
+</center>
+<p align="right">
+    <font size="2" id="date"> {{ date }} </font>
+</p>
+<hr />
+<form id="pps" action="/pps/" method="POST">
+    {% csrf_token %}
+    <font size="3">
+        {{ pps_form2.as_p }}
+    </font>
+    <br />
+    <input class="btn" type="submit" value="Make Ready" />
+    <br />
+</form>
+<br />
+<div id="spinner"></div>
+<hr />
+{% endblock content %}
