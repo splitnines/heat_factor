@@ -292,10 +292,16 @@ def results_gopher(match, shooter_id):
                                 pps_dict['time'] += float(d['stageTimeSecs'])
                                 pps_dict['points'] += int(d['points'])
 
-    if len(pps_dict) > 0:
+    if pps_dict['time'] > 0 and pps_dict['points'] > 0:
         pps = pps_dict['points'] / pps_dict['time']
 
         return float(f'{pps:.2f}')
+
+    elif pps_dict['time'] == 0 and pps_dict['points'] == 0:
+        pps = 0
+
+        return float(f'{pps:.2f}')
+
     else:
         raise Exception('A problem occured with function results_gopher().')
 
@@ -309,14 +315,18 @@ def get_pps(match_defs, match_results, mem_num, division):
         match_def = json.loads(match_def)
         match_result = json.loads(match_result)
 
-        if 'match_subtype' in match_def:
-            if match_def['match_subtype'] != 'uspsa':
-                if match_def['match_type'] != 'uspsa_p':
-                    continue
+        uspsa_re = re.compile(r'uspsa')
+        match_type = match_def.get('match_type')
+        if match_type is not None and not uspsa_re.search(match_type.lower()):
+            continue
 
         match_date = dt.date.fromisoformat(match_def['match_date'])
 
         for shooter in match_def['match_shooters']:
+
+            if division.lower() != shooter['sh_dvp'].lower():
+                continue
+
             if (
                 'sh_id' in shooter and
                 mem_num.upper() == shooter['sh_id'].upper()
@@ -328,12 +338,12 @@ def get_pps(match_defs, match_results, mem_num, division):
                 except Exception:
                     raise Exception('Received exception from results_gopher.')
 
+                if pps_dict[match_date] == 0:
+                    del pps_dict[match_date]
+
                 shooter_fn = shooter['sh_fn']
                 shooter_ln = shooter['sh_ln']
             else:
-                continue
-
-            if division.lower() != shooter['sh_dvp'].lower():
                 continue
 
     if len(pps_dict) > 0:
@@ -392,6 +402,11 @@ def pps_plot(pps_dict, fn, ln, form_dict):
         f'Division: {form_dict["division"]}', (1, 1), (-125, 10), fontsize=7,
         xycoords='axes fraction', textcoords='offset points',
         va='top'
+    )
+    plt.annotate(
+        f'Average PP/S: {sum(pps_dict.values()) / len(pps_dict.values()):.2f}',
+        (0, 0), (0, -80), xycoords='axes fraction',
+        textcoords='offset points', va='top'
     )
     plt.annotate(
         f'Total Matchs: {len(dates)}',

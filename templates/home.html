@@ -46,11 +46,8 @@
 <p>
     Enter your Practiscore username/email and password and your USPSA membership
     number to get a graph that plots your accuracy/points in matches over time.
-    This is a good tool for those of us who have accuracy/points as our
-    weakness. You can track progress based on when you implemmented gear changes
-    or training changes. Matches prior to 2019-01-01 will not be included. A
-    maximum of 50 matches will be graphed. It only works for USPSA matches
-    (maybe IPSC, but I haven't tested it). <br /><br />
+    Matches prior to 2019-01-01 will not be included. A maximum of 50 matches
+    will be graphed. It only works for USPSA matches.<br /><br />
 </p>
 <form id="points" action="/points/" method="POST">
     {% csrf_token %}
@@ -70,12 +67,9 @@
 </div>
 <p>
     Enter your Practiscore username/email and password and your USPSA membership
-    number to get a graph that plots your accuracy/points in matches over time.
-    This is a good tool for those of us who have accuracy/points as our
-    weakness. You can track progress based on when you implemmented gear changes
-    or training changes. Matches prior to 2019-01-01 will not be included. A
-    maximum of 50 matches will be graphed. It only works for USPSA matches
-    (maybe IPSC, but I haven't tested it). <br /><br />
+    number to get a graph that plots your points per second in matches over
+    time. Matches prior to 2017-01-01 will not be included. It only works for
+    USPSA matches.<br /><br />
 </p>
 <form id="pps" action="/pps/" method="POST">
     {% csrf_token %}

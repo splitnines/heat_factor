@@ -304,21 +304,21 @@ def pps(request):
                     BytesIO image or an Exception
     """
     form_data = {
-        'username': request.POST.get('username'),
-        'password': request.POST.get('password'),
-        'mem_num': request.POST.get('mem_num'),
-        'division': request.POST.get('division'),
+        'username': request.POST.get('username_pps'),
+        'password': request.POST.get('password_pps'),
+        'mem_num': request.POST.get('mem_num_pps'),
+        'division': request.POST.get('division_pps'),
         'delete_match': (
-            request.POST.get('delete_match')
-            if isinstance(request.POST.get('delete_match'), str) else ''
+            request.POST.get('delete_match_pps')
+            if isinstance(request.POST.get('delete_match_pps'), str) else ''
         ),
         'end_date': (
-            request.POST.get('end_date')
-            if isinstance(request.POST.get('end_date'), str) else ''
+            request.POST.get('end_date_pps')
+            if isinstance(request.POST.get('end_date_pps'), str) else ''
         ),
         'start_date': (
-            request.POST.get('start_date')
-            if isinstance(request.POST.get('start_date'), str) else ''
+            request.POST.get('start_date_pps')
+            if isinstance(request.POST.get('start_date_pps'), str) else ''
         ),
     }
 

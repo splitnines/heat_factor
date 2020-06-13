@@ -139,40 +139,40 @@ class AccuStatsForm2(forms.Form):
 
 class PPSForm1(forms.Form):
 
-    username = forms.CharField(
+    username_pps = forms.CharField(
         label="Practiscore username/email",
         max_length=50,
         widget=forms.TextInput(attrs={'size': '50'}),
         required=True,
     )
 
-    password = forms.CharField(
+    password_pps = forms.CharField(
         label="Practiscore password",
         max_length=32,
         widget=forms.PasswordInput(attrs={'size': '32'}),
         required=True,
     )
 
-    mem_num = forms.CharField(
+    mem_num_pps = forms.CharField(
         label="USPSA Membership Number",
         max_length=10,
         widget=forms.TextInput(attrs={'size': '10'}),
         required=True,
     )
 
-    division = forms.CharField(
+    division_pps = forms.CharField(
         label="Select USPSA Division",
         widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
 
-    end_date = forms.DateField(
+    end_date_pps = forms.DateField(
         initial=datetime.date.fromisoformat(str(DAY)),
         widget=forms.HiddenInput(),
         required=False,
     )
 
-    start_date = forms.DateField(
+    start_date_pps = forms.DateField(
         initial=datetime.date.fromisoformat('2017-01-01'),
         widget=forms.HiddenInput(),
         required=False,
@@ -181,44 +181,44 @@ class PPSForm1(forms.Form):
 
 class PPSForm2(forms.Form):
 
-    username = forms.CharField(
+    username_pps = forms.CharField(
         label="Practiscore username/email",
         max_length=50,
         widget=forms.TextInput(attrs={'size': '50'}),
         required=True,
     )
 
-    password = forms.CharField(
+    password_pps = forms.CharField(
         label="Practiscore password",
         max_length=32,
         widget=forms.PasswordInput(attrs={'size': '32'}),
         required=True,
     )
 
-    mem_num = forms.CharField(
+    mem_num_pps = forms.CharField(
         label="USPSA Membership Number",
         max_length=10,
         widget=forms.TextInput(attrs={'size': '10'}),
         required=True,
     )
 
-    division = forms.CharField(
+    division_pps = forms.CharField(
         label="Select USPSA Division",
         widget=forms.Select(choices=DIVISION_LIST),
         required=True,
     )
 
-    end_date = forms.DateField(
+    end_date_pps = forms.DateField(
         initial=datetime.date.fromisoformat(str(DAY)),
         required=False,
     )
 
-    start_date = forms.DateField(
+    start_date_pps = forms.DateField(
         initial=datetime.date.fromisoformat('2017-01-01'),
         required=False,
     )
 
-    delete_match = forms.CharField(
+    delete_match_pps = forms.CharField(
         label="Exclude Dates",
         max_length=60,
         widget=forms.TextInput(
