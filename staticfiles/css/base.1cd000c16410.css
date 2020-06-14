@@ -20,7 +20,7 @@ div.quads {
     float: left;
 }
 
-.q1 {
+/* .q1 {
     top: 0;
     left: 50%;
 }
@@ -38,7 +38,7 @@ div.quads {
 .q4 {
     top: 50%;
     left: 50%;
-}
+} */
 
 .seperator {
     margin: 15px;
