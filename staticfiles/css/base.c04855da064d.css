@@ -1,9 +1,9 @@
 /* static/css/base.css */
 
 html {
-    height: 95%;
-    padding: 5px;
-    margin: 0;
+    height: 100%;
+    padding: 0.1%;
+    margin: 0.1%;
     background-color: rgba(0, 0, 0, 0.9);
 }
 
@@ -14,35 +14,37 @@ body {
     color: rgb(173, 216, 230)
 }
 
-div.quads {
+.quads {
     width: 50%;
     height: 50%;
     float: left;
+    /* align-content: center; */
 }
 
-.q1 {
+/* .q1 {
     top:0;
     left:0;
-}
+} */
 
-.q2 {
+/* .q2 {
     top: 0;
     left: 50%;
-}
+} */
 
-.q3 {
+/* .q3 {
     top: 50%;
     left: 0;
-}
+} */
 
-.q4 {
+/* .q4 {
     top: 50%;
     left: 50%;
-}
+} */
 
 .seperator {
-    margin: 15px;
-    padding: 0;
+    margin: 5px;
+    padding: 5px;
+    float: left;
 }
 
 
@@ -103,14 +105,14 @@ header {
     text-decoration: none;
 } */
 
-/* .nav-left {
+.nav-left {
     margin-right: auto;
-} */
+}
 
-/* .nav-right {
+.nav-right {
     display: flex;
     padding-top: 2rem;
-} */
+}
 
 .btn {
     padding: 0.2rem 0.6rem;
@@ -157,10 +159,12 @@ header {
   height: 60px;
   animation: spin 2s linear infinite;
   position: fixed;
-  top: 38%;
-  left: 48%;
-  bottom: 62%;
-  right: 52%;
+  /* top: 50%;
+  right: 50%; */
+  top: 50%;
+  left: 50%;
+  bottom: 50%;
+  right: 50%;
 }
 
 @keyframes spin {
