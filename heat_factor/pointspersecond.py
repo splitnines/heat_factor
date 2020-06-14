@@ -378,7 +378,7 @@ def pps_plot(pps_dict, fn, ln, form_dict):
         x, pps, linewidth=2, marker='o', color='cornflowerblue', label='PPS'
     )
     plt.plot(
-        x, trend(x), linewidth=2, color='red', label='Trend'
+        x, trend(x), linewidth=2, color='#9a1f40', label='Trend'
     )
     plt.plot(
         x, avg, linewidth=2, linestyle='--', color='whitesmoke',
