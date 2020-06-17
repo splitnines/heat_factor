@@ -18,6 +18,7 @@ function enableSubmit(divId, inputId, formName) {
     // document.getElementById(divId).innerHTML = '<br />';
 
     $('#'+inputId).attr('disabled', false);
+    // $('#'+formName).trigger('reset');
     $('[name='+formName+']').trigger('reset');
     $('#'+divId).html('<br />');
 
