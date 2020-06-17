@@ -24,7 +24,12 @@
                     match. Copy-n-paste a Practiscore match URL to see the "Heat
                     Factor" of each division in that match.
                 </p>
-                <form name="myForm" action="/heat_factor/" method="POST">
+                <form
+                    id="myForm"
+                    name="myForm"
+                    action="/heat_factor/"
+                    method="POST"
+                >
                     {% csrf_token %}
                     <h3>
                         {{ practiscore_url_form.as_p }}

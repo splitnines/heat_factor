@@ -2,8 +2,10 @@ function checkForm(e, inputId, formId, regEx, msgText) {
 
     if (!regEx.test(e.value)) {
 
-        document.getElementById(formId).disabled = true;
-        document.getElementById(inputId).textContent = msgText;
+        // document.getElementById(formId).disabled = true;
+        // document.getElementById(inputId).textContent = msgText;
+        $('#'+formId).attr('disabled', true);
+        $('#'+inputId).text(msgText);
 
     }
 }
@@ -11,9 +13,13 @@ function checkForm(e, inputId, formId, regEx, msgText) {
 
 function enableSubmit(divId, inputId, formName) {
 
-    document.getElementById(inputId).disabled = false;
-    document.forms[formName].reset();
-    document.getElementById(divId).innerHTML = '<br />';
+    // document.getElementById(inputId).disabled = false;
+    // document.forms[formName].reset();
+    // document.getElementById(divId).innerHTML = '<br />';
+
+    $('#'+inputId).attr('disabled', false);
+    $('#'+formName).trigger('reset');
+    $('#'+divId).html('<br />');
 
 }
 
