@@ -20,9 +20,13 @@ function enableSubmit(divId, inputId, formName) {
 
 function displaySpinner() {
 
-    let spinner = document.getElementById('spinner');
-    spinner.innerHTML = '<br />';
-    spinner.setAttribute('class', 'loading');
+    // let spinner = document.getElementById('spinner');
+    // spinner.innerHTML = '<br />';
+    // spinner.setAttribute('class', 'loading');
+
+    let $spinner = $('#spinner').html();
+    $(spinner).append('<br />');
+    $(spinner).addClass('loading');
 
 }
 
@@ -69,21 +73,27 @@ if (document.getElementById('id_p_url')) {
 }
 
 // adds spinner to page while waiting for scores to load
-if (document.getElementById('points')) {
+// if (document.getElementById('points')) {
 
-    const points = document.getElementById('points');
-    points.addEventListener('submit', displaySpinner, false);
-}
+//     const points = document.getElementById('points');
+//     points.addEventListener('submit', displaySpinner, false);
+// }
 
-if (document.getElementById('pps')) {
+$('#points').submit(displaySpinner);
 
-    const pps = document.getElementById('pps');
-    pps.addEventListener('submit', displaySpinner, false);
-}
+// if (document.getElementById('pps')) {
+
+//     const pps = document.getElementById('pps');
+//     pps.addEventListener('submit', displaySpinner, false);
+// }
+
+$('#pps').submit(displaySpinner);
 
 
 // replace backend generated date with frontend generated date
-if (document.getElementById('date')) {
+// if (document.getElementById('date')) {
 
-    document.getElementById('date').textContent = timeStamp();
-}
+//     document.getElementById('date').textContent = timeStamp();
+// }
+
+$('#date').text(timeStamp());

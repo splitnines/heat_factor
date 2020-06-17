@@ -20,13 +20,9 @@ function enableSubmit(divId, inputId, formName) {
 
 function displaySpinner() {
 
-    // let spinner = document.getElementById('spinner');
-    // spinner.innerHTML = '<br />';
-    // spinner.setAttribute('class', 'loading');
-
-    let $spinner = $('#spinner').html();
-    $(spinner).append('<br />');
-    $(spinner).addClass('loading');
+    let spinner = document.getElementById('spinner');
+    spinner.innerHTML = '<br />';
+    spinner.setAttribute('class', 'loading');
 
 }
 
@@ -73,13 +69,11 @@ if (document.getElementById('id_p_url')) {
 }
 
 // adds spinner to page while waiting for scores to load
-// if (document.getElementById('points')) {
+if (document.getElementById('points')) {
 
-//     const points = document.getElementById('points');
-//     points.addEventListener('submit', displaySpinner, false);
-// }
-
-$('#points').submit(displaySpinner);
+    const points = document.getElementById('points');
+    points.addEventListener('submit', displaySpinner, false);
+}
 
 // if (document.getElementById('pps')) {
 
@@ -87,7 +81,7 @@ $('#points').submit(displaySpinner);
 //     pps.addEventListener('submit', displaySpinner, false);
 // }
 
-$('#pps').submit(displaySpinner);
+$('#pps').on('submit', displaySpinner())
 
 
 // replace backend generated date with frontend generated date
@@ -96,4 +90,4 @@ $('#pps').submit(displaySpinner);
 //     document.getElementById('date').textContent = timeStamp();
 // }
 
-$('#date').text(timeStamp());
+$('#date').text(timeStamp() + ' test');
