@@ -56,9 +56,10 @@ def pointspersec(form_dict):
 
     try:
         pps_dict, fn, ln = (
-            get_pps(match_defs, match_results, form_dict['mem_num'],
-                    form_dict['division']
-                )
+            get_pps(
+                match_defs, match_results, form_dict['mem_num'],
+                form_dict['division']
+            )
         )
 
     except Exception as e:
@@ -139,6 +140,9 @@ def get_match_links(form_dict):
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
 
+            from sys import stderr
+            print(login.content, file=stderr)
+
             raise Exception('"ViewAll" link not found.')
 
         if re.search(login_status_strs['success'], str(login.content)):
@@ -146,6 +150,9 @@ def get_match_links(form_dict):
             view_all_link = (
                 re.search(login_status_strs['success'], str(login.content))
             )
+
+            from sys import stderr
+            print(view_all_link.group(1), file=stderr)
 
             shooter_ps_match_links = (
                 sess.get(view_all_link.group(1), headers=headers)
