@@ -1,4 +1,3 @@
-
 function checkForm(e, inputId, formId, regEx, msgText) {
 
     if (!regEx.test(e.value)) {
@@ -82,9 +81,9 @@ if (document.getElementById('pps')) {
     pps.addEventListener('submit', displaySpinner, false);
 }
 
+
 // replace backend generated date with frontend generated date
 if (document.getElementById('date')) {
 
     document.getElementById('date').textContent = timeStamp();
-
 }

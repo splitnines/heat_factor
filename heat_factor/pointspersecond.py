@@ -141,7 +141,7 @@ def get_match_links(form_dict):
             sess.close
 
             from sys import stderr
-            print(login.content, file=stderr)
+            print(f'DEBUG: {login.content}', file=stderr)
 
             raise Exception('"ViewAll" link not found.')
 
