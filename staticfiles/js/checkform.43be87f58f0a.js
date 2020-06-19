@@ -5,7 +5,7 @@ function checkForm(e, inputId, formId, regEx, msgText) {
         // document.getElementById(formId).disabled = true;
         // document.getElementById(inputId).textContent = msgText;
         $('#'+formId).attr('disabled', true);
-        $('#'+inputId).text(msgText);
+        $('#'+inputId).text(msgText).fadeIn(500);
 
     }
 }
@@ -63,30 +63,20 @@ const regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
 const psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
 const psRegEx = new RegExp(regExStr, 'g');
 
-const $heatFactor = $('#id_p_url')
+if (document.getElementById('id_p_url')) {
 
-$heatFactor.blur(function() {
-    checkForm($heatFactor, 'checkform', 'heatfactor', psRegEx, psBadUrlMsg);
-});
+    const heatFactor = document.getElementById('id_p_url');
 
-$heatFactor.focus(function() {
-    enableSubmit('checkform', 'heatfactor', 'myForm');
-});
+    heatFactor.addEventListener('blur', function() {
+        checkForm(
+            heatFactor, 'checkform', 'heatfactor', psRegEx, psBadUrlMsg
+        );
+    }, false);
 
-// if (document.getElementById('id_p_url')) {
-
-//     const heatFactor = document.getElementById('id_p_url');
-
-//     heatFactor.addEventListener('blur', function() {
-//         checkForm(
-//             heatFactor, 'checkform', 'heatfactor', psRegEx, psBadUrlMsg
-//         );
-//     }, false);
-
-//     heatFactor.addEventListener('focus', function() {
-//         enableSubmit('checkform', 'heatfactor', 'myForm');
-//     }, false);
-// }
+    heatFactor.addEventListener('focus', function() {
+        enableSubmit('checkform', 'heatfactor', 'myForm');
+    }, false);
+}
 
 // adds spinner to page while waiting for scores to load
 // if (document.getElementById('points')) {
