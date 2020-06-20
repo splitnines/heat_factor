@@ -31,7 +31,7 @@ class ClassificationWhatIf:
 
         self.bs = http_get(self.mem_num, self.division)
         self.current_pct = get_classification_pct(self.bs, self.division)
-        self.shooter_class = get_classification_letter(self.bs, self.division)
+        self.shooter_class = classification_letter(self.bs, self.division)
 
     def get_upped(self):
         """
@@ -39,7 +39,7 @@ class ClassificationWhatIf:
             [float] -- the percent needed for a shooter to move up a
                        classification level.
         """
-        scores = get_scores(self.bs, self.division)
+        scores = calc_scores(self.bs, self.division)
 
         return (
             round(
@@ -60,7 +60,7 @@ class ClassificationWhatIf:
             [dict] -- keys are the classification letter, values are the
                       percent score needed to achieve that class.
         """
-        scores = get_scores(self.bs, self.division)
+        scores = calc_scores(self.bs, self.division)
 
         if self.shooter_class == 'U':
             if scores['count'] > 2:
@@ -125,7 +125,7 @@ def http_get(mem_num, division):
     return bs
 
 
-def get_classifier_scores(bs, division):
+def classifier_scores(bs, division):
     """Retreives the valid classifier scores that make up the shooters
        current classification.
 
@@ -190,7 +190,7 @@ def get_classification_pct(bs, division):
     return None
 
 
-def get_classification_letter(bs, division):
+def classification_letter(bs, division):
     """Retrieves shooters current classification percent.
 
     Arguments:
@@ -225,7 +225,7 @@ def get_classification_letter(bs, division):
     return None
 
 
-def get_scores(bs, division):
+def calc_scores(bs, division):
     """Calculate the sum of the shooters most recent valid classifier scores.
 
     Arguments:
@@ -239,7 +239,7 @@ def get_scores(bs, division):
     """
     scores = {'sum': 0, 'count': 0}
 
-    for score in get_classifier_scores(bs, division):
+    for score in classifier_scores(bs, division):
         if scores['count'] < 5:
 
             scores['sum'] += score[1]
