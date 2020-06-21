@@ -1,15 +1,17 @@
-function checkForm(e, inputId, formId, regEx, msgText) {
-    if (!regEx.test(e[0].value)) {
+function checkForm(heatFactor, inputId, formId, regEx, msgText) {
+    if (!regEx.test(heatFactor)) {
         $('#'+formId).attr('disabled', true);
-        $('#'+inputId).fadeIn(5000).text(msgText);
+        $('#'+inputId).html(msgText)
+        .css('display', 'inline-block')
+        .fadeIn(500);
     }
 }
 
-function enableSubmit(divId, inputId, formName) {
-    $('#'+inputId).attr('disabled', false);
-    $('[name='+formName+']').trigger('reset');
-    $('#'+divId).html('<br />');
-}
+// function enableSubmit(divId, inputId, formName) {
+//     $('#'+inputId).attr('disabled', false);
+//     $('[name='+formName+']').trigger('reset');
+//     $('#'+divId).html('<br />');
+// }
 
 function displaySpinner() {
     let $spinner = $('#spinner').html();
@@ -38,14 +40,23 @@ const regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
 const psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
 const psRegEx = new RegExp(regExStr, 'g');
 
-const $heatFactor = $('#id_p_url')
+const $heatFactorBtn = $('#heatfactor')
+const $heatFactorInput = $('#id_p_url')
 
-$heatFactor.blur(function() {
-    checkForm($heatFactor, 'checkform', 'heatfactor', psRegEx, psBadUrlMsg);
+$heatFactorBtn.on('click', function() {
+    checkForm(
+        $heatFactorInput[0].value, 'checkform',
+        'heatfactor', psRegEx, psBadUrlMsg
+    );
 });
 
-$heatFactor.focus(function() {
-    enableSubmit('checkform', 'heatfactor', 'myForm');
+$heatFactorInput.on('focus', function() {
+    $('#heatfactor').attr('disabled', false);
+    $('[name=myForm]').trigger('reset');
+    $('#checkform').fadeOut(1500);
+    // .css('display', 'inline-block');
+
+    // enableSubmit('checkform', 'heatfactor', 'myForm');
 });
 
 // adds spinner to page while waiting for scores to load
