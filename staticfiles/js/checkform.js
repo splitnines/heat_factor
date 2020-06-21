@@ -1,11 +1,11 @@
-function checkForm(heatFactor, inputId, formId, regEx, msgText) {
-    if (!regEx.test(heatFactor)) {
-        $('#'+formId).attr('disabled', true);
-        $('#'+inputId).html(msgText)
-        .css('display', 'inline-block')
-        .fadeIn(500);
-    }
-}
+// function checkForm(heatFactor, inputId, formId, regEx, msgText) {
+//     if (!regEx.test(heatFactor)) {
+//         $('#'+formId).attr('disabled', true);
+//         $('#'+inputId).html(msgText)
+//         .css('display', 'inline-block')
+//         .fadeIn(500);
+//     }
+// }
 
 // function enableSubmit(divId, inputId, formName) {
 //     $('#'+inputId).attr('disabled', false);
@@ -44,10 +44,16 @@ const $heatFactorBtn = $('#heatfactor')
 const $heatFactorInput = $('#id_p_url')
 
 $heatFactorBtn.on('click', function() {
-    checkForm(
-        $heatFactorInput[0].value, 'checkform',
-        'heatfactor', psRegEx, psBadUrlMsg
-    );
+    if (!psRegEx.test($heatFactorInput[0].value)) {
+        $('#heatfactor').attr('disabled', true);
+        $('#checkform').fadeIn(1000).delay(1000)
+        .html(psBadUrlMsg)
+        .css('display', 'inline-block');
+    }
+    // checkForm(
+    //     $heatFactorInput[0].value, 'checkform',
+    //     'heatfactor', psRegEx, psBadUrlMsg
+    // );
 });
 
 $heatFactorInput.on('focus', function() {
