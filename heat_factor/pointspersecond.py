@@ -140,9 +140,6 @@ def get_match_links(form_dict):
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
 
-            from sys import stderr
-            print(f'DEBUG: {login.content}', file=stderr)
-
             raise Exception('"ViewAll" link not found.')
 
         if re.search(login_status_strs['success'], str(login.content)):
