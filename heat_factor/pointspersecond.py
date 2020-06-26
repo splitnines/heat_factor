@@ -148,9 +148,6 @@ def get_match_links(form_dict):
                 re.search(login_status_strs['success'], str(login.content))
             )
 
-            from sys import stderr
-            print(view_all_link.group(1), file=stderr)
-
             shooter_ps_match_links = (
                 sess.get(view_all_link.group(1), headers=headers)
             )
@@ -199,7 +196,7 @@ def get_match_links(form_dict):
             dt.date.fromisoformat(match_date_range['start_date']) and
             dt.date.fromisoformat(match_link_info['date']) <=
             dt.date.fromisoformat(match_date_range['end_date']) and
-            dt.date.fromisoformat(match_link_info['date']) not in
+            str(dt.date.fromisoformat(match_link_info['date'])) not in
             delete_list
         ):
             match_links_json.append(match_link_info)
