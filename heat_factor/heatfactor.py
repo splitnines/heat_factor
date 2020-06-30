@@ -32,12 +32,11 @@ def heatfactor(url):
             chart = get_chart(get_match_def(url))
 
         except Exception:
-
             raise Exception('Error downloading AWS S3 json file.')
 
         return chart
-    else:
 
+    else:
         raise Exception('Bad URL.')
 
 
@@ -83,7 +82,6 @@ def get_match_def(match_link):
         )
 
     except Exception:
-
         raise Exception('Error downloading AWS S3 json file.')
 
     return match_def

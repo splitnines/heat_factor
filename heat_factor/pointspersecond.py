@@ -38,14 +38,12 @@ def pointspersec(form_dict):
         check_mem_num(form_dict['mem_num'])
 
     except Exception:
-
         raise Exception('USPSA membership number not found.')
 
     try:
         match_links = get_match_links(form_dict)
 
     except Exception as e:
-
         raise Exception(e)
 
     try:
@@ -88,7 +86,6 @@ def check_mem_num(mem_num):
     oops_re = re.compile('Oops!')
 
     if oops_re.search(uspsa_org_response):
-
         raise Exception
 
 
@@ -129,17 +126,14 @@ def get_match_links(form_dict):
 
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
-
             raise Exception('Bad password.')
 
         if re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
-
             raise Exception('Bad email/username')
 
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
-
             raise Exception('"ViewAll" link not found.')
 
         if re.search(login_status_strs['success'], str(login.content)):
@@ -221,7 +215,6 @@ async def http_get(url, session):
             return await response.text()
 
     except Exception:
-
         raise Exception(f'Error downloading {url}')
 
 
@@ -432,24 +425,3 @@ def pps_plot(pps_dict, fn, ln, form_dict):
     image = image.decode('utf-8')
 
     return image
-
-    # testing and development
-    # return plt
-
-
-# for tesing and development
-# today = dt.date.today()
-
-# form_dict = {
-#     'username': 'splitnines@gmail.com',
-#     'password': '',
-#     'mem_num': 'A106663',
-#     'division': 'Production',
-#     'end_date': str(today),
-#     'start_date': '2019-08-01',
-#     'delete_match': '2020-01-26',
-# }
-
-# image = pointspersec(form_dict)
-
-# image.show()

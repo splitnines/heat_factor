@@ -15,7 +15,6 @@ from .pointspersecond import pointspersec
 
 def sys_logger(app_name, *app_data):
     """Poor excuse for a logging system"""
-
     print(f'SYS_LOGGER: {app_name}, {app_data}', file=sys.stderr)
 
 
@@ -359,10 +358,8 @@ def pps(request):
 
 
 def error(request):
-
     return render(request, 'error.html')
 
 
 def covid_da(request):
-
     return render(request, 'COVID-19_data_analysis.html')

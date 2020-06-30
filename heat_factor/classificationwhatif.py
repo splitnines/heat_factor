@@ -119,7 +119,6 @@ def http_get(mem_num, division):
     bs = BeautifulSoup(http_resp.text, 'lxml')
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
-
         raise Exception
 
     return bs
@@ -182,7 +181,6 @@ def get_classification_pct(bs, division):
             )
 
             if classification_pct == 'X':
-
                 raise Exception
 
             return float(classification_pct)
@@ -217,7 +215,6 @@ def classification_letter(bs, division):
             )
 
             if classification_letter == 'X':
-
                 raise Exception
 
             return classification_letter

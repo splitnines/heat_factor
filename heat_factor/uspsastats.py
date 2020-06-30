@@ -40,14 +40,12 @@ def uspsastats(form_data):
         check_mem_num(form_data['mem_num'])
 
     except Exception:
-
         raise Exception('USPSA membership number not found.')
 
     try:
         match_links_json = get_match_links(form_data)
 
     except Exception as e:
-
         raise Exception(e)
 
     match_date_range = {
@@ -206,7 +204,6 @@ def check_mem_num(mem_num):
     oops_re = re.compile('Oops!')
 
     if oops_re.search(uspsa_org_response):
-
         raise Exception
 
 
@@ -247,17 +244,14 @@ def get_match_links(form_dict):
 
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
-
             raise Exception('Bad password.')
 
         if re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
-
             raise Exception('Bad email/username')
 
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
-
             raise Exception('"ViewAll" link not found.')
 
         if re.search(login_status_strs['success'], str(login.content)):
@@ -307,7 +301,6 @@ async def http_get(url, session):
             return await response.text()
 
     except Exception:
-
         raise Exception(f'Error downloading {url}')
 
 
@@ -463,7 +456,6 @@ def get_dataframe(
         match_def_data, match_scores_data = event_loop(http_sess, json_obj)
 
     except Exception:
-
         raise Exception
 
     match_def_json = (json.loads(i) for i in match_def_data)
@@ -574,10 +566,6 @@ def get_dataframe(
     )
 
     scores_df.sort_values(by=['Match Date'], inplace=True)
-
-    # for tesing purposes, dumping the dataframe to a csv file
-    # path = 'C:\\Users\\rickey\\Desktop\\db_proj\\scores.csv'
-    # scores_df.to_csv(path, index=False)
 
     return scores_df, shooter_fname, shooter_lname
 
