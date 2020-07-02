@@ -2,13 +2,8 @@ $(function() {
 
     function displaySpinner() {
         let $spinner = $('#spinner').html();
-        // $(spinner).append('<br />');
+        $(spinner).append('<br />');
         $(spinner).addClass('loading');
-    }
-
-    function removeSpinner() {
-        let $spinner = $('#spinner').html();
-        $(spinner).removeClass('loading');
     }
 
     function padZero(num) {
@@ -61,35 +56,5 @@ $(function() {
 
     $('#classificationCalc').submit(function(e) {
         e.preventDefault();
-        var url = $(this).attr('action');
-        var formData = $(this).serialize();
-        $('#responseHTML').empty().removeClass('resp');
-        displaySpinner();
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: formData,
-            success: function(resp) {
-                removeSpinner();
-                $('#responseHTML')
-                .addClass('resp')
-                .html($(resp)[15].innerHTML)
-                .hide()
-                .fadeIn(1000);
-            },
-            error: function() {
-                removeSpinner();
-                $('#responseHTML')
-                .addClass('resp')
-                .html('<font color="red">An error occured.</font')
-                .hide()
-                .fadeIn(1000);
-            },
-        });
-    });
-    $('#id_mem_num_1').focus(function() {
-        $('#classificationCalc').trigger('reset');
-
     });
 });

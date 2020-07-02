@@ -44,7 +44,7 @@
             <div class="seperator">
                 <div class="stripe">
                     <center>
-                        <h2>Classifaction Calculator</h2>
+                        <h2>Classification Calculator</h2>
                     </center>
                 </div>
                 <p>
@@ -52,13 +52,18 @@
                     and this will tell what percentage you need on your next
                     classifier to move up a class.
                 </p>
-                <form action="/get_upped/" method="POST">
+                <form
+                    id="classificationCalc"
+                    action="/get_upped/"
+                    method="POST"
+                >
                     {% csrf_token %}
                     <h3>
                         {{ get_upped_form.as_p }}
                     </h3>
                     <br />
                     <input class="btn" type="submit" value="Make Ready" />
+                    <div id="responseHTML"></div>
                 </form>
             </div>
         </div>

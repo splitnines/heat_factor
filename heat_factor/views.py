@@ -165,7 +165,7 @@ def get_upped(request):
         content = {
             'response_text': f"""
                 You\'re a <font color=\"red\">{shooter.get_shooter_class()}
-                </font>. Nowhere to go from here"""
+                </font>. Nowhere to go from here."""
         }
 
         return render(request, 'get_upped.html', content)

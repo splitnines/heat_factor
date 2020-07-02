@@ -124,10 +124,4 @@ header {
 
 .resp {
     background-color: pink;
-    color: black;
-    border: 2px solid rgba(0, 0, 0, 0.9);
-    font-size: 1.50rem;
-    font-weight: 600;
-    outline: mediumvioletred;
-    padding: 0.2rem 0.4rem;
 }

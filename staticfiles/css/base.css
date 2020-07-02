@@ -14,38 +14,6 @@ body {
     color: rgb(173, 216, 230)
 }
 
-/* div.quads {
-    width: 50%;
-    height: 50%;
-    float: left;
-}
-
-.q1 {
-    top: 0;
-    left: 50%;
-}
-
-.q2 {
-    top: 0;
-    left: 50%;
-}
-
-.q3 {
-    top: 50%;
-    left: 0;
-}
-
-.q4 {
-    top: 50%;
-    left: 50%;
-}
-
-.seperator {
-    margin: 15px;
-    padding: 0;
-} */
-
-
 .stripe {
     color: rgba(0, 0, 0, 1.0);
     background-color: rgba(173, 216, 230, 1.0);
@@ -97,20 +65,6 @@ header {
     margin-bottom: 2rem;
     display: flex;
 }
-
-/* header h1 a {
-    color: red;
-    text-decoration: none;
-} */
-
-/* .nav-left {
-    margin-right: auto;
-} */
-
-/* .nav-right {
-    display: flex;
-    padding-top: 2rem;
-} */
 
 .btn {
     padding: 0.2rem 0.6rem;
@@ -166,4 +120,14 @@ header {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.resp {
+    background-color: pink;
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    font-size: 1.50rem;
+    font-weight: 600;
+    outline: mediumvioletred;
+    padding: 0.2rem 0.4rem;
 }
