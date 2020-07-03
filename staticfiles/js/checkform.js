@@ -70,6 +70,7 @@ $(() => {
             data: formData,
             beforeSend: () => {
                 $('#responseHTML')
+                .slideUp(600)
                 .empty()
                 .removeClass('resp');
                 displaySpinner();
@@ -82,14 +83,14 @@ $(() => {
                 .addClass('resp')
                 .html($(resp)[15].innerHTML)
                 .hide()
-                .fadeIn(1000);
+                .slideDown(600);
             },
             error: () => {
                 $('#responseHTML')
                 .addClass('resp')
                 .html(errorHtml)
                 .hide()
-                .fadeIn(1000);
+                .slideDown(600);
             },
         });
     });
