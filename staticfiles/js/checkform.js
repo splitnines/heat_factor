@@ -1,4 +1,4 @@
-$(function() {
+$(() => {
 
     function displaySpinner() {
         $(spinner).addClass('loading');
@@ -28,7 +28,7 @@ $(function() {
     var psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
     var psRegEx = new RegExp(regExStr, 'g');
 
-    $('#heatfactor').click(function(e) {
+    $('#heatfactor').click((e) => {
         if (!psRegEx.test($('#id_p_url')[0].value)) {
             e.preventDefault();
             $('#checkform').fadeIn(1000).delay(1000)
@@ -39,9 +39,9 @@ $(function() {
         }
     });
 
-    $('#id_p_url').focus(function() {
+    $('#id_p_url').focus(() => {
         $('[name=myForm]').trigger('reset');
-        $('#checkform').fadeOut(1500);
+        $('#checkform').fadeOut(1000);
     });
 
     // adds spinner to page while waiting for scores to load
