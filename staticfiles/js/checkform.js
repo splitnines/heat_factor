@@ -45,12 +45,12 @@ $(function() {
     });
 
     // adds spinner to page while waiting for scores to load
-    $('#points').submit(function() {
+    $('#points').submit(() => {
         displaySpinner()
     });
 
     // adds spinner to page while waiting for pps to load
-    $('#pps').submit(function() {
+    $('#pps').submit(() => {
         displaySpinner()
     });
 
@@ -67,21 +67,21 @@ $(function() {
             type: 'POST',
             url: url,
             data: formData,
-            beforeSend: function() {
+            beforeSend: () => {
                 $('#responseHTML').empty().removeClass('resp');
                 displaySpinner();
             },
-            complete: function() {
+            complete: () => {
                 removeSpinner();
             },
-            success: function(resp) {
+            success: (resp) => {
                 $('#responseHTML')
                 .addClass('resp')
                 .html($(resp)[15].innerHTML)
                 .hide()
                 .fadeIn(1000);
             },
-            error: function() {
+            error: () => {
                 $('#responseHTML')
                 .addClass('resp')
                 .html('<font color="red">Sorry, an error occured.</font')
@@ -92,7 +92,7 @@ $(function() {
     });
 
     // reset form data on focus
-    $('#id_mem_num_1').focus(function() {
+    $('#id_mem_num_1').focus(() => {
         $('#classificationCalc').trigger('reset');
     });
 
