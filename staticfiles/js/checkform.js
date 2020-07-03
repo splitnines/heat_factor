@@ -62,13 +62,16 @@ $(() => {
         e.preventDefault();
         var url = $(this).attr('action');
         var formData = $(this).serialize();
+        var errorHtml = '<font color="red">Sorry, an error occured.</font>'
 
         $.ajax({
             type: 'POST',
             url: url,
             data: formData,
             beforeSend: () => {
-                $('#responseHTML').empty().removeClass('resp');
+                $('#responseHTML')
+                .empty()
+                .removeClass('resp');
                 displaySpinner();
             },
             complete: () => {
@@ -84,7 +87,7 @@ $(() => {
             error: () => {
                 $('#responseHTML')
                 .addClass('resp')
-                .html('<font color="red">Sorry, an error occured.</font')
+                .html(errorHtml)
                 .hide()
                 .fadeIn(1000);
             },
