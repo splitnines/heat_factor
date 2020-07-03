@@ -1,21 +1,25 @@
 $(function() {
 
     function displaySpinner() {
+        let $spinner = $('#spinner').html();
+        // $(spinner).append('<br />');
         $(spinner).addClass('loading');
     }
 
     function removeSpinner() {
+        let $spinner = $('#spinner').html();
         $(spinner).removeClass('loading');
     }
 
     function padZero(num) {
+
         return (num < 10 ? '0' : '') + num
     }
 
     function timeStamp() {
-        var today = new Date();
+        const today = new Date();
 
-        var ts = today.toDateString() + ' ';
+        let ts = today.toDateString() + ' ';
         ts += padZero(today.getHours()) + ':';
         ts += padZero(today.getMinutes()) + ':';
         ts += padZero(today.getSeconds());
@@ -24,40 +28,37 @@ $(function() {
     }
 
     // form validation and button manipulation based on URL input
-    var regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
-    var psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
-    var psRegEx = new RegExp(regExStr, 'g');
+    const regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
+    const psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
+    const psRegEx = new RegExp(regExStr, 'g');
 
-    $('#heatfactor').click(function(e) {
-        if (!psRegEx.test($('#id_p_url')[0].value)) {
-            e.preventDefault();
+    const $heatFactorBtn = $('#heatfactor')
+    const $heatFactorInput = $('#id_p_url')
+
+    $heatFactorBtn.on('click', function() {
+        if (!psRegEx.test($heatFactorInput[0].value)) {
+            $('#heatfactor').attr('disabled', true);
             $('#checkform').fadeIn(1000).delay(1000)
             .html(psBadUrlMsg)
             .css('display', 'inline-block');
-        } else {
-            displaySpinner();
         }
     });
 
-    $('#id_p_url').focus(function() {
+    $heatFactorInput.on('focus', function() {
+        $('#heatfactor').attr('disabled', false);
         $('[name=myForm]').trigger('reset');
         $('#checkform').fadeOut(1500);
     });
 
     // adds spinner to page while waiting for scores to load
-    $('#points').submit(function() {
-        displaySpinner()
-    });
+    $('#points').submit(displaySpinner)
 
     // adds spinner to page while waiting for pps to load
-    $('#pps').submit(function() {
-        displaySpinner()
-    });
+    $('#pps').submit(displaySpinner);
 
     // replace backend generated date with frontend generated date
     $('#date').text(timeStamp());
 
-    // display results of get_upped app on current page
     $('#classificationCalc').submit(function(e) {
         e.preventDefault();
         var url = $(this).attr('action');
@@ -84,14 +85,13 @@ $(function() {
             error: function() {
                 $('#responseHTML')
                 .addClass('resp')
-                .html('<font color="red">Sorry, an error occured.</font')
+                .html('<font color="red">An error occured.</font')
                 .hide()
                 .fadeIn(1000);
             },
         });
     });
 
-    // reset form data on focus
     $('#id_mem_num_1').focus(function() {
         $('#classificationCalc').trigger('reset');
     });
