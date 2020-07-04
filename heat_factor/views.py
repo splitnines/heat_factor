@@ -254,8 +254,10 @@ def points(request):
         ),
     }
 
-    sys_logger('points', form_data['mem_num'], form_data['division'])
-
+    sys_logger(
+        'points', form_data['mem_num'], form_data['division'],
+        form_data.get('username')
+    )
     try:
         image = uspsastats(form_data)
 
