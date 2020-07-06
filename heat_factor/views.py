@@ -27,27 +27,6 @@ def home(request):
     Returns:
         [object] -- HTTPResponse object
     """
-    if request.method == 'POST':
-        if (
-            PractiscoreUrlForm(request.POST).is_valid() and
-            GetUppedForm(request.POST).is_valid() and
-            AccuStatsForm1(request.POST).is_valid() and
-            PPSForm1(request.POST).is_valid()
-        ):
-
-            forms = {
-                'practiscore_url_form': PractiscoreUrlForm(request.POST),
-                'get_upped_form': GetUppedForm(request.POST),
-                'accu_stats_form1': AccuStatsForm1(request.POST),
-                'pps_form1': PPSForm1(request.POST),
-            }
-
-            return render(request, 'home.html', forms)
-
-        else:
-
-            return HttpResponseRedirect('/')
-
     if request.method == 'GET':
         forms = {
             'practiscore_url_form': PractiscoreUrlForm(),
@@ -69,12 +48,12 @@ def heat_factor(request):
         [dict] -- renders the content to the url in the form of a dict
                   containing the matplotlib image and the data.
     """
+    sys_logger('heat_factor', request.POST.get('p_url'))
+
     try:
         chart = heatfactor(request.POST.get('p_url'))
-        sys_logger('heat_factor', request.POST.get('p_url'))
 
     except Exception as e:
-
         if re.match('Error downloading AWS S3 json file.', e.args[0]):
             exception_content = {
                 'message': e.args[0]
@@ -237,7 +216,6 @@ def points(request):
     """
     if request.method == 'POST':
         if AccuStatsForm2(request.POST).is_valid():
-
             form_data = {
                 'username': request.POST.get('username'),
                 'password': request.POST.get('password'),
