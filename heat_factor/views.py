@@ -235,39 +235,48 @@ def points(request):
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception
     """
-    form_data = {
-        'username': request.POST.get('username'),
-        'password': request.POST.get('password'),
-        'mem_num': request.POST.get('mem_num'),
-        'division': request.POST.get('division'),
-        'delete_match': (
-            request.POST.get('delete_match')
-            if isinstance(request.POST.get('delete_match'), str) else ''
-        ),
-        'shooter_end_date': (
-            request.POST.get('shooter_end_date')
-            if isinstance(request.POST.get('shooter_end_date'), str) else ''
-        ),
-        'shooter_start_date': (
-            request.POST.get('shooter_start_date')
-            if isinstance(request.POST.get('shooter_start_date'), str) else ''
-        ),
-    }
-
-    sys_logger('points', form_data.get('mem_num'), form_data.get('division'))
-
-    try:
-        image = uspsastats(form_data)
-
-    except Exception as e:
-        exception_content = {
-            'message': e.args[0],
-        }
-
-        return render(request, 'error.html', exception_content)
-
     if request.method == 'POST':
         if AccuStatsForm2(request.POST).is_valid():
+
+            form_data = {
+                'username': request.POST.get('username'),
+                'password': request.POST.get('password'),
+                'mem_num': request.POST.get('mem_num'),
+                'division': request.POST.get('division'),
+                'delete_match': (
+                    request.POST.get('delete_match')
+                    if isinstance(
+                        request.POST.get('delete_match'), str
+                    ) else ''
+                ),
+                'shooter_end_date': (
+                    request.POST.get('shooter_end_date')
+                    if isinstance(
+                        request.POST.get('shooter_end_date'), str
+                    ) else ''
+                ),
+                'shooter_start_date': (
+                    request.POST.get('shooter_start_date')
+                    if isinstance(
+                        request.POST.get('shooter_start_date'), str
+                    ) else ''
+                ),
+            }
+
+            sys_logger(
+                'points', form_data.get('mem_num'), form_data.get('division')
+            )
+
+            try:
+                image = uspsastats(form_data)
+
+            except Exception as e:
+                exception_content = {
+                    'message': e.args[0],
+                }
+
+                return render(request, 'error.html', exception_content)
+
             content = {
                 'graph': image,
                 'date': dt.datetime.now(),
@@ -281,13 +290,11 @@ def points(request):
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-        content = {
-            'graph': image,
-            'date': dt.datetime.now(),
-            'accu_stats_form2': AccuStatsForm2(),
-        }
+        exception_content = {
+                    'message': 'You\'re doing it wrong.'
+                }
 
-        return render(request, 'points.html', content)
+        return render(request, 'error.html', exception_content)
 
 
 def pps(request):
@@ -302,39 +309,46 @@ def pps(request):
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception
     """
-    form_data = {
-        'username': request.POST.get('username_pps'),
-        'password': request.POST.get('password_pps'),
-        'mem_num': request.POST.get('mem_num_pps'),
-        'division': request.POST.get('division_pps'),
-        'delete_match': (
-            request.POST.get('delete_match_pps')
-            if isinstance(request.POST.get('delete_match_pps'), str) else ''
-        ),
-        'end_date': (
-            request.POST.get('end_date_pps')
-            if isinstance(request.POST.get('end_date_pps'), str) else ''
-        ),
-        'start_date': (
-            request.POST.get('start_date_pps')
-            if isinstance(request.POST.get('start_date_pps'), str) else ''
-        ),
-    }
-
-    sys_logger('pps', form_data['mem_num'], form_data['division'])
-
-    try:
-        image = pointspersec(form_data)
-
-    except Exception as e:
-        exception_content = {
-            'message': e.args[0],
-        }
-
-        return render(request, 'error.html', exception_content)
-
     if request.method == 'POST':
         if PPSForm2(request.POST).is_valid():
+
+            form_data = {
+                'username': request.POST.get('username_pps'),
+                'password': request.POST.get('password_pps'),
+                'mem_num': request.POST.get('mem_num_pps'),
+                'division': request.POST.get('division_pps'),
+                'delete_match': (
+                    request.POST.get('delete_match_pps')
+                    if isinstance(
+                        request.POST.get('delete_match_pps'), str
+                    ) else ''
+                ),
+                'end_date': (
+                    request.POST.get('end_date_pps')
+                    if isinstance(
+                        request.POST.get('end_date_pps'), str
+                    ) else ''
+                ),
+                'start_date': (
+                    request.POST.get('start_date_pps')
+                    if isinstance(
+                        request.POST.get('start_date_pps'), str
+                    )else ''
+                ),
+            }
+
+            sys_logger('pps', form_data['mem_num'], form_data['division'])
+
+            try:
+                image = pointspersec(form_data)
+
+            except Exception as e:
+                exception_content = {
+                    'message': e.args[0],
+                }
+
+                return render(request, 'error.html', exception_content)
+
             content = {
                 'image': image,
                 'date': dt.datetime.now(),
@@ -348,13 +362,11 @@ def pps(request):
             return HttpResponseRedirect('/')
 
     if request.method == 'GET':
-        content = {
-            'image': image,
-            'date': dt.datetime.now(),
-            'pps_form2': PPSForm2(),
-        }
+        exception_content = {
+                    'message': 'You\'re doing it wrong.'
+                }
 
-        return render(request, 'pps.html', content)
+        return render(request, 'error.html', exception_content)
 
 
 def error(request):

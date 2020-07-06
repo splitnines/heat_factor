@@ -1,5 +1,29 @@
 import os
+
+from django.core.exceptions import ImproperlyConfigured
+
 import django_heroku
+
+
+def get_secret(setting):
+    """Get the environment variable for sensitive data
+
+    Args:
+        setting (str): environment variable name
+
+    Raises:
+        ImproperlyConfigured: when environ var is not defined
+
+    Returns:
+        str: environment variable
+    """
+    try:
+        return os.environ.get(setting)
+
+    except KeyError:
+        error_msg = f'Set the {setting} environment variable.'
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
