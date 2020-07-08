@@ -2,7 +2,6 @@ import datetime as dt
 import re
 import sys
 
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 
 from .classificationwhatif import ClassificationWhatIf
@@ -361,5 +360,5 @@ def error(request):
     return render(request, 'error.html')
 
 
-def covid_da(request):
-    return render(request, 'COVID-19_data_analysis.html')
+# def covid_da(request):
+#     return render(request, 'COVID-19_data_analysis.html')
