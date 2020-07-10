@@ -260,11 +260,12 @@ def event_loop(func, *args):
     Returns:
         [object] -- returns whatever is received from the called function.
     """
-    # why do I have to use Selector???
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
     response = (loop.run_until_complete(func(*args)))
     loop.close()
+
+    # response = asyncio.run(func(*args))
 
     return response
 
