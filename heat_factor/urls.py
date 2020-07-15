@@ -1,15 +1,17 @@
 from django.urls import path
 from django.views.generic import RedirectView
-from . import views
+
+from .views import *
 
 urlpatterns = [
-    path('', views.home),
-    path('points/', views.points),
-    path('heat_factor/', views.heat_factor),
-    path('bad_url/', views.bad_url),
-    path('get_upped/', views.get_upped),
-    path('error/', views.error),
-    path('pps/', views.pps),
-    # path('COVID-19_data_analysis', views.covid_da),
-    path('favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')),
+    path('', home_view),
+    path('points/', points_view),
+    path('heat_factor/', heat_factor_view),
+    path('bad_url/', bad_url_view),
+    path('get_upped/', get_upped_view),
+    path('error/', error_view),
+    path('pps/', pps_view),
+    path(
+        'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
+    ),
 ]

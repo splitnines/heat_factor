@@ -17,7 +17,7 @@ def sys_logger(app_name, *app_data):
     print(f'SYS_LOGGER: {app_name}, {app_data}', file=sys.stderr)
 
 
-def home(request):
+def home_view(request):
     """Routes to site home page template.
 
     Arguments:
@@ -41,7 +41,7 @@ def home(request):
         return redirect('')
 
 
-def heat_factor(request):
+def heat_factor_view(request):
     """Renders the Heat Factor graph for a given USPSA match link.
 
     Arguments:
@@ -87,7 +87,7 @@ def heat_factor(request):
     return render(request, 'heat_factor.html', content)
 
 
-def bad_url(request):
+def bad_url_view(request):
     """Routes to bad_url.html for heat_factor function.  When the user
        provides an incorrect practiscore URL this function is called.  This
        acts as a backup to the javascript function doing form validation
@@ -107,7 +107,7 @@ def bad_url(request):
         return render(request, 'bad_url.html', forms)
 
 
-def get_upped(request):
+def get_upped_view(request):
     """Creates a ClassificationWhatIf object and calls various methods on that
        object to produce the percentage a shooter needs to move up a class or
        for a new shooter to get an initial classification.
@@ -213,7 +213,7 @@ def get_upped(request):
         return render(request, 'get_upped.html', content)
 
 
-def points(request):
+def points_view(request):
     """Handles the interface between the HTML template containing the user
        supplied data and the backend API interface that produces an image
 
@@ -285,7 +285,7 @@ def points(request):
     return render(request, 'points.html', content)
 
 
-def pps(request):
+def pps_view(request):
     """Handles the interface between the HTML template containing the user
        supplied data and the backend API interface that produces an image
 
@@ -356,9 +356,5 @@ def pps(request):
     return render(request, 'pps.html', content)
 
 
-def error(request):
+def error_view(request):
     return render(request, 'error.html')
-
-
-# def covid_da(request):
-#     return render(request, 'COVID-19_data_analysis.html')
