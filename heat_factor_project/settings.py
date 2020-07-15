@@ -38,6 +38,12 @@ DEBUG = os.environ.get('DEBUG_VALUE', False)
 
 ALLOWED_HOSTS = [str(os.environ.get('ALLOWED_HOSTS'))]
 
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+SECURE_SSL_REDIRECT = True
+
 
 # Application definition
 
