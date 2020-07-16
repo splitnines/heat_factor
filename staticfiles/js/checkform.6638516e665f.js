@@ -61,7 +61,6 @@ $(() => {
     $('#classificationCalc').submit(function(e) {
 
         e.preventDefault();
-
         var url = $(this).attr('action');
         var formData = $(this).serialize();
         var errorHtml = '<font color="red">Sorry, an error occured.</font>'
@@ -77,11 +76,9 @@ $(() => {
                 .removeClass('resp');
                 displaySpinner();
             },
-
             complete: () => {
                 removeSpinner();
             },
-
             success: (resp) => {
                 $('#responseHTML')
                 .addClass('resp')
@@ -89,7 +86,6 @@ $(() => {
                 .hide()
                 .slideDown(600);
             },
-
             error: () => {
                 $('#responseHTML')
                 .addClass('resp')
