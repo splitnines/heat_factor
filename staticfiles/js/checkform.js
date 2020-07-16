@@ -100,4 +100,22 @@ $(() => {
         $('#classificationCalc').trigger('reset');
     });
 
+    // embed most recent youtube video from my channel
+    var youtubeChannelId = "UC_QPi6_8WRZ1bXgShJAzSbg";
+    var youtubeChannelUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=";
+    var rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+    var embeddedUrl = rss2jsonUrl;
+    embeddedUrl += encodeURIComponent(youtubeChannelUrl);
+    embeddedUrl += youtubeChannelId;
+    console.log(embeddedUrl)
+
+    $.getJSON(embeddedUrl, function(data) {
+
+            var link = data.items[0].link;
+            var id = link.substr(link.indexOf("=")+1);
+
+            $("#youtubeVideo").attr("src","https://youtube.com/embed/" + id + "?controls=0&showinfo=0&rel=0");
+    });
+
 });
