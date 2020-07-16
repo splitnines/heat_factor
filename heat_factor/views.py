@@ -280,7 +280,7 @@ def points_view(request):
         'graph': image,
         'date': dt.datetime.now(),
         'accu_stats_form2': AccuStatsForm2(),
-        }
+    }
 
     return render(request, 'points.html', content)
 

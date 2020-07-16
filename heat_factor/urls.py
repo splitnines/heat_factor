@@ -1,7 +1,10 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views import *
+from .views import (
+    home_view, points_view, heat_factor_view, bad_url_view,
+    get_upped_view, error_view, pps_view
+)
 
 urlpatterns = [
     path('', home_view),
