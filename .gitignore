@@ -10,5 +10,5 @@ heat_factor/classificationwhatif_old.py
 .vscode/*
 .vscode/
 heat_factor/README.md
-./README.md
-heat_factor/heat_factor_project/settings_dev.py
+README.md
+heat_factor_project/settings_dev.py
