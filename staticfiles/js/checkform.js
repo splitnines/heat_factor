@@ -126,4 +126,28 @@ $(() => {
         $("#youtubeVideo").attr("src","https://youtube.com/embed/" + id + "?controls=0&showinfo=0&rel=0");
     });
 
+    $('#pointsImg').click(() => {
+        $('#pointsMyModal').css('display', 'block');
+        $('#img01').attr('src', $('#pointsImg').attr('src'))
+        $('#pointsCaption').html($('#pointsImg').attr('alt'));
+        $('.modal-content-1').css('width', '90%');
+    });
+
+    $('.pointsClose').click(() => {
+        $('#pointsMyModal').css('display', 'none');
+        $('.modal-content-1').css('width', '60%');
+    });
+
+    $('#ppsImg').click(() => {
+        $('#ppsMyModal').css('display', 'block');
+        $('#img02').attr('src', $('#ppsImg').attr('src'))
+        $('#ppsCaption').html($('#ppsImg').attr('alt'));
+        $('.modal-content-2').css('width', '90%');
+    });
+
+    $('.ppsClose').click(() => {
+        $('#ppsMyModal').css('display', 'none');
+        $('.modal-content-2').css('width', '60%');
+    });
+
 });

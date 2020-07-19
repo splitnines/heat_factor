@@ -4,6 +4,7 @@
 <html>
     <head>
         <title>www.alphamikenoshoot.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
             href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400"
             rel="stylesheet"
@@ -67,7 +68,7 @@
                 </form>
             </div>
         </div>
-        <div id="q3" class="quads">
+        <div id="points">
             <div class="seperator">
                 <div class="stripe">
                     <center>
@@ -81,19 +82,50 @@
                     2019-01-01 will not be included. A maximum of 50 matches
                     will be graphed. It only works for USPSA matches.<br /><br />
                 </p>
-                <form id="points" action="/points/" method="POST">
-                    {% csrf_token %}
-                    <h3>
-                        {{ accu_stats_form1.as_p }}
-                    </h3>
-                    <br />
-                    <input class="btn" type="submit" value="Make Ready" />
-                </form>
-                <br />
-                <div id="spinner"></div>
+                <div id="pointsPos">
+                    <div id="pointsLeft">
+                        <form id="points" action="/points/" method="POST">
+                            {% csrf_token %}
+                            <h3>
+                                {{ accu_stats_form1.as_p }}
+                            </h3>
+                            <br />
+                            <input
+                                class="btn"
+                                type="submit"
+                                value="Make Ready"
+                            />
+                        </form>
+                        <br />
+                        <div id="spinner"></div>
+                    </div>
+                    <div id="pointsRight">
+                        Sample Points Report
+                        <br />
+                        <img
+                            src="{% static 'images/points_sample.png' %}"
+                            alt=""
+                            class="modal-content-1"
+                            id="pointsImg"
+                            width="500"
+                            height="300"
+                            title="Sample Report"
+                        />
+                        <br />
+                        <font style="font-size: 10px;">(Click to enlarge)</font>
+                        <div id="pointsMyModal" class="modal">
+                            <span class="pointsClose">&times;</span>
+                            <img class="modal-content-1" id="img01" />
+                            <div id="pointsCaption">
+                                Sample Points Report
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="q4" class="quads">
+        <br />
+        <div id="pps">
             <div class="seperator">
                 <div class="stripe">
                     <center>
@@ -107,18 +139,47 @@
                     2017-01-01 will not be included. It only works for USPSA
                     matches.<br /><br />
                 </p>
-                <form id="pps" action="/pps/" method="POST">
-                    {% csrf_token %}
-                    <h3>
-                        {{ pps_form1.as_p }}
-                    </h3>
-                    <br />
-                    <input class="btn" type="submit" value="Make Ready" />
-                </form>
-                <br />
-                <div id="spinner"></div>
+                <div id="ppsPos">
+                    <div id="ppsLeft">
+                        <form id="pps" action="/pps/" method="POST">
+                            {% csrf_token %}
+                            <h3>
+                                {{ pps_form1.as_p }}
+                            </h3>
+                            <br />
+                            <input
+                                class="btn"
+                                type="submit"
+                                value="Make Ready"
+                            />
+                        </form>
+                        <br />
+                        <div id="spinner"></div>
+                    </div>
+                    <div id="ppsRight">
+                        Sample PPS Report
+                        <br />
+                        <img
+                            src="{% static 'images/pps_sample.png' %}"
+                            alt=""
+                            class="modal-content-2"
+                            id="ppsImg"
+                            width="500"
+                            height="300"
+                            title="Sample Report"
+                        />
+                        <br />
+                        <font style="font-size: 10px;">(Click to enlarge)</font>
+                        <div id="ppsMyModal" class="modal">
+                            <span class="ppsClose">&times;</span>
+                            <img class="modal-content-2" id="img02" />
+                            <div id="ppsCaption">Sample PPS Report</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <br />
         <div class="stripe">
             <center>
                 <h2>

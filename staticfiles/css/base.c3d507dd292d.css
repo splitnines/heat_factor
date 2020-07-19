@@ -200,14 +200,7 @@ header {
 }
 
 /* Modal Content (image) */
-.modal-content-1 {
-  margin: auto;
-  display: block;
-  width: 60%;
-  max-width: 1400px;
-}
-
-.modal-content-2 {
+.modal-content {
   margin: auto;
   display: block;
   width: 60%;
