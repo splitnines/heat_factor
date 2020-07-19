@@ -132,7 +132,7 @@ header {
     padding: 0.2rem 0.4rem;
 }
 
-#pointsPos {
+#pointsPos, #ppsPos {
     display: flex;
     width: 100%;
 }
@@ -150,10 +150,10 @@ header {
     text-align: center;
 }
 
-#ppsPos {
+/* #ppsPos {
     display: flex;
     width: 100%;
-}
+} */
 
 #ppsLeft {
     position: relative;
@@ -278,8 +278,14 @@ header {
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 1000px) {
-  .modal-content-1, .modal-content-2, #pointsRight, #ppsRight {
+  .modal-content-1, .modal-content-2, #pointsRight {
     width: 100%;
     visibility: hidden;
+  }
+  #pointsLeft, #ppsLeft {
+      width: 100%;
+  }
+  #pointsPos, #ppsPos {
+      display: block;
   }
 }
