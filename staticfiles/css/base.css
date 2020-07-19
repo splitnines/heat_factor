@@ -134,7 +134,7 @@ header {
 
 #pointsPos {
     display: flex;
-    width: 100;
+    width: 100%;
 }
 
 #pointsLeft {
@@ -152,12 +152,12 @@ header {
 
 #ppsPos {
     display: flex;
-    width: 100;
+    width: 100%;
 }
 
 #ppsLeft {
     position: relative;
-    left: 0px;
+    left: 0%;
     width: 50%;
 }
 
@@ -169,7 +169,7 @@ header {
 }
 
 #pointsImg {
-  border-radius: 5px;
+  /* border-radius: 5px; */
   cursor: pointer;
   transition: 0.3s;
   width: 60%;
@@ -179,7 +179,7 @@ header {
 #pointsImg:hover {opacity: 0.7;}
 
 #ppsImg {
-  border-radius: 5px;
+  /* border-radius: 5px; */
   cursor: pointer;
   transition: 0.3s;
   width: 60%;
@@ -208,14 +208,14 @@ header {
   margin: auto;
   display: block;
   width: 60%;
-  max-width: 1400px;
+  max-width: 60%;
 }
 
 .modal-content-2 {
   margin: auto;
   display: block;
   width: 60%;
-  max-width: 1400px;
+  max-width: 60%;
 }
 
 /* Caption of Modal Image */
