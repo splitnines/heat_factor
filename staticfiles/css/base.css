@@ -277,11 +277,9 @@ header {
 }
 
 /* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 600px) {
-  .modal-content-1 {
+@media only screen and (max-width: 1000px) {
+  .modal-content-1, .modal-content-2, #pointsRight, #ppsRight {
     width: 100%;
-  }
-  .modal-content-2 {
-      width: 100%;
+    visibility: hidden;
   }
 }
