@@ -254,11 +254,18 @@ header {
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 1000px) {
-  #pointsRight, #ppsRight {
+  /* #pointsRight, #ppsRight {
     visibility: hidden;
-  }
-  #pointsLeft, #ppsLeft {
+  } */
+  /* #pointsLeft, #ppsLeft {
       width: 100%;
       height: 100%;
+  } */
+  #pointsImg, #ppsImg {
+      width: 100px;
+      height: 30px;
+  }
+  #pointsRight, #ppsRight {
+      font-size: 10px;
   }
 }
