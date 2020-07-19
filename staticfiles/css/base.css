@@ -277,7 +277,7 @@ header {
 }
 
 /* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 1400px){
+@media only screen and (max-width: 600px) {
   .modal-content-1 {
     width: 100%;
   }
