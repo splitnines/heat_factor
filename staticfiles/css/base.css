@@ -168,23 +168,23 @@ header {
     text-align: center;
 }
 
-#pointsImg {
+#pointsImg, #ppsImg {
   /* border-radius: 5px; */
   cursor: pointer;
   transition: 0.3s;
   width: 60%;
   height: 80%;
+  background-size: cover;
 }
 
 #pointsImg:hover {opacity: 0.7;}
 
-#ppsImg {
-  /* border-radius: 5px; */
+/* #ppsImg {
   cursor: pointer;
   transition: 0.3s;
   width: 60%;
   height: 80%;
-}
+} */
 
 #ppsImg:hover {opacity: 0.7;}
 
