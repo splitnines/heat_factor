@@ -183,7 +183,9 @@ header {
 .modal-content-1, .modal-content-2 {
   margin: auto;
   display: block;
-  width: 60%;
+  /* width: 60%; */
+  width: 500px;
+  height: 300px;
   max-width: 80%;
 }
 

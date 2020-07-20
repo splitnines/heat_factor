@@ -115,15 +115,17 @@ $(() => {
     var rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
 
     var embeddedUrl = rss2jsonUrl;
-    embeddedUrl += encodeURIComponent(youtubeChannelUrl);
-    embeddedUrl += youtubeChannelId;
+    embeddedUrl += encodeURIComponent(youtubeChannelUrl + youtubeChannelId);
 
     $.getJSON(embeddedUrl, function(data) {
 
         var link = data.items[0].link;
         var id = link.substr(link.indexOf("=")+1);
 
-        $("#youtubeVideo").attr("src","https://youtube.com/embed/" + id + "?controls=0&showinfo=0&rel=0");
+        var youtubeSrc = "https://youtube.com/embed/";
+        youtubeSrc += id + "?controls=0&showinfo=0&rel=0";
+
+        $("#youtubeVideo").attr("src", youtubeSrc);
     });
 
     $('#pointsImg').click(() => {
