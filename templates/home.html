@@ -13,174 +13,157 @@
         <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" />
     </head>
     <body>
-        <div id="q1" class="quads">
-            <div class="seperator">
-                <div class="stripe">
-                    <center>
-                        <h2>USPSA Heat Factor by Division</h2>
-                    </center>
-                </div>
-                <p>
-                    Provides a classification-like number for a division at a
-                    match. Copy-n-paste a Practiscore match URL to see the "Heat
-                    Factor" of each division in that match.
-                </p>
-                <form name="myForm" action="/heat_factor/" method="POST">
-                    {% csrf_token %}
-                    <h3>
-                        {{ practiscore_url_form.as_p }}
-                    </h3>
-                    <br />
-                    <input
-                        class="btn"
-                        id="heatfactor"
-                        type="submit"
-                        value="Make Ready"
-                    />
-                    <div class="cf_msg" id="checkform"></div>
-                </form>
-            </div>
+        <!-- <div id="q1" class="quads"> -->
+        <!-- <div class="seperator"> -->
+        <div class="stripe">
+            <center>
+                <h2>USPSA Heat Factor by Division</h2>
+            </center>
         </div>
-        <div id="q2" class="quads">
-            <div class="seperator">
-                <div class="stripe">
-                    <center>
-                        <h2>Classification Calculator</h2>
-                    </center>
-                </div>
-                <p>
-                    Enter your USPSA membership number and a division you shoot
-                    and this will tell what percentage you need on your next
-                    classifier to move up a class.
-                </p>
-                <form
-                    id="classificationCalc"
-                    action="/get_upped/"
-                    method="POST"
-                >
+        <p>
+            Provides a classification-like number for a division at a match.
+            Copy-n-paste a Practiscore match URL to see the "Heat Factor" of
+            each division in that match.
+        </p>
+        <form name="myForm" action="/heat_factor/" method="POST">
+            {% csrf_token %}
+            <h3>
+                {{ practiscore_url_form.as_p }}
+            </h3>
+            <br />
+            <input
+                class="btn"
+                id="heatfactor"
+                type="submit"
+                value="Make Ready"
+            />
+            <div class="cf_msg" id="checkform"></div>
+        </form>
+        <!-- </div> -->
+        <!-- </div> -->
+        <!-- <div id="q2" class="quads"> -->
+        <!-- <div class="seperator"> -->
+        <div class="stripe">
+            <center>
+                <h2>Classification Calculator</h2>
+            </center>
+        </div>
+        <p>
+            Enter your USPSA membership number and a division you shoot and this
+            will tell what percentage you need on your next classifier to move
+            up a class.
+        </p>
+        <form id="classificationCalc" action="/get_upped/" method="POST">
+            {% csrf_token %}
+            <h3>
+                {{ get_upped_form.as_p }}
+            </h3>
+            <br />
+            <input class="btn" type="submit" value="Make Ready" />
+            <div id="responseHTML"></div>
+        </form>
+        <!-- </div> -->
+        <!-- </div> -->
+        <!-- <div id="points"> -->
+        <!-- <div class="seperator"> -->
+        <div class="stripe">
+            <center>
+                <h2>Match Points Report</h2>
+            </center>
+        </div>
+        <p>
+            Enter your Practiscore username/email and password and your USPSA
+            membership number to get a graph that plots your accuracy/points in
+            matches over time. Matches prior to 2019-01-01 will not be included.
+            A maximum of 50 matches will be graphed. It only works for USPSA
+            matches.<br /><br />
+        </p>
+        <div id="pointsPos">
+            <div id="pointsLeft">
+                <form id="points" action="/points/" method="POST">
                     {% csrf_token %}
                     <h3>
-                        {{ get_upped_form.as_p }}
+                        {{ accu_stats_form1.as_p }}
                     </h3>
                     <br />
                     <input class="btn" type="submit" value="Make Ready" />
-                    <div id="responseHTML"></div>
                 </form>
+                <br />
+                <div id="spinner"></div>
             </div>
-        </div>
-        <div id="points">
-            <div class="seperator">
-                <div class="stripe">
-                    <center>
-                        <h2>Match Points Report</h2>
-                    </center>
-                </div>
-                <p>
-                    Enter your Practiscore username/email and password and your
-                    USPSA membership number to get a graph that plots your
-                    accuracy/points in matches over time. Matches prior to
-                    2019-01-01 will not be included. A maximum of 50 matches
-                    will be graphed. It only works for USPSA matches.<br /><br />
-                </p>
-                <div id="pointsPos">
-                    <div id="pointsLeft">
-                        <form id="points" action="/points/" method="POST">
-                            {% csrf_token %}
-                            <h3>
-                                {{ accu_stats_form1.as_p }}
-                            </h3>
-                            <br />
-                            <input
-                                class="btn"
-                                type="submit"
-                                value="Make Ready"
-                            />
-                        </form>
-                        <br />
-                        <div id="spinner"></div>
-                    </div>
-                    <div id="pointsRight">
+            <div id="pointsRight">
+                Sample Points Report
+                <br />
+                <img
+                    src="{% static 'images/points_sample.png' %}"
+                    alt="Sample Points Report"
+                    class="modal-content-1"
+                    id="pointsImg"
+                    width="500"
+                    height="300"
+                    title="Sample Report"
+                />
+                <font style="font-size: 10px;">(Click image to enlarge)</font>
+                <div id="pointsMyModal" class="modal">
+                    <span class="pointsClose">&times;</span>
+                    <img class="modal-content-1" id="img01" />
+                    <div id="pointsCaption">
                         Sample Points Report
-                        <br />
-                        <img
-                            src="{% static 'images/points_sample.png' %}"
-                            alt="Sample Points Report"
-                            class="modal-content-1"
-                            id="pointsImg"
-                            width="500"
-                            height="300"
-                            title="Sample Report"
-                        />
-                        <font style="font-size: 10px;"
-                            >(Click image to enlarge)</font
-                        >
-                        <div id="pointsMyModal" class="modal">
-                            <span class="pointsClose">&times;</span>
-                            <img class="modal-content-1" id="img01" />
-                            <div id="pointsCaption">
-                                Sample Points Report
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- </div> -->
+        <!-- </div> -->
         <br />
-        <div id="pps">
-            <div class="seperator">
-                <div class="stripe">
-                    <center>
-                        <h2>Points Per Second Report</h2>
-                    </center>
-                </div>
-                <p>
-                    Enter your Practiscore username/email and password and your
-                    USPSA membership number to get a graph that plots your
-                    points per second in matches over time. Matches prior to
-                    2017-01-01 will not be included. It only works for USPSA
-                    matches.<br /><br />
-                </p>
-                <div id="ppsPos">
-                    <div id="ppsLeft">
-                        <form id="pps" action="/pps/" method="POST">
-                            {% csrf_token %}
-                            <h3>
-                                {{ pps_form1.as_p }}
-                            </h3>
-                            <br />
-                            <input
-                                class="btn"
-                                type="submit"
-                                value="Make Ready"
-                            />
-                        </form>
-                        <br />
-                        <div id="spinner"></div>
-                    </div>
-                    <div id="ppsRight">
-                        Sample PPS Report
-                        <br />
-                        <img
-                            src="{% static 'images/pps_sample.png' %}"
-                            alt="Sample PPS Report"
-                            class="modal-content-2"
-                            id="ppsImg"
-                            width="500"
-                            height="300"
-                            title="Sample Report"
-                        />
-                        <font style="font-size: 10px;"
-                            >(Click image to enlarge)</font
-                        >
-                        <div id="ppsMyModal" class="modal">
-                            <span class="ppsClose">&times;</span>
-                            <img class="modal-content-2" id="img02" />
-                            <div id="ppsCaption">Sample PPS Report</div>
-                        </div>
-                    </div>
+        <!-- <div id="pps"> -->
+        <!-- <div class="seperator"> -->
+        <div class="stripe">
+            <center>
+                <h2>Points Per Second Report</h2>
+            </center>
+        </div>
+        <p>
+            Enter your Practiscore username/email and password and your USPSA
+            membership number to get a graph that plots your points per second
+            in matches over time. Matches prior to 2017-01-01 will not be
+            included. It only works for USPSA matches.<br /><br />
+        </p>
+        <div id="ppsPos">
+            <div id="ppsLeft">
+                <form id="pps" action="/pps/" method="POST">
+                    {% csrf_token %}
+                    <h3>
+                        {{ pps_form1.as_p }}
+                    </h3>
+                    <br />
+                    <input class="btn" type="submit" value="Make Ready" />
+                </form>
+                <br />
+                <div id="spinner"></div>
+            </div>
+            <div id="ppsRight">
+                Sample PPS Report
+                <br />
+                <img
+                    src="{% static 'images/pps_sample.png' %}"
+                    alt="Sample PPS Report"
+                    class="modal-content-2"
+                    id="ppsImg"
+                    width="500"
+                    height="300"
+                    title="Sample Report"
+                />
+                <font style="font-size: 10px;">(Click image to enlarge)</font>
+                <div id="ppsMyModal" class="modal">
+                    <span class="ppsClose">&times;</span>
+                    <img class="modal-content-2" id="img02" />
+                    <div id="ppsCaption">Sample PPS Report</div>
                 </div>
             </div>
         </div>
+        <!-- </div> -->
+        <!-- </div> -->
         <br />
         <div class="stripe">
             <center>
