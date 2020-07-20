@@ -269,6 +269,7 @@ header {
   }
 
   #pointsRight, #ppsRight {
+    /* visibility: hidden; */
     position: relative;
     left: 0%;
     width: 0%;
