@@ -153,7 +153,7 @@ header {
 }
 
 #pointsImg, #ppsImg {
-  /* border-radius: 5px; */
+  border-radius: 10px;
   cursor: pointer;
   transition: 0.3s;
   width: 60%;
@@ -183,9 +183,9 @@ header {
 .modal-content-1, .modal-content-2 {
   margin: auto;
   display: block;
-  /* width: 60%; */
-  width: 500px;
-  height: 300px;
+  width: 60%;
+  /* width: 500px;
+  height: 300px; */
   max-width: 80%;
 }
 
@@ -256,14 +256,7 @@ header {
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 1000px) {
-  /* #pointsRight, #ppsRight {
-    visibility: hidden;
-  } */
-  #pointsImg, #ppsImg {
-      width: 90px;
-      height: 30px;
-  }
   #pointsRight, #ppsRight {
-      font-size: 10px;
+    visibility: hidden;
   }
 }
