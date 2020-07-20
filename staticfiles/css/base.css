@@ -256,7 +256,22 @@ header {
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 1000px) {
-  #pointsRight, #ppsRight {
+
+    #pointsRight, #ppsRight {
     visibility: hidden;
+  }
+
+  #pointsLeft, #ppsLeft {
+    position: relative;
+    left: 0%;
+    width: 100%;
+    height: auto;
+  }
+
+  #pointsRight, #ppsRight {
+    position: relative;
+    left: 0%;
+    width: 0%;
+    text-align: center;
   }
 }
