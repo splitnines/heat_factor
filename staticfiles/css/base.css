@@ -136,7 +136,7 @@ header {
 }
 
 #pointsPos, #ppsPos {
-    display: inline-flex;
+    display: flex;
     width: 100%;
     height: auto;
 }
@@ -163,9 +163,9 @@ header {
     height: 80%;
 }
 
-#pointsImg:hover {opacity: 0.7;}
-
-#ppsImg:hover {opacity: 0.7;}
+#pointsImg:hover, #ppsImg:hover {
+    opacity: 0.7;
+}
 
 /* The Modal (background) */
 .modal {
@@ -203,17 +203,18 @@ header {
 }
 
 /* Add Animation */
-.modal-content-1, .modal-content-2, #caption, #youtubeVideo {
-    -webkit-animation-name: zoom;
-    -webkit-animation-duration: 0.6s;
+.modal-content-1, .modal-content-2, #pointsCaption,
+#ppsCaption, #youtubeVideo {
+    /* -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s; */
     animation-name: zoom;
     animation-duration: 0.6s;
 }
 
-@-webkit-keyframes zoom {
+/* @-webkit-keyframes zoom {
     from {-webkit-transform:scale(0)}
     to {-webkit-transform:scale(1)}
-}
+} */
 
 @keyframes zoom {
     from {transform:scale(0)}
@@ -221,7 +222,7 @@ header {
 }
 
 /* The Close Button */
-.pointsClose {
+.pointsClose, .ppsClose {
     position: absolute;
     top: 15px;
     right: 35px;
@@ -231,25 +232,8 @@ header {
     transition: 0.3s;
 }
 
-.pointsClose:hover,
-.pointsClose:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.ppsClose {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.ppsClose:hover,
-.ppsClose:focus {
+.pointsClose:hover, .pointsClose:focus,
+.ppsClose:hover, .ppsClose:focus {
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
@@ -263,10 +247,7 @@ header {
     }
 
     #pointsLeft, #ppsLeft {
-        position: relative;
-        left: 0%;
         width: 100%;
-        height: auto;
     }
 
     #pointsRight, #ppsRight {

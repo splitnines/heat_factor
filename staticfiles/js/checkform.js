@@ -128,6 +128,7 @@ $(() => {
         $("#youtubeVideo").attr("src", youtubeSrc);
     });
 
+    // sample image animation
     $('#pointsImg').click(() => {
         $('#pointsMyModal').css('display', 'block');
         $('#img01').attr('src', $('#pointsImg').attr('src'))
