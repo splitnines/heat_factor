@@ -36,6 +36,7 @@ input[type="text"] {
     border-radius: 15px;
     padding: 0.28rem 0.4rem;
     font-family: 'Source Sans Pro', sans-serif;
+    max-width: 50%;
 }
 
 input[type="password"] {
@@ -47,6 +48,7 @@ input[type="password"] {
     border-radius: 15px;
     padding: 0.28rem 0.4rem;
     font-family: 'Source Sans Pro', sans-serif;
+    max-width: 50%;
 }
 
 select {
