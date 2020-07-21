@@ -135,9 +135,9 @@ header {
 }
 
 #pointsPos, #ppsPos {
-    display: flex;
-    width: 100%;
-    height: auto;
+    display: inline-flex;
+    /* width: 100%; */
+    /* height: auto; */
 }
 
 #pointsLeft, #ppsLeft {
