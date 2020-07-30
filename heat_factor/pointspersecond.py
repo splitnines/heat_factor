@@ -292,7 +292,7 @@ def results_gopher(match, shooter_id):
 
         return float(f'{pps:.2f}')
 
-    elif pps_dict['time'] == 0 and pps_dict['points'] == 0:
+    elif pps_dict['time'] <= 0 and pps_dict['points'] <= 0:
         pps = 0
 
         return float(f'{pps:.2f}')
@@ -353,12 +353,17 @@ def get_pps(match_defs, match_results, mem_num, division):
 
 def pps_plot(pps_dict, fn, ln, form_dict):
 
-    pps = np.asarray(list(pps_dict.values()))
-    dates = np.asarray(list(pps_dict.keys()))
+    pps = np.array(list(pps_dict.values()))
+    dates = np.array(list(pps_dict.keys()))
 
     x = np.arange(len(pps))
-    trend = np.poly1d(np.polyfit(x, pps, 1))
-    avg = sum(pps_dict.values()) / len(pps_dict.values())
+
+    try:
+        trend = np.poly1d(np.polyfit(x, pps, 2))
+    except Exception:
+        trend = np.poly1d(np.polyfit(x, pps, 2))
+
+    avg = sum(pps) / len(pps)
     avg = np.full(shape=(len(x),), fill_value=avg)
 
     plt.style.use('dark_background')
