@@ -358,9 +358,16 @@ def pps_plot(pps_dict, fn, ln, form_dict):
 
     x = np.arange(len(pps))
 
+    # this is a bug workaround
+    # it may only be present in my dev env
     try:
         trend = np.poly1d(np.polyfit(x, pps, 2))
     except Exception:
+        from sys import stderr
+        print(
+            'SYS_LOGGER: np.poly1d(np.polyfit()) bug fix triggered',
+            file=stderr
+        )
         trend = np.poly1d(np.polyfit(x, pps, 2))
 
     avg = sum(pps) / len(pps)
