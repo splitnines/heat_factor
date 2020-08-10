@@ -124,9 +124,7 @@ $(() => {
         const link = data.items[0].link;
         const id = link.substr(link.indexOf("=")+1);
 
-        const youtubeSrc = "https://youtube.com/embed/" + id +
-        "?controls=0&showinfo=0&rel=0";
-        // youtubeSrc += id + "?controls=0&showinfo=0&rel=0";
+        const youtubeSrc = `https://youtube.com/embed/${id}?controls=0&showinfo=0&rel=0`
 
         $("#youtubeVideo").attr("src", youtubeSrc);
     });
