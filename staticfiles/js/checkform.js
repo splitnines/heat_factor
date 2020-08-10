@@ -14,9 +14,9 @@ $(() => {
 
     function timeStamp() {
 
-        var today = new Date();
+        const today = new Date();
 
-        var ts = today.toDateString() + ' ';
+        let ts = today.toDateString() + ' ';
         ts += padZero(today.getHours()) + ':';
         ts += padZero(today.getMinutes()) + ':';
         ts += padZero(today.getSeconds());
@@ -25,9 +25,9 @@ $(() => {
     }
 
     // form validation and button manipulation based on URL input
-    var regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
-    var psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
-    var psRegEx = new RegExp(regExStr, 'g');
+    const regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
+    const psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
+    const psRegEx = new RegExp(regExStr, 'g');
 
     $('#heatfactor').click((e) => {
         if (!psRegEx.test($('#id_p_url')[0].value)) {
@@ -66,9 +66,9 @@ $(() => {
 
         e.preventDefault();
 
-        var url = $(this).attr('action');
-        var formData = $(this).serialize();
-        var errorHtml = '<font color="red">Sorry, an error occured.</font>'
+        const url = $(this).attr('action');
+        const formData = $(this).serialize();
+        const errorHtml = '<font color="red">Sorry, an error occured.</font>'
 
         $.ajax({
             type: 'POST',
@@ -110,20 +110,23 @@ $(() => {
     });
 
     // embed most recent youtube video from my channel
-    var youtubeChannelId = "UC_QPi6_8WRZ1bXgShJAzSbg";
-    var youtubeChannelUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=";
-    var rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
+    const youtubeChannelId = "UC_QPi6_8WRZ1bXgShJAzSbg";
+    const youtubeChannelUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=";
+    const rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-    var embeddedUrl = rss2jsonUrl;
-    embeddedUrl += encodeURIComponent(youtubeChannelUrl + youtubeChannelId);
+    const embeddedUrl = rss2jsonUrl + encodeURIComponent(
+        youtubeChannelUrl + youtubeChannelId
+    );
+    // embeddedUrl += encodeURIComponent(youtubeChannelUrl + youtubeChannelId);
 
     $.getJSON(embeddedUrl, function(data) {
 
-        var link = data.items[0].link;
-        var id = link.substr(link.indexOf("=")+1);
+        const link = data.items[0].link;
+        const id = link.substr(link.indexOf("=")+1);
 
-        var youtubeSrc = "https://youtube.com/embed/";
-        youtubeSrc += id + "?controls=0&showinfo=0&rel=0";
+        const youtubeSrc = "https://youtube.com/embed/" + id +
+        "?controls=0&showinfo=0&rel=0";
+        // youtubeSrc += id + "?controls=0&showinfo=0&rel=0";
 
         $("#youtubeVideo").attr("src", youtubeSrc);
     });
