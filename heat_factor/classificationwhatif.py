@@ -5,11 +5,9 @@ from bs4 import BeautifulSoup
 classification_dict = {
     'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,
 }
-
 next_class_up = {
     'M': 'GM', 'A': 'M', 'B': 'A', 'C': 'B', 'D': 'C',
 }
-
 reverse_classification_dict = {
     95: 'GM', 85: 'M', 75: 'A', 60: 'B', 40: 'C', 2: 'D', 0: 'U',
 }
@@ -19,7 +17,6 @@ class ClassificationWhatIf:
     """Provides an interface to uspsa.org used to calculate the percent score
        a shooter needs in their next classifier to move up in classification.
     """
-
     def __init__(self, mem_num, division):
         """
         Arguments:
@@ -28,7 +25,6 @@ class ClassificationWhatIf:
         """
         self.mem_num = mem_num
         self.division = division
-
         self.bs = http_get(self.mem_num, self.division)
         self.current_pct = get_classification_pct(self.bs, self.division)
         self.shooter_class = classification_letter(self.bs, self.division)
@@ -40,7 +36,6 @@ class ClassificationWhatIf:
                        classification level.
         """
         scores = calc_scores(self.bs, self.division)
-
         return (
             round(
                 (classification_dict[next_class_up[self.shooter_class]]
@@ -61,12 +56,9 @@ class ClassificationWhatIf:
                       percent score needed to achieve that class.
         """
         scores = calc_scores(self.bs, self.division)
-
         if self.shooter_class == 'U':
             if scores['count'] > 2:
-
                 return calc_initial(scores['sum'], scores['count'])
-
             raise Exception('Not enough scores on record.')
 
     def get_shooter_class(self):
@@ -86,11 +78,9 @@ class ClassificationWhatIf:
                      current class.
         """
         if self.shooter_class == 'U':
-
             raise Exception(
                 'Unclassified shooter.  Use method get_initial().'
             )
-
         return next_class_up[self.shooter_class]
 
 
@@ -110,17 +100,14 @@ def http_get(mem_num, division):
     """
     if division != 'PCC':
         division_search = division.title().replace(' ', '_')
-
     else:
         division_search = division.upper().replace(' ', '_')
 
     http_resp = requests.get(f'https://uspsa.org/classification/{mem_num}')
-
     bs = BeautifulSoup(http_resp.text, 'lxml')
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
         raise Exception
-
     return bs
 
 
@@ -138,7 +125,6 @@ def classifier_scores(bs, division):
     """
     if division != 'PCC':
         division_search = division.title().replace(' ', '_')
-
     else:
         division_search = division.upper().replace(' ', '_')
 
@@ -147,7 +133,6 @@ def classifier_scores(bs, division):
 
     for row in table_rows[1:]:
         if str(row.find_all('td')[3].text.strip()) == 'Y':
-
             yield (
                 str(row.find_all('td')[3].text.strip()),
                 float(str(row.find_all('td')[4].text.strip()))
@@ -174,15 +159,12 @@ def get_classification_pct(bs, division):
     for row in rows:
         header = row.find_all('th')
         data = row.find_all('td')
-
         if [i.text.strip() for i in header][0] == division:
             classification_pct = (
                 [i.text.strip() for i in data][1].split(': ')[1]
             )
-
             if classification_pct == 'X':
                 raise Exception
-
             return float(classification_pct)
 
     return None
@@ -208,15 +190,12 @@ def classification_letter(bs, division):
     for row in rows:
         header = row.find_all('th')
         data = row.find_all('td')
-
         if [i.text.strip() for i in header][0] == division:
             classification_letter = (
                 [i.text.strip() for i in data][0].split(': ')[1]
             )
-
             if classification_letter == 'X':
                 raise Exception
-
             return classification_letter
 
     return None
@@ -238,10 +217,8 @@ def calc_scores(bs, division):
 
     for score in classifier_scores(bs, division):
         if scores['count'] < 5:
-
             scores['sum'] += score[1]
             scores['count'] += 1
-
     return scores
 
 
@@ -263,10 +240,8 @@ def calc_initial(score_sum, score_count):
     for classification in classification_dict:
         if 2.0 in initial_dict.values():
             break
-
         if classification == 'U':
             continue
-
         for n in np.arange(2.0, 100.0, 0.0001):
             if (
                 ((score_sum + n) / (score_count + 1)
@@ -274,5 +249,4 @@ def calc_initial(score_sum, score_count):
             ):
                 initial_dict[classification] = round(n, 4)
                 break
-
     return initial_dict

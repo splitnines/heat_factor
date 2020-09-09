@@ -33,11 +33,9 @@ def home_view(request):
             'accu_stats_form1': AccuStatsForm1(),
             'pps_form1': PPSForm1(),
         }
-
         return render(request, 'home.html', forms)
 
     else:
-
         return redirect('')
 
 
@@ -54,36 +52,29 @@ def heat_factor_view(request):
     if request.method == 'POST':
         if PractiscoreUrlForm(request.POST).is_valid():
             practiscore_url = request.POST.get('p_url')
-
     else:
         exception_content = {
             'message': 'heat_factor incorrect method error.',
         }
-
         return render(request, 'error.html', exception_content)
 
     sys_logger('heat_factor', practiscore_url)
-
     try:
         chart = heatfactor(practiscore_url)
-
     except Exception as e:
         if re.match('Error downloading AWS S3 json file.', e.args[0]):
             exception_content = {
                 'message': e.args[0]
             }
-
             return render(request, 'error.html', exception_content)
 
         elif re.match('Bad URL.', e.args[0]):
-
             return redirect('/bad_url/')
 
     content = {
         'chart': chart,
         'date': dt.datetime.now(),
     }
-
     return render(request, 'heat_factor.html', content)
 
 
@@ -103,7 +94,6 @@ def bad_url_view(request):
         forms = {
             'practiscore_url_form': PractiscoreUrlForm(),
         }
-
         return render(request, 'bad_url.html', forms)
 
 
@@ -122,12 +112,10 @@ def get_upped_view(request):
         if GetUppedForm(request.POST).is_valid():
             mem_num = request.POST.get('mem_num_1')
             division = request.POST.get('division_1')
-
         else:
             exception_content = {
                 'message': 'get_upped incorrect method error.',
             }
-
             return render(request, 'error.html', exception_content)
 
     sys_logger('get_upped', mem_num, division)
@@ -143,12 +131,9 @@ def get_upped_view(request):
                 """,
             'date': dt.datetime.now()
         }
-
     try:
         shooter = ClassificationWhatIf(mem_num, division)
-
     except Exception:
-
         return render(request, 'get_upped.html', exception_content)
 
     if shooter.get_shooter_class() == 'GM':
@@ -157,15 +142,12 @@ def get_upped_view(request):
                 You\'re a <font color=\"red\">{shooter.get_shooter_class()}
                 </font>. Nowhere to go from here."""
         }
-
         return render(request, 'get_upped.html', content)
 
     if shooter.get_shooter_class() == 'U':
         try:
             initial_dict = shooter.get_initial()
-
         except Exception:
-
             return render(request, 'get_upped.html', exception_content)
 
         initial_calssification_html = '<br>'.join(
@@ -178,7 +160,6 @@ def get_upped_view(request):
             'response_text': initial_calssification_html,
             'date': dt.datetime.now(),
         }
-
         return render(request, 'get_upped.html', content)
 
     if shooter.get_upped() > 100:
@@ -190,15 +171,12 @@ def get_upped_view(request):
             """,
             'date': dt.datetime.now(),
         }
-
         return render(request, 'get_upped.html', content)
 
     else:
         try:
             next_class_up = shooter.get_next_class()
-
         except Exception:
-
             return render(request, 'get_upped.html', exception_content)
 
         content = {
@@ -209,7 +187,6 @@ def get_upped_view(request):
             """,
             'date': dt.datetime.now(),
         }
-
         return render(request, 'get_upped.html', content)
 
 
@@ -259,21 +236,17 @@ def points_view(request):
         exception_content = {
             'message': 'You\'re doing it wrong.'
         }
-
         return render(request, 'error.html', exception_content)
 
     sys_logger(
         'points', form_data.get('mem_num'), form_data.get('division')
     )
-
     try:
         image = uspsastats(form_data)
-
     except Exception as e:
         exception_content = {
             'message': e.args[0],
         }
-
         return render(request, 'error.html', exception_content)
 
     content = {
@@ -281,7 +254,6 @@ def points_view(request):
         'date': dt.datetime.now(),
         'accu_stats_form2': AccuStatsForm2(),
     }
-
     return render(request, 'points.html', content)
 
 
@@ -299,27 +271,23 @@ def pps_view(request):
     """
     if request.method == 'POST':
         if PPSForm2(request.POST).is_valid():
-
             form_data = {
                 'username': request.POST.get('username_pps'),
                 'password': request.POST.get('password_pps'),
                 'mem_num': request.POST.get('mem_num_pps'),
                 'division': request.POST.get('division_pps'),
-
                 'delete_match': (
                     request.POST.get('delete_match_pps')
                     if isinstance(
                         request.POST.get('delete_match_pps'), str
                     ) else ''
                 ),
-
                 'end_date': (
                     request.POST.get('end_date_pps')
                     if isinstance(
                         request.POST.get('end_date_pps'), str
                     ) else ''
                 ),
-
                 'start_date': (
                     request.POST.get('start_date_pps')
                     if isinstance(
@@ -332,19 +300,15 @@ def pps_view(request):
         exception_content = {
             'message': 'You\'re doing it wrong.'
         }
-
         return render(request, 'error.html', exception_content)
 
     sys_logger('pps', form_data['mem_num'], form_data['division'])
-
     try:
         image = pointspersec(form_data)
-
     except Exception as e:
         exception_content = {
             'message': e.args[0],
         }
-
         return render(request, 'error.html', exception_content)
 
     content = {
@@ -352,7 +316,6 @@ def pps_view(request):
         'date': dt.datetime.now(),
         'pps_form2': PPSForm2(),
     }
-
     return render(request, 'pps.html', content)
 
 

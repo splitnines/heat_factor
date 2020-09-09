@@ -33,25 +33,18 @@ def pointspersec(form_dict):
     Returns:
         BytesIO -- a matplotlib image file in a BytesIO data stream
     """
-
     try:
         check_mem_num(form_dict['mem_num'])
-
     except Exception:
         raise Exception('USPSA membership number not found.')
-
     try:
         match_links = get_match_links(form_dict)
-
     except Exception as e:
         raise Exception(e)
-
     try:
         match_defs, match_results = event_loop(http_sess, match_links)
-
     except Exception:
         raise Exception('A problem occured downloading match data.')
-
     try:
         pps_dict, fn, ln = (
             get_pps(
@@ -59,13 +52,10 @@ def pointspersec(form_dict):
                 form_dict['division']
             )
         )
-
     except Exception as e:
         raise Exception(e.args[0])
-
     try:
         return pps_plot(pps_dict, fn, ln, form_dict)
-
     except Exception:
         raise Exception('Image creation failed.')
 
@@ -84,7 +74,6 @@ def check_mem_num(mem_num):
     ).text
 
     oops_re = re.compile('Oops!')
-
     if oops_re.search(uspsa_org_response):
         raise Exception
 
@@ -107,71 +96,55 @@ def get_match_links(form_dict):
         'AppleWebKit/537.36 (KHTML, like Gecko) '
         'Chrome/83.0.4103.61 Safari/537.36'
     }
-
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
         'success': r'<a href=\"([\w:/\.\d]+)\"\sid=\"viewAllButton\"'
     }
-
     login_dict = {
         'username': form_dict['username'],
         'password': form_dict['password'],
     }
-
     with requests.Session() as sess:
         login = sess.post(
             'https://practiscore.com/login', data=login_dict, headers=headers
         )
-
         if re.findall(login_status_strs['bad_pass'], str(login.content)):
             sess.close
             raise Exception('Bad password.')
-
         if re.findall(login_status_strs['bad_email'], str(login.content)):
             sess.close
             raise Exception('Bad email/username')
-
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
             raise Exception('"ViewAll" link not found.')
-
         if re.search(login_status_strs['success'], str(login.content)):
-
             view_all_link = (
                 re.search(login_status_strs['success'], str(login.content))
             )
-
             shooter_ps_match_links = (
                 sess.get(view_all_link.group(1), headers=headers)
             )
-
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
 
     match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
-
     match_link_raw_data = (
         match_link_re.search(str(shooter_ps_match_links.content))
     )
-
     match_links_json = deque()
     # epoch = dt.date.fromisoformat('2017-01-01')
     raw_match_links = json.loads(match_link_raw_data.group(1))
-
     today = dt.date.today()
-
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
         'start_date': '2017-01-01',
     }
-
     if (
         form_dict['end_date'] != '' and
         form_dict['end_date'] < str(dt.date.fromisoformat(str(today)))
     ):
         match_date_range['end_date'] = form_dict['end_date']
-
     if (
         form_dict['start_date'] != '' and
         form_dict['start_date'] > match_date_range['start_date'] and
@@ -211,9 +184,7 @@ async def http_get(url, session):
     try:
         async with session.get(url) as response:
             assert response.status == 200
-
             return await response.text()
-
     except Exception:
         raise Exception(f'Error downloading {url}')
 
@@ -237,13 +208,11 @@ async def http_sess(links):
                 f"production/{link['matchId']}/match_def.json"
             )
             def_tasks.append(asyncio.create_task(http_get(url1, session)))
-
             url2 = (
                 'https://s3.amazonaws.com/ps-scores/'
                 f"production/{link['matchId']}/results.json"
             )
             results_tasks.append(asyncio.create_task(http_get(url2, session)))
-
         return (
             (x for x in await asyncio.gather(*def_tasks)),
             (x for x in await asyncio.gather(*results_tasks))
@@ -264,19 +233,15 @@ def event_loop(func, *args):
     asyncio.set_event_loop(loop)
     response = (loop.run_until_complete(func(*args)))
     loop.close()
-
     # response = asyncio.run(func(*args))
-
     return response
 
 
 def results_gopher(match, shooter_id):
-
     pps_dict = {
         'time': 0.,
         'points': 0,
     }
-
     for a in match:
         if 'Match' not in a:
             for b in a.values():
@@ -289,12 +254,10 @@ def results_gopher(match, shooter_id):
 
     if pps_dict['time'] > 0 and pps_dict['points'] > 0:
         pps = pps_dict['points'] / pps_dict['time']
-
         return float(f'{pps:.2f}')
 
     elif pps_dict['time'] <= 0 and pps_dict['points'] <= 0:
         pps = 0
-
         return float(f'{pps:.2f}')
 
     else:
@@ -302,26 +265,20 @@ def results_gopher(match, shooter_id):
 
 
 def get_pps(match_defs, match_results, mem_num, division):
-
     pps_dict = defaultdict(float)
 
     for match_def, match_result in zip(match_defs, match_results):
-
         match_def = json.loads(match_def)
         match_result = json.loads(match_result)
-
         uspsa_re = re.compile(r'uspsa')
         match_type = match_def.get('match_type')
         if match_type is not None and not uspsa_re.search(match_type.lower()):
             continue
-
         match_date = dt.date.fromisoformat(match_def['match_date'])
 
         for shooter in match_def['match_shooters']:
-
             if division.lower() != shooter['sh_dvp'].lower():
                 continue
-
             if (
                 'sh_id' in shooter and
                 mem_num.upper() == shooter['sh_id'].upper()
@@ -332,17 +289,14 @@ def get_pps(match_defs, match_results, mem_num, division):
                     )
                 except Exception:
                     raise Exception('Received exception from results_gopher.')
-
                 if pps_dict[match_date] == 0:
                     del pps_dict[match_date]
-
                 shooter_fn = shooter['sh_fn']
                 shooter_ln = shooter['sh_ln']
             else:
                 continue
 
     if len(pps_dict) > 0:
-
         return (
             OrderedDict(sorted(pps_dict.items(), reverse=False)),
             shooter_fn, shooter_ln
@@ -357,7 +311,6 @@ def pps_plot(pps_dict, fn, ln, form_dict):
     dates = np.array(list(pps_dict.keys()))
 
     x = np.arange(len(pps))
-
     # this is a bug workaround
     # it may only be present in my dev env
     try:
@@ -375,12 +328,10 @@ def pps_plot(pps_dict, fn, ln, form_dict):
 
     plt.style.use('dark_background')
     plt.subplots(figsize=(14.5, 8))
-
     plt.title('Points/Sec per Match', fontsize=16)
     plt.ylabel('Points/Sec')
     plt.xlabel('Match Date')
     plt.xticks(x, dates, rotation=90, fontsize=8)
-
     plt.plot(
         x, pps, linewidth=2, marker='o', color='cornflowerblue', label='PPS'
     )
@@ -391,10 +342,8 @@ def pps_plot(pps_dict, fn, ln, form_dict):
         x, avg, linewidth=2, linestyle='--', color='whitesmoke',
         label='Average'
     )
-
     plt.grid(linestyle=':', linewidth=0.3)
     plt.margins(x=0.01, y=0.03)
-
     plt.annotate(
         f'Shooter Name: {fn} {ln}', (1, 1), (-125, 30),
         fontsize=7, xycoords='axes fraction',
@@ -420,7 +369,6 @@ def pps_plot(pps_dict, fn, ln, form_dict):
         (0, 0), (0, -92), xycoords='axes fraction',
         textcoords='offset points', va='top'
     )
-
     plt.legend(
         bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=3,
         borderaxespad=0., fontsize=8
@@ -429,11 +377,9 @@ def pps_plot(pps_dict, fn, ln, form_dict):
 
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
-
     buffer.seek(0)
     image_png = buffer.getvalue()
     buffer.close()
-
     image = base64.b64encode(image_png)
     image = image.decode('utf-8')
 
