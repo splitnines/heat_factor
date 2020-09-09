@@ -39,7 +39,6 @@ def uspsastats(form_data):
         check_mem_num(form_data['mem_num'])
     except Exception:
         raise Exception('USPSA membership number not found.')
-
     try:
         match_links_json = get_match_links(form_data)
     except Exception as e:
@@ -75,7 +74,6 @@ def uspsastats(form_data):
         )
     except Exception:
         raise Exception('Dataframe creation failed.')
-
     try:
         return get_graph(
             scores_df, f'{shooter_fn} {shooter_ln}',
@@ -530,7 +528,6 @@ def get_graph(scores, shooter_name, mem_number, division):
 
     plt.style.use('dark_background')
     plt.figure(figsize=(14.5, 8))
-
     plt.plot(
         x, scores['Pct Points'], label='Percent Points', color='#39bcf0',
         linestyle='solid', marker='o', markersize=4, linewidth=2
