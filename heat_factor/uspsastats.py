@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import requests
 from aiohttp import ClientSession
+from requests.adapters import Response
 
 
 def uspsastats(form_data):
@@ -203,6 +204,7 @@ def get_match_links(form_dict):
         [deque] -- list of json object containing the match link uuids for
                    pulling match json files from AWS.
     """
+    shooter_ps_match_links = Response
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -410,6 +412,8 @@ def get_dataframe(
         [tuple] -- contains a pandas dataframe with the scores from all matchs.
                    shooters first name {str} and last name {str}.
     """
+    shooter_fname = str()
+    shooter_lname = str()
     try:
         # call event_loop() - spawns the async http gets from the AWS S3
         # API server

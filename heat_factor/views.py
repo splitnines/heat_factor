@@ -49,6 +49,8 @@ def heat_factor_view(request):
         [dict] -- renders the content to the url in the form of a dict
                   containing the matplotlib image and the data.
     """
+    practiscore_url = str()
+    chart = str()
     if request.method == 'POST':
         if PractiscoreUrlForm(request.POST).is_valid():
             practiscore_url = request.POST.get('p_url')
@@ -108,6 +110,8 @@ def get_upped_view(request):
     Returns:
         [object] -- HTTPResponse object
     """
+    mem_num = str()
+    division = str()
     if request.method == 'POST':
         if GetUppedForm(request.POST).is_valid():
             mem_num = request.POST.get('mem_num_1')
@@ -202,6 +206,7 @@ def points_view(request):
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception
     """
+    form_data = dict()
     if request.method == 'POST':
         if AccuStatsForm2(request.POST).is_valid():
             form_data = {
@@ -269,6 +274,7 @@ def pps_view(request):
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception
     """
+    form_data = dict()
     if request.method == 'POST':
         if PPSForm2(request.POST).is_valid():
             form_data = {
@@ -292,7 +298,8 @@ def pps_view(request):
                     request.POST.get('start_date_pps')
                     if isinstance(
                         request.POST.get('start_date_pps'), str
-                    )else ''
+                    )
+                    else ''
                 ),
             }
 

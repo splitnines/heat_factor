@@ -35,6 +35,8 @@ class ClassificationWhatIf:
             [float] -- the percent needed for a shooter to move up a
                        classification level.
         """
+        global classification_dict
+        global next_class_up
         scores = calc_scores(self.bs, self.division)
         return (
             round(
@@ -77,11 +79,14 @@ class ClassificationWhatIf:
             [str] -- contains the letter for the next classification up from
                      current class.
         """
+        global next_class_up
         if self.shooter_class == 'U':
             raise Exception(
                 'Unclassified shooter.  Use method get_initial().'
             )
         return next_class_up[self.shooter_class]
+
+# ...end class ClassificationWhatIf . . .
 
 
 def http_get(mem_num, division):
@@ -235,6 +240,7 @@ def calc_initial(score_sum, score_count):
         [dict] -- keys are the classification letter, values are the percent
                   score needed to achieve that class.
     """
+    global classification_dict
     initial_dict = {}
 
     for classification in classification_dict:

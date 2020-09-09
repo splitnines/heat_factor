@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from aiohttp import ClientSession
+from requests.adapters import Response
 
 
 def pointspersec(form_dict):
@@ -91,6 +92,7 @@ def get_match_links(form_dict):
         [deque] -- list of json object containing the match link uuids for
                    pulling match json files from AWS.
     """
+    shooter_ps_match_links = Response
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -266,6 +268,8 @@ def results_gopher(match, shooter_id):
 
 def get_pps(match_defs, match_results, mem_num, division):
     pps_dict = defaultdict(float)
+    shooter_fn = str()
+    shooter_ln = str()
 
     for match_def, match_result in zip(match_defs, match_results):
         match_def = json.loads(match_def)
