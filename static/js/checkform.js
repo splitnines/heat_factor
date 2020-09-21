@@ -13,14 +13,11 @@ $(() => {
     }
 
     function timeStamp() {
-
         const today = new Date();
-
         let ts = today.toDateString() + ' ';
         ts += padZero(today.getHours()) + ':';
         ts += padZero(today.getMinutes()) + ':';
         ts += padZero(today.getSeconds());
-
         return ts;
     }
 
@@ -31,13 +28,10 @@ $(() => {
 
     $('#heatfactor').click((e) => {
         if (!psRegEx.test($('#id_p_url')[0].value)) {
-
             e.preventDefault();
-
             $('#checkform').fadeIn(1000).delay(1000)
             .html(psBadUrlMsg)
             .css('display', 'inline-block');
-
         } else {
             displaySpinner();
         }
@@ -63,9 +57,7 @@ $(() => {
 
     // display results of get_upped app on current page
     $('#classificationCalc').submit(function(e) {
-
         e.preventDefault();
-
         const url = $(this).attr('action');
         const formData = $(this).serialize();
         const errorHtml = '<font color="red">Sorry, an error occured.</font>'
@@ -81,11 +73,9 @@ $(() => {
                 .removeClass('resp');
                 displaySpinner();
             },
-
             complete: () => {
                 removeSpinner();
             },
-
             success: (resp) => {
                 $('#responseHTML')
                 .addClass('resp')
@@ -93,7 +83,6 @@ $(() => {
                 .hide()
                 .slideDown(600);
             },
-
             error: () => {
                 $('#responseHTML')
                 .addClass('resp')
@@ -113,18 +102,14 @@ $(() => {
     const youtubeChannelId = "UC_QPi6_8WRZ1bXgShJAzSbg";
     const youtubeChannelUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     const rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
-
     const embeddedUrl = rss2jsonUrl + encodeURIComponent(
         youtubeChannelUrl + youtubeChannelId
     );
 
     $.getJSON(embeddedUrl, function(data) {
-
         const link = data.items[0].link;
         const id = link.substr(link.indexOf("=")+1);
-
         const youtubeSrc = `https://youtube.com/embed/${id}?controls=0&showinfo=0&rel=0`
-
         $("#youtubeVideo").attr("src", youtubeSrc);
     });
 
