@@ -2,13 +2,13 @@ import numpy as np
 import requests
 from bs4 import BeautifulSoup
 
-classification_dict = {
+CLASSIFICATION_DICT = {
     'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,
 }
-next_class_up = {
+NEXT_CLASS_UP = {
     'M': 'GM', 'A': 'M', 'B': 'A', 'C': 'B', 'D': 'C',
 }
-reverse_classification_dict = {
+REVERSE_CLASSIFICATION_DICT = {
     95: 'GM', 85: 'M', 75: 'A', 60: 'B', 40: 'C', 2: 'D', 0: 'U',
 }
 
@@ -35,12 +35,10 @@ class ClassificationWhatIf:
             [float] -- the percent needed for a shooter to move up a
                        classification level.
         """
-        global classification_dict
-        global next_class_up
         scores = calc_scores(self.bs, self.division)
         return (
             round(
-                (classification_dict[next_class_up[self.shooter_class]]
+                (CLASSIFICATION_DICT[NEXT_CLASS_UP[self.shooter_class]]
                  * (scores['count'] + 1)) - scores['sum'], 4
             )
         )
@@ -79,12 +77,11 @@ class ClassificationWhatIf:
             [str] -- contains the letter for the next classification up from
                      current class.
         """
-        global next_class_up
         if self.shooter_class == 'U':
             raise Exception(
                 'Unclassified shooter.  Use method get_initial().'
             )
-        return next_class_up[self.shooter_class]
+        return NEXT_CLASS_UP[self.shooter_class]
 
 # ...end class ClassificationWhatIf . . .
 
@@ -240,10 +237,9 @@ def calc_initial(score_sum, score_count):
         [dict] -- keys are the classification letter, values are the percent
                   score needed to achieve that class.
     """
-    global classification_dict
     initial_dict = {}
 
-    for classification in classification_dict:
+    for classification in CLASSIFICATION_DICT:
         if 2.0 in initial_dict.values():
             break
         if classification == 'U':
@@ -251,7 +247,7 @@ def calc_initial(score_sum, score_count):
         for n in np.arange(2.0, 100.0, 0.0001):
             if (
                 ((score_sum + n) / (score_count + 1)
-                 ) >= classification_dict[classification]
+                 ) >= CLASSIFICATION_DICT[classification]
             ):
                 initial_dict[classification] = round(n, 4)
                 break
