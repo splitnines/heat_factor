@@ -43,7 +43,7 @@ def uspsastats(form_data):
     try:
         match_links_json = get_match_links(form_data)
     except Exception as e:
-        raise Exception(e)
+        raise Exception(f'Line 46: {e}')
 
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
@@ -74,14 +74,14 @@ def uspsastats(form_data):
             form_data['mem_num'], form_data['division']
         )
     except Exception:
-        raise Exception('Dataframe creation failed.')
+        raise Exception('Line 77: Dataframe creation failed.')
     try:
         return get_graph(
             scores_df, f'{shooter_fn} {shooter_ln}',
             form_data['mem_num'], form_data['division']
         )
     except Exception:
-        raise Exception('Image creation failed.')
+        raise Exception('Line 84: Image creation failed.')
 
 
 """The following functions were converted from the practiscore javascipt code
@@ -273,7 +273,7 @@ async def http_get(url, session):
             assert response.status == 200
             return await response.text()
     except Exception:
-        raise Exception(f'Error downloading {url}')
+        raise Exception(f'Error downloading {url} (function http_get)')
 
 
 async def http_sess(links):
@@ -419,7 +419,10 @@ def get_dataframe(
         # API server
         match_def_data, match_scores_data = event_loop(http_sess, json_obj)
     except Exception:
-        raise Exception
+        raise Exception(
+            'Line: 423 - Error source: '
+            'get_dataframe function, call to event_loop'
+        )
 
     match_def_json = (json.loads(i) for i in match_def_data)
     match_scores_json = [json.loads(i) for i in match_scores_data]
