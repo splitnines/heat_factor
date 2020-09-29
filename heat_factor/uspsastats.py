@@ -257,7 +257,7 @@ def get_match_links(form_dict):
     match_links_json = deque()
     epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(
-        match_link_raw_data.group(1).replace('\\\\"', '')
+        match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
     )
 
     for match_link_info in raw_match_links:
