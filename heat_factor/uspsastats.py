@@ -3,6 +3,7 @@ import base64
 import datetime as dt
 import json
 import re
+import sys
 from collections import defaultdict, deque
 from io import BytesIO
 
@@ -255,6 +256,7 @@ def get_match_links(form_dict):
     for match_link_info in raw_match_links:
         if dt.date.fromisoformat(match_link_info['date']) >= epoch:
             match_links_json.append(match_link_info)
+    print(f'DEBUG: {match_links_json}', file=sys.stderr)
     return match_links_json
 
 
