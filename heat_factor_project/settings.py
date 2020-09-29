@@ -1,10 +1,10 @@
 import os
 # for debugging
-import logging
+# import logging
 
 from django.core.exceptions import ImproperlyConfigured
 
-# import django_heroku
+import django_heroku
 
 
 def get_secret(setting):
@@ -149,23 +149,23 @@ STATICFILES_DIRS = (
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
 
 # Production debugging code (turn environment var DJANGO_LOG_LEVEL to DEBUG)
-logger = logging.getLogger(__name__)
-logger.info('DEBUG: ')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-        },
-    },
-}
+# logger = logging.getLogger(__name__)
+# logger.info('DEBUG: ')
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+#         },
+#     },
+# }
