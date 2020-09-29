@@ -250,7 +250,7 @@ def points_view(request):
         image = uspsastats(form_data)
     except Exception as e:
         exception_content = {
-            'message': f'views line 253: {e.args[0]}',
+            'message': f'views.py line 253: {e.args[0]}',
         }
         return render(request, 'error.html', exception_content)
 
