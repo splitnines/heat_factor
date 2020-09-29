@@ -248,6 +248,7 @@ def get_match_links(form_dict):
     match_link_raw_data = (
         match_link_re.search(str(shooter_ps_match_links.content))
     )
+    # DEBUG
     print(
         f'DEBUG match_link_raw_data: {match_link_raw_data.group(1)}',
         file=sys.stderr
@@ -255,11 +256,14 @@ def get_match_links(form_dict):
 
     match_links_json = deque()
     epoch = dt.date.fromisoformat('2019-01-01')
-    raw_match_links = json.loads(match_link_raw_data.group(1))
+    raw_match_links = json.loads(
+        match_link_raw_data.group(1).replace('\\\\"', '')
+    )
 
     for match_link_info in raw_match_links:
         if dt.date.fromisoformat(match_link_info['date']) >= epoch:
             match_links_json.append(match_link_info)
+    # DEBUG
     print(f'DEBUG match_links_json: {match_links_json}', file=sys.stderr)
     return match_links_json
 

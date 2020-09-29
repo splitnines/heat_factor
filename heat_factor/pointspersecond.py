@@ -136,7 +136,9 @@ def get_match_links(form_dict):
     )
     match_links_json = deque()
     # epoch = dt.date.fromisoformat('2017-01-01')
-    raw_match_links = json.loads(match_link_raw_data.group(1))
+    raw_match_links = json.loads(
+        match_link_raw_data.group(1).replace('\\\\"', '')
+    )
     today = dt.date.today()
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
