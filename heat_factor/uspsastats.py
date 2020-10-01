@@ -248,11 +248,6 @@ def get_match_links(form_dict):
     match_link_raw_data = (
         match_link_re.search(str(shooter_ps_match_links.content))
     )
-    # DEBUG
-    print(
-        f'DEBUG match_link_raw_data: {match_link_raw_data.group(1)}',
-        file=sys.stderr
-    )
 
     match_links_json = deque()
     epoch = dt.date.fromisoformat('2019-01-01')
@@ -263,6 +258,7 @@ def get_match_links(form_dict):
     for match_link_info in raw_match_links:
         if (
             dt.date.fromisoformat(match_link_info['date']) >= epoch and
+            # added 09/30/2020 because Steel Challenge matches break shit
             'Steel Challenge' not in match_link_info['name']
         ):
             match_links_json.append(match_link_info)
@@ -473,12 +469,9 @@ def get_dataframe(
                     continue
                 if division.lower() != match_info['sh_dvp'].lower():
                     continue
-                # call calc_totals() function
                 totals = calc_totals(match_scores_json, idx, shooter_uuid)
-                # call get_round_count() function
                 round_count = get_round_count(totals)
                 points_possible = round_count * 5
-                # call get_points_scored() function
                 points_scored = get_points_scored(shooter_pf, totals)
                 if points_scored > 0:
                     pct_points = round(

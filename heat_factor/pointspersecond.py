@@ -170,14 +170,11 @@ def get_match_links(form_dict):
             dt.date.fromisoformat(match_date_range['end_date']) and
             str(dt.date.fromisoformat(match_link_info['date'])) not in
             delete_list and
+            # added 09/30/2020 because steel challenge matches broke shit
             'Steel Challenge' not in match_link_info['name']
         ):
             match_links_json.append(match_link_info)
 
-    print(
-        f'PPS DEBUG: match_links_json - {match_links_json}',
-        file=sys.stderr
-    )
     return match_links_json
 
 
@@ -193,12 +190,9 @@ async def http_get(url, session):
     """
     try:
         async with session.get(url) as response:
-            status = response.status
             assert response.status == 200
             return await response.text()
     except Exception:
-        print(f'PPS DEBUG: {url}', file=sys.stderr)
-        print(f'PPS DEBUG: status {status}', file=sys.stderr)
         raise Exception(f'Error downloading {url}')
 
 
@@ -331,10 +325,9 @@ def pps_plot(pps_dict, fn, ln, form_dict):
     try:
         trend = np.poly1d(np.polyfit(x, pps, 2))
     except Exception:
-        from sys import stderr
         print(
             'SYS_LOGGER: np.poly1d(np.polyfit()) bug fix triggered',
-            file=stderr
+            file=sys.stderr
         )
         trend = np.poly1d(np.polyfit(x, pps, 2))
 
