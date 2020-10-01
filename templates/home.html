@@ -25,9 +25,7 @@
         </p>
         <form name="myForm" action="/heat_factor/" method="POST">
             {% csrf_token %}
-            <h3>
-                {{ practiscore_url_form.as_p }}
-            </h3>
+            <h3>{{ practiscore_url_form.as_p }}</h3>
             <br />
             <input
                 class="btn"
@@ -49,9 +47,7 @@
         </p>
         <form id="classificationCalc" action="/get_upped/" method="POST">
             {% csrf_token %}
-            <h3>
-                {{ get_upped_form.as_p }}
-            </h3>
+            <h3>{{ get_upped_form.as_p }}</h3>
             <br />
             <input class="btn" type="submit" value="Make Ready" />
             <div id="responseHTML"></div>
@@ -72,9 +68,7 @@
             <div id="pointsLeft">
                 <form id="points" action="/points/" method="POST">
                     {% csrf_token %}
-                    <h3>
-                        {{ accu_stats_form1.as_p }}
-                    </h3>
+                    <h3>{{ accu_stats_form1.as_p }}</h3>
                     <br />
                     <input class="btn" type="submit" value="Make Ready" />
                 </form>
@@ -93,13 +87,11 @@
                     height="300"
                     title="Sample Report"
                 />
-                <font style="font-size: 10px;">(Click image to enlarge)</font>
+                <font style="font-size: 10px">(Click image to enlarge)</font>
                 <div id="pointsMyModal" class="modal">
                     <span class="pointsClose">&times;</span>
                     <img class="modal-content-1" id="img01" />
-                    <div id="pointsCaption">
-                        Sample Points Report
-                    </div>
+                    <div id="pointsCaption">Sample Points Report</div>
                 </div>
             </div>
         </div>
@@ -119,9 +111,7 @@
             <div id="ppsLeft">
                 <form id="pps" action="/pps/" method="POST">
                     {% csrf_token %}
-                    <h3>
-                        {{ pps_form1.as_p }}
-                    </h3>
+                    <h3>{{ pps_form1.as_p }}</h3>
                     <br />
                     <input class="btn" type="submit" value="Make Ready" />
                 </form>
@@ -140,7 +130,7 @@
                     height="300"
                     title="Sample Report"
                 />
-                <font style="font-size: 10px;">(Click image to enlarge)</font>
+                <font style="font-size: 10px">(Click image to enlarge)</font>
                 <div id="ppsMyModal" class="modal">
                     <span class="ppsClose">&times;</span>
                     <img class="modal-content-2" id="img02" />
@@ -176,14 +166,7 @@
                 >Heat Factor App</a
             >
         </b>
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
         <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
-        <!-- <script>
-            window.JQuery ||
-                document.write(
-                    '<script src="{% static 'js/jquery-3.5.1.min.js' %}"><\/script>'
-                );
-        </script> -->
         <script>
             window.JQuery ||
                 document.write(

@@ -1,10 +1,12 @@
 $(() => {
 
     function displaySpinner() {
+        // rewrite in vanilla js
         $(spinner).addClass('loading');
     }
 
     function removeSpinner() {
+        // rewrite in vanilla js
         $(spinner).removeClass('loading');
     }
 
@@ -67,28 +69,19 @@ $(() => {
             url: url,
             data: formData,
             beforeSend: () => {
-                $('#responseHTML')
-                .slideUp(600)
-                .empty()
-                .removeClass('resp');
+                $('#responseHTML').slideUp(600).empty().removeClass('resp');
                 displaySpinner();
             },
             complete: () => {
                 removeSpinner();
             },
             success: (resp) => {
-                $('#responseHTML')
-                .addClass('resp')
-                .html($(resp)[15].innerHTML)
-                .hide()
-                .slideDown(600);
+                $('#responseHTML').addClass('resp').html($(resp)[15].innerHTML)
+                .hide().slideDown(600);
             },
             error: () => {
                 $('#responseHTML')
-                .addClass('resp')
-                .html(errorHtml)
-                .hide()
-                .slideDown(600);
+                .addClass('resp').html(errorHtml).hide().slideDown(600);
             },
         });
     });

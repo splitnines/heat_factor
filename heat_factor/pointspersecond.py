@@ -3,6 +3,7 @@ import base64
 import datetime as dt
 import json
 import re
+import sys
 from collections import defaultdict, deque, OrderedDict
 from io import BytesIO
 
@@ -172,6 +173,10 @@ def get_match_links(form_dict):
         ):
             match_links_json.append(match_link_info)
 
+    print(
+        f'PPS DEBUG: match_links_json - {match_links_json}',
+        file=sys.stderr
+    )
     return match_links_json
 
 
@@ -187,9 +192,12 @@ async def http_get(url, session):
     """
     try:
         async with session.get(url) as response:
+            status = response.status
             assert response.status == 200
             return await response.text()
     except Exception:
+        print(f'PPS DEBUG: {url}', file=sys.stderr)
+        print(f'PPS DEBUG: status {status}', file=sys.stderr)
         raise Exception(f'Error downloading {url}')
 
 
