@@ -261,7 +261,10 @@ def get_match_links(form_dict):
     )
 
     for match_link_info in raw_match_links:
-        if dt.date.fromisoformat(match_link_info['date']) >= epoch:
+        if (
+            dt.date.fromisoformat(match_link_info['date']) >= epoch and
+            'Steel Challenge' not in match_link_info['name']
+        ):
             match_links_json.append(match_link_info)
     # DEBUG
     print(f'DEBUG match_links_json: {match_links_json}', file=sys.stderr)

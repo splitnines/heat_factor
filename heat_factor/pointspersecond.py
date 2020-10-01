@@ -169,7 +169,8 @@ def get_match_links(form_dict):
             dt.date.fromisoformat(match_link_info['date']) <=
             dt.date.fromisoformat(match_date_range['end_date']) and
             str(dt.date.fromisoformat(match_link_info['date'])) not in
-            delete_list
+            delete_list and
+            'Steel Challenge' not in match_link_info['name']
         ):
             match_links_json.append(match_link_info)
 
