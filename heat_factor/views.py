@@ -3,13 +3,22 @@ import re
 import sys
 
 from django.shortcuts import redirect, render
+from django.utils import timezone
 
 from .classificationwhatif import ClassificationWhatIf
-from .forms import (AccuStatsForm1, AccuStatsForm2, GetUppedForm,
-                    PractiscoreUrlForm, PPSForm1, PPSForm2)
+from .forms import (
+    AccuStatsForm1,
+    AccuStatsForm2,
+    GetUppedForm,
+    PractiscoreUrlForm,
+    PPSForm1,
+    PPSForm2
+)
 from .heatfactor import heatfactor
 from .uspsastats import uspsastats
 from .pointspersecond import pointspersec
+
+from .models import Uspsa
 
 
 def sys_logger(app_name, *app_data):
@@ -116,6 +125,24 @@ def get_upped_view(request):
         if GetUppedForm(request.POST).is_valid():
             mem_num = request.POST.get('mem_num_1')
             division = request.POST.get('division_1')
+
+            record_exists = Uspsa.objects.filter(
+                    uspsa_num=mem_num,
+                    division=division
+                ).exists()
+
+            if record_exists:
+                record = Uspsa.objects.get(
+                    uspsa_num=mem_num,
+                    division=division
+                )
+                record.date_updated = timezone.now()
+            else:
+                record = Uspsa(
+                    uspsa_num=mem_num,
+                    division=division
+                )
+            record.save()
         else:
             exception_content = {
                 'message': 'get_upped incorrect method error.',
