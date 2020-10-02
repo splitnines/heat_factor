@@ -119,8 +119,8 @@ def get_upped_view(request):
     Returns:
         [object] -- HTTPResponse object
     """
-    mem_num = str()
-    division = str()
+    mem_num = None
+    division = None
     if request.method == 'POST':
         if GetUppedForm(request.POST).is_valid():
             mem_num = request.POST.get('mem_num_1')
