@@ -3,7 +3,6 @@ import base64
 import datetime as dt
 import json
 import re
-import sys
 from collections import defaultdict, deque
 from io import BytesIO
 
@@ -262,8 +261,6 @@ def get_match_links(form_dict):
             'Steel Challenge' not in match_link_info['name']
         ):
             match_links_json.append(match_link_info)
-    # DEBUG
-    print(f'DEBUG match_links_json: {match_links_json}', file=sys.stderr)
     return match_links_json
 
 
@@ -325,7 +322,6 @@ def event_loop(func, *args):
     Returns:
         [object] -- returns whatever is received from the called function.
     """
-    # why do I have to use Selector???
     loop = asyncio.SelectorEventLoop()
     asyncio.set_event_loop(loop)
     response = (loop.run_until_complete(func(*args)))

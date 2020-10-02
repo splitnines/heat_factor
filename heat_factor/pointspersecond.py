@@ -240,7 +240,6 @@ def event_loop(func, *args):
     asyncio.set_event_loop(loop)
     response = (loop.run_until_complete(func(*args)))
     loop.close()
-    # response = asyncio.run(func(*args))
     return response
 
 
