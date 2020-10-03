@@ -126,23 +126,26 @@ def get_upped_view(request):
             mem_num = request.POST.get('mem_num_1')
             division = request.POST.get('division_1')
 
-            record_exists = Uspsa.objects.filter(
-                    uspsa_num=mem_num,
-                    division=division
-                ).exists()
+            try:
+                record_exists = Uspsa.objects.filter(
+                        uspsa_num=mem_num,
+                        division=division
+                    ).exists()
 
-            if record_exists:
-                record = Uspsa.objects.get(
-                    uspsa_num=mem_num,
-                    division=division
-                )
-                record.date_updated = timezone.now()
-            else:
-                record = Uspsa(
-                    uspsa_num=mem_num,
-                    division=division
-                )
-            record.save()
+                if record_exists:
+                    record = Uspsa.objects.get(
+                        uspsa_num=mem_num,
+                        division=division
+                    )
+                    record.date_updated = timezone.now()
+                else:
+                    record = Uspsa(
+                        uspsa_num=mem_num,
+                        division=division
+                    )
+                record.save()
+            except Exception:
+                sys_logger('get_upped', 'database failure')
         else:
             exception_content = {
                 'message': 'get_upped incorrect method error.',
