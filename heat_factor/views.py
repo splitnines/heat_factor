@@ -7,18 +7,13 @@ from django.utils import timezone
 
 from .classificationwhatif import ClassificationWhatIf
 from .forms import (
-    AccuStatsForm1,
-    AccuStatsForm2,
-    GetUppedForm,
-    PractiscoreUrlForm,
-    PPSForm1,
-    PPSForm2
+    AccuStatsForm1, AccuStatsForm2, GetUppedForm,
+    PPSForm1, PPSForm2, PractiscoreUrlForm
 )
 from .heatfactor import heatfactor
-from .uspsastats import uspsastats
-from .pointspersecond import pointspersec
-
 from .models import Uspsa
+from .pointspersecond import pointspersec
+from .uspsastats import uspsastats
 
 
 def sys_logger(app_name, *app_data):
@@ -43,7 +38,6 @@ def home_view(request):
             'pps_form1': PPSForm1(),
         }
         return render(request, 'home.html', forms)
-
     else:
         return redirect('')
 
@@ -58,8 +52,8 @@ def heat_factor_view(request):
         [dict] -- renders the content to the url in the form of a dict
                   containing the matplotlib image and the data.
     """
-    practiscore_url = str()
-    chart = str()
+    practiscore_url = None
+    chart = None
     if request.method == 'POST':
         if PractiscoreUrlForm(request.POST).is_valid():
             practiscore_url = request.POST.get('p_url')
@@ -151,7 +145,6 @@ def get_upped_view(request):
                 'message': 'get_upped incorrect method error.',
             }
             return render(request, 'error.html', exception_content)
-
     sys_logger('get_upped', mem_num, division)
 
     exception_content = {
