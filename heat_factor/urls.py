@@ -12,7 +12,7 @@ router.register(r'uspsa', UspsaViewSet)
 
 urlpatterns = [
     path('', home_view),
-    path('', include(router.urls)),
+    path('uspsa/', include(router.urls)),
     path('points/', points_view),
     path('heat_factor/', heat_factor_view),
     path('bad_url/', bad_url_view),
