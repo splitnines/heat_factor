@@ -43,6 +43,7 @@ Pillow = "==7.2.0"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+django-admin-honeypot = "*"
 
 [requires]
 python_version = "3.8"

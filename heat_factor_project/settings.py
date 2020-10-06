@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'heat_factor.apps.HeatFactorConfig',
     'rest_framework',
+    'admin_honeypot_fix.apps.AdminHoneypotFixConfig',
 ]
 
 MIDDLEWARE = [
