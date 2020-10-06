@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'heat_factor.apps.HeatFactorConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

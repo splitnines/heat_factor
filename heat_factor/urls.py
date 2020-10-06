@@ -1,10 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import RedirectView
 
 from .views import (
     home_view, points_view, heat_factor_view, bad_url_view,
-    get_upped_view, error_view, pps_view
+    get_upped_view, error_view, pps_view, UspsaViewSet
 )
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'uspsa', UspsaViewSet)
 
 urlpatterns = [
     path('', home_view),
@@ -15,6 +19,9 @@ urlpatterns = [
     path('error/', error_view),
     path('pps/', pps_view),
     path(
-        'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
+        r'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
     ),
+    path('', include(router.urls)),
+    path('api-auth/',
+         include('rest_framework.urls', namespace='rest_framework'))
 ]

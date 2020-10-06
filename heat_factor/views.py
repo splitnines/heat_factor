@@ -14,6 +14,9 @@ from .heatfactor import heatfactor
 from .models import Uspsa
 from .pointspersecond import pointspersec
 from .uspsastats import uspsastats
+from rest_framework import viewsets
+from rest_framework import permissions
+from .serializers import UspsaSerializer
 
 
 def sys_logger(app_name, *app_data):
@@ -351,3 +354,9 @@ def pps_view(request):
 
 def error_view(request):
     return render(request, 'error.html')
+
+
+class UspsaViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Uspsa.objects.all().order_by('date_created')
+    serializer_class = UspsaSerializer
+    permission_classes = [permissions.IsAuthenticated]
