@@ -20,8 +20,10 @@ urlpatterns = [
     path('error/', error_view),
     path('pps/', pps_view),
     path('', include(router.urls)),
-    path('api-auth/',
-         include('rest_framework.urls', namespace='rest_framework')),
+    path(
+        'api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')
+    ),
     path(
         r'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
     ),
