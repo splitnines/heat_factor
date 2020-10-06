@@ -154,6 +154,12 @@ STATICFILES_DIRS = (
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
 django_heroku.settings(locals())
 
 # Production debugging code (turn environment var DJANGO_LOG_LEVEL to DEBUG)
