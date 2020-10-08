@@ -357,6 +357,6 @@ def error_view(request):
 
 
 class UspsaViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Uspsa.objects.all().order_by('date_created')
+    queryset = Uspsa.objects.all().order_by('-date_updated')
     serializer_class = UspsaSerializer
     permission_classes = [permissions.IsAuthenticated]
