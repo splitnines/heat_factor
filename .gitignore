@@ -1,21 +1,11 @@
 db.sqlite3
-heat_factor/__pycache__
-heat_factor/__pycache__/\*
-heat_factor/classificationwhatif_ref.py
 heat_factor/Test membership numbers.txt
-heat_factor/classificationwhatif_old.py
 .vscode/launch.json
-.vscode/settings.json
 .vscode/settings.json
 .vscode/*
 .vscode/
 heat_factor/README.md
 README.md
 heat_factor_project/settings_dev.py
-Pipfile.bak
-admin_honeypot_fix/__pycache__
-heat_factor_project/__pycache__/settings_dev.cpython-38.pyc
-heat_factor/migrations/__pycache__/0001_initial.cpython-38.pyc
-heat_factor/migrations/__pycache__/0002_auto_20201002_2111.cpython-38.pyc
-heat_factor_project/__pycache__/settings_dev.cpython-38.pyc
-heat_factor_project/__pycache__/urls.cpython-38.pyc
+__pycache__/
+*.py[cod]
