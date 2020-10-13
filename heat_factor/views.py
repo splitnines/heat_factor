@@ -1,9 +1,11 @@
 import datetime as dt
+import json
 import re
 import sys
 
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.http import HttpResponse
 
 from .classificationwhatif import ClassificationWhatIf
 from .forms import (
@@ -123,25 +125,27 @@ def get_upped_view(request):
             mem_num = request.POST.get('mem_num_1')
             division = request.POST.get('division_1')
 
+            # database lookup
             try:
                 record_exists = Uspsa.objects.filter(
                         uspsa_num=mem_num,
                         division=division
                     ).exists()
-
                 if record_exists:
                     record = Uspsa.objects.get(
                         uspsa_num=mem_num,
                         division=division
                     )
                     record.date_updated = timezone.now()
+                    record.save()
                 else:
                     record = Uspsa(
                         uspsa_num=mem_num,
                         division=division
                     )
-                record.save()
+                    record.save()
             except Exception:
+                # fail quietly
                 sys_logger('get_upped', 'database failure')
         else:
             exception_content = {
@@ -159,26 +163,44 @@ def get_upped_view(request):
                 tool won\'t work.<br> Also, if you don\'t have at least 3
                 qualifing classifier scores on record this tool won\'t work.
                 """,
-            'date': dt.datetime.now()
+            'date': str(dt.datetime.now())
         }
     try:
         shooter = ClassificationWhatIf(mem_num, division)
     except Exception:
-        return render(request, 'get_upped.html', exception_content)
+        if request.is_ajax():
+            return HttpResponse(
+                json.dumps(exception_content), content_type="application/json"
+            )
+        else:
+            return render(request, 'get_upped.html', exception_content)
+        # return render(request, 'get_upped.html', exception_content)
 
     if shooter.get_shooter_class() == 'GM':
         content = {
             'response_text': f"""
                 You\'re a <font color=\"red\">{shooter.get_shooter_class()}
-                </font>. Nowhere to go from here."""
+                </font>. Nowhere to go from here.""",
+            'date': str(dt.datetime.now()),
         }
-        return render(request, 'get_upped.html', content)
+        if request.is_ajax():
+            return HttpResponse(
+                json.dumps(content), content_type="application/json"
+            )
+        else:
+            return render(request, 'get_upped.html', content)
 
     if shooter.get_shooter_class() == 'U':
         try:
             initial_dict = shooter.get_initial()
         except Exception:
-            return render(request, 'get_upped.html', exception_content)
+            if request.is_ajax():
+                return HttpResponse(
+                    json.dumps(exception_content),
+                    content_type="application/json"
+                )
+            else:
+                return render(request, 'get_upped.html', exception_content)
 
         initial_calssification_html = '<br>'.join(
             [f"""You need a score of <font color=\"red\">{initial_dict[k]}%
@@ -188,9 +210,14 @@ def get_upped_view(request):
         )
         content = {
             'response_text': initial_calssification_html,
-            'date': dt.datetime.now(),
+            'date': str(dt.datetime.now()),
         }
-        return render(request, 'get_upped.html', content)
+        if request.is_ajax():
+            return HttpResponse(
+                json.dumps(content), content_type="application/json"
+            )
+        else:
+            return render(request, 'get_upped.html', content)
 
     if shooter.get_upped() > 100:
         content = {
@@ -199,9 +226,14 @@ def get_upped_view(request):
                 a score greater than <font color=\"red\">100%</font>. Enjoy
                 {shooter.get_shooter_class()} class.
             """,
-            'date': dt.datetime.now(),
+            'date': str(dt.datetime.now()),
         }
-        return render(request, 'get_upped.html', content)
+        if request.is_ajax():
+            return HttpResponse(
+                json.dumps(content), content_type="application/json"
+            )
+        else:
+            return render(request, 'get_upped.html', content)
 
     else:
         try:
@@ -215,9 +247,14 @@ def get_upped_view(request):
                 {str(shooter.get_upped())}%</font> to make
                 <font color=\"red\">{next_class_up}</font> class.
             """,
-            'date': dt.datetime.now(),
+            'date': str(dt.datetime.now()),
         }
-        return render(request, 'get_upped.html', content)
+        if request.is_ajax():
+            return HttpResponse(
+                json.dumps(content), content_type="application/json"
+            )
+        else:
+            return render(request, 'get_upped.html', content)
 
 
 def points_view(request):

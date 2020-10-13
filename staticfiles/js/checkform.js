@@ -68,6 +68,7 @@ $(() => {
             type: 'POST',
             url: url,
             data: formData,
+            dataType: 'json',
             beforeSend: () => {
                 $('#responseHTML').slideUp(600).empty().removeClass('resp');
                 displaySpinner();
@@ -76,7 +77,11 @@ $(() => {
                 removeSpinner();
             },
             success: (resp) => {
-                $('#responseHTML').addClass('resp').html($(resp)[15].innerHTML)
+                // $('#responseHTML').addClass('resp')
+                // .html($(resp)[15].innerHTML)
+                // .hide().slideDown(600);
+                $('#responseHTML').addClass('resp')
+                .html(resp.response_text)
                 .hide().slideDown(600);
             },
             error: () => {
