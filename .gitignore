@@ -12,3 +12,5 @@ __pycache__/
 heat_factor/staticfiles
 heat_factor/staticfiles/
 heat_factor/staticfiles/*
+staticfiles
+staticfiles/
