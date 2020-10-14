@@ -1,8 +1,14 @@
+const displaySpinner = () => {
+    let element = document.getElementById("spinner");
+    element.classList.add("loading");
+}
+
 $(() => {
-    function displaySpinner() {
-        // rewrite in vanilla js
-        $(spinner).addClass('loading');
-    }
+
+    // function displaySpinner() {
+    //     // rewrite in vanilla js
+    //     $(spinner).addClass('loading');
+    // }
 
     function removeSpinner() {
         // rewrite in vanilla js
@@ -41,7 +47,6 @@ $(() => {
     $('#id_p_url').focus(() => {
         $('[name=myForm]').trigger('reset');
         $('#checkform').fadeOut(1000);
-        $('checkform').toggleClass('fade');
     });
 
     // adds spinner to page while waiting for scores to load
@@ -96,7 +101,7 @@ $(() => {
         $('#classificationCalc').trigger('reset');
     });
 
-    // // embed most recent youtube video from my channel
+    // embed most recent youtube video from my channel
     const youtubeChannelId = "UC_QPi6_8WRZ1bXgShJAzSbg";
     const youtubeChannelUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     const rss2jsonUrl = "https://api.rss2json.com/v1/api.json?rss_url=";
@@ -135,4 +140,5 @@ $(() => {
         $('#ppsMyModal').css('display', 'none');
         $('.modal-content-2').css('width', '60%');
     });
+
 });
