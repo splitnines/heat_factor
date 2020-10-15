@@ -20,6 +20,7 @@ urlpatterns = [
     path('bad_url/', bad_url_view),
     path('error/', error_view),
     path('', include(router.urls)),
-    path(r'favicon\.ico',
-         RedirectView.as_view(url='/static/images/favicon.ico')),
+    path(
+        r'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
+    ),
 ]
