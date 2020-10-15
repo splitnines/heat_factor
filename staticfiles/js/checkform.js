@@ -24,7 +24,8 @@ $(() => {
 
     // form validation and button manipulation based on URL input
     const regExStr = '^https://(www\.)?practiscore\.com/results/new/[0-9a-z-]+$'
-    const psBadUrlMsg = 'Bad URL, please enter a valid Practiscore.com match URL.';
+    const psBadUrlMsg = `Bad URL, please enter a valid Practiscore.com
+                         match URL.`;
     const psRegEx = new RegExp(regExStr, 'g');
 
     $('#heatfactor').click((e) => {
