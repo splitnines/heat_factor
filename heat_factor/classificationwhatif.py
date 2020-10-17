@@ -1,6 +1,10 @@
+import sys
+
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
+from django.utils import timezone
+
 
 CLASSIFICATION_DICT = {
     'GM': 95, 'M': 85, 'A': 75, 'B': 60, 'C': 40, 'D': 2, 'U': 0,
@@ -252,3 +256,32 @@ def calc_initial(score_sum, score_count):
                 initial_dict[classification] = round(n, 4)
                 break
     return initial_dict
+
+
+def sys_logger(app_name, *app_data):
+    """Poor excuse for a logging system"""
+    print(f'SYS_LOGGER: {app_name}, {app_data}', file=sys.stderr)
+
+
+def uspsa_model_util(model_name, mem_num, division):
+    try:
+        record_exists = model_name.objects.filter(
+                uspsa_num=mem_num,
+                division=division
+            ).exists()
+        if record_exists:
+            record = model_name.objects.get(
+                uspsa_num=mem_num,
+                division=division
+            )
+            record.date_updated = timezone.now()
+            record.save()
+        else:
+            record = model_name(
+                uspsa_num=mem_num,
+                division=division
+            )
+            record.save()
+    except Exception:
+        # fail quietly
+        sys_logger('get_upped', 'database failure')

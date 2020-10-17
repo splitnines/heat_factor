@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.http import HttpResponse
 
-from .classificationwhatif import ClassificationWhatIf
+from .classificationwhatif import ClassificationWhatIf, uspsa_model_util
 from .forms import (
     AccuStatsForm1, AccuStatsForm2, GetUppedForm,
     PPSForm1, PPSForm2, PractiscoreUrlForm
@@ -124,29 +124,6 @@ def get_upped_view(request):
         if GetUppedForm(request.POST).is_valid():
             mem_num = request.POST.get('mem_num_1')
             division = request.POST.get('division_1')
-
-            # database lookup
-            try:
-                record_exists = Uspsa.objects.filter(
-                        uspsa_num=mem_num,
-                        division=division
-                    ).exists()
-                if record_exists:
-                    record = Uspsa.objects.get(
-                        uspsa_num=mem_num,
-                        division=division
-                    )
-                    record.date_updated = timezone.now()
-                    record.save()
-                else:
-                    record = Uspsa(
-                        uspsa_num=mem_num,
-                        division=division
-                    )
-                    record.save()
-            except Exception:
-                # fail quietly
-                sys_logger('get_upped', 'database failure')
         else:
             exception_content = {
                 'message': 'get_upped incorrect method error.',
@@ -167,6 +144,7 @@ def get_upped_view(request):
         }
     try:
         shooter = ClassificationWhatIf(mem_num, division)
+        uspsa_model_util(Uspsa, mem_num, division)
     except Exception:
         if request.is_ajax():
             return HttpResponse(
