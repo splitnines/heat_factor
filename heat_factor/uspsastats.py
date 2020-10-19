@@ -43,7 +43,7 @@ def uspsastats(form_data):
     try:
         match_links_json = get_match_links(form_data)
     except Exception as e:
-        raise Exception(f'Line 46: {e}')
+        raise Exception(f'{e}')
 
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
