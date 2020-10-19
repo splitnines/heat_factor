@@ -50,11 +50,9 @@ class ClassificationWhatIf:
     def get_initial(self):
         """Used to get the initial classification of an
            unclassified shooter.
-
         Raises:
             Exception: if the member number does not have enough scores on
                        record raise ValueError, needs at least 3 scores.
-
         Returns:
             [dict] -- keys are the classification letter, values are the
                       percent score needed to achieve that class.
@@ -76,7 +74,6 @@ class ClassificationWhatIf:
         """
         Raises:
             AttributeError: if shooters current class is 'U'
-
         Returns:
             [str] -- contains the letter for the next classification up from
                      current class.
@@ -92,15 +89,12 @@ class ClassificationWhatIf:
 
 def http_get(mem_num, division):
     """Scrapes the uspsa.org classification lookup page.
-
     Arguments:
         mem_num {str} -- the uspsa membership number to query
         division {str} -- uspsa division
-
     Raises:
         AttributeError: if no data if found on uspsa.org for mem_num/division
                         combo.
-
     Returns:
         [object] -- the BeautifulSoup object with the data from uspsa.org
     """
@@ -120,11 +114,9 @@ def http_get(mem_num, division):
 def classifier_scores(bs, division):
     """Retreives the valid classifier scores that make up the shooters
        current classification.
-
     Arguments:
         bs {object} -- BeautifulSoup object from the uspsa.org scrape.
         division {str} -- uspsa division
-
     Yields:
         [tuple] -- str containing the classifier code, must be 'Y' and a
                    float containing the percent for that code.
@@ -147,15 +139,12 @@ def classifier_scores(bs, division):
 
 def get_classification_pct(bs, division):
     """Retrieves shooters current classification percent.
-
     Arguments:
         bs {object} -- BeautifulSoup object from the uspsa.org scrape.
         division {str} -- uspsa division
-
     Raises:
         Exception: if member number is no longer active the class on
                    uspsa.org is set to 'X'.
-
     Returns:
         [float] -- current classification percent for member/division combo.
     """
@@ -178,15 +167,12 @@ def get_classification_pct(bs, division):
 
 def classification_letter(bs, division):
     """Retrieves shooters current classification percent.
-
     Arguments:
         bs {object} -- BeautifulSoup object from the uspsa.org scrape.
         division {str} -- uspsa division
-
     Raises:
         Exception: if member number is no longer active the class on
                    uspsa.org is set to 'X'.
-
     Returns:
         [str] -- the shooters current classification letter.
     """
@@ -209,11 +195,9 @@ def classification_letter(bs, division):
 
 def calc_scores(bs, division):
     """Calculate the sum of the shooters most recent valid classifier scores.
-
     Arguments:
         bs {object} -- BeautifulSoup object from the uspsa.org scrape.
         division {str} -- uspsa division
-
     Returns:
         [dict] -- with 2 keys, a float representing the sum of valid scores
                   on record and an int containing the count of valid scores
@@ -232,11 +216,9 @@ def calc_initial(score_sum, score_count):
     """Performs a "reverse" calculation to determine what percent an
        unclassified shooter needs on thier next classifier to receive an
        initial classification.
-
     Arguments:
         score_sum {float} -- some of valid scores on record.
         score_count {int} -- count of valid scores on record.
-
     Returns:
         [dict] -- keys are the classification letter, values are the percent
                   score needed to achieve that class.

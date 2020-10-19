@@ -27,10 +27,8 @@ def sys_logger(app_name, *app_data):
 
 def home_view(request):
     """Routes to site home page template.
-
     Arguments:
         request {object} -- HTTPRequest object
-
     Returns:
         [object] -- HTTPResponse object
     """
@@ -48,10 +46,8 @@ def home_view(request):
 
 def heat_factor_view(request):
     """Renders the Heat Factor graph for a given USPSA match link.
-
     Arguments:
         request {object} -- HTTPRequest object
-
     Returns:
         [dict] -- renders the content to the url in the form of a dict
                   containing the matplotlib image and the data.
@@ -92,10 +88,8 @@ def bad_url_view(request):
        provides an incorrect practiscore URL this function is called.  This
        acts as a backup to the javascript function doing form validation
        at the browser.
-
     Arguments:
         request {object} -- HTTPRequest object
-
     Returns:
         [object] -- HTTPResponse object
     """
@@ -110,10 +104,8 @@ def get_upped_view(request):
     """Creates a ClassificationWhatIf object and calls various methods on that
        object to produce the percentage a shooter needs to move up a class or
        for a new shooter to get an initial classification.
-
     Arguments:
         request {object} -- HTTPRequest object
-
     Returns:
         [object] -- HTTPResponse object
     """
@@ -237,11 +229,9 @@ def get_upped_view(request):
 def points_view(request):
     """Handles the interface between the HTML template containing the user
        supplied data and the backend API interface that produces an image
-
     Arguments:
         request {[object]} -- HTTPRequest object containing the form data
                               from the HTML template
-
     Returns:
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception
@@ -305,11 +295,9 @@ def points_view(request):
 def pps_view(request):
     """Handles the interface between the HTML template containing the user
        supplied data and the backend API interface that produces an image
-
     Arguments:
         request {[object]} -- HTTPRequest object containing the form data
                               from the HTML template
-
     Returns:
         [object] -- HTTPResponse object containing either the matplotlib
                     BytesIO image or an Exception

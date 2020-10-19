@@ -12,14 +12,11 @@ import requests
 def heatfactor(url):
     """Main interface function.  Provides a standard interface to client
        software.
-
     Arguments:
         url {[type]} -- [description]
-
     Raises:
         Exception: Error downloading AWS S3 json file.
         Exception: Bad URL.
-
     Returns:
         [object] -- matplotlib image
     """
@@ -42,13 +39,10 @@ def heatfactor(url):
 
 def get_match_def(match_link):
     """Fetches the match data from AWS in the form of a json file.
-
     Arguments:
         match_link {str} -- practiscore match url.
-
     Raises:
         ValueError: if there was a problem pulling the AWS files.
-
     Returns:
         [dict] -- json object with the match data from AWS.
     """
@@ -91,10 +85,8 @@ def get_heat_factor(match_def):
     """Calculates the heat index for each division and pulls the match name
        from the json object.  Assigns random heat factor to each shooter
        within a range based on the shooters classification.
-
     Arguments:
         match_def {dict} -- json object with the match data from AWS.
-
     Returns:
         [dict] -- dict containing the heat index for each division as an int.
     """
@@ -145,10 +137,8 @@ def get_heat_factor(match_def):
 def get_chart(match_def):
     """Configure the matplotlib image, encodes the image into a BytesIO bytes
        object.
-
     Arguments:
         match_def {[dict]} -- json object with the match data from AWS.
-
     Returns:
         [bytes object] -- the bytes encoded png matplotlib image
     """

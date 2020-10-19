@@ -20,18 +20,15 @@ def uspsastats(form_data):
        views.py.
 
        This is the main function/interface for the module.
-
     Arguments:
         form_data {dict} -- contains the form data passed from the HTML form
                             to views.py
-
     Raises:
         Exception: USPSA membership number not found.
         Exception: Passes Exception message from get_match_links(),
                    3 possible Exceptions.
         Exception: Dataframe creation failed.
         Exception: Image creation failed.
-
     Returns:
         BytesIO -- a matplotlib image file in a BytesIO data stream
     """
@@ -86,11 +83,9 @@ def uspsastats(form_data):
 
 """The following functions were converted from the practiscore javascipt code
    that decodes the AWS json files with the scores for paper targets.
-
     Arguments:
         score_field {int} -- the coded scores for paper targets in the AWS
                              json file
-
     Returns:
         {int} -- the human consumable scores for paper targets.
     """
@@ -175,10 +170,8 @@ def num_npm(score_field):
 
 def check_mem_num(mem_num):
     """Checks that mem_num is a valid uspsa number.
-
     Arguments:
         mem_num {str} -- the users USPSA membership number (alphanumeric).
-
     Raises:
         Exception: if membership number is not found.
     """
@@ -195,11 +188,9 @@ def get_match_links(form_dict):
     """Logs into Practicescore.com and scrapes the links to each match the
        shooter participated in.  These links are scraped from javascript
        code in the HTML of the users Practiscore home page.
-
     Arguments:
         form_dict {dict} -- dict containing username and password used to log
                             in to Practiscore.com
-
     Returns:
         [deque] -- list of json object containing the match link uuids for
                    pulling match json files from AWS.
@@ -266,11 +257,9 @@ def get_match_links(form_dict):
 
 async def http_get(url, session):
     """Perform the HTTP get request to the AWS server.
-
     Arguments:
         url {str} -- the individual url from the shooters list of matches
         session {object} -- the aiohttp session object
-
     Returns:
         [json object] -- the AWS response for each json file
     """
@@ -284,10 +273,8 @@ async def http_get(url, session):
 
 async def http_sess(links):
     """Creates the async coroutines to fetch the match details from AWS
-
     Arguments:
         links {json object} -- contains the PS AWS uuid for each match
-
     Returns:
         {str} -- the AWS json files as a string objects.
     """
@@ -314,11 +301,9 @@ async def http_sess(links):
 
 def event_loop(func, *args):
     """Calls the specified function with list of args.
-
     Arguments:
         func {function} -- name of async function to call and "place on the
                            loop.
-
     Returns:
         [object] -- returns whatever is received from the called function.
     """
@@ -331,13 +316,11 @@ def event_loop(func, *args):
 
 def calc_totals(match_scores, idx, shtr_uuid):
     """Calculates the total points for the given match.
-
     Arguments:
         match_scores {list} -- json file with the shooters details from each
                                match.
         idx {int} -- used to align the two AWS json files with the scores.
         shtr_uuid {str} -- the shooters uuid.
-
     Returns:
         [defaultdict] -- dict with total points.
     """
@@ -362,10 +345,8 @@ def calc_totals(match_scores, idx, shtr_uuid):
 
 def get_round_count(totals):
     """Calculate round count.
-
     Arguments:
         totals {dict} -- keys are target scoring zone, values are hits.
-
     Returns:
         [float] -- sum of total points for a given match.
     """
@@ -376,11 +357,9 @@ def get_round_count(totals):
 
 def get_points_scored(pf, totals):
     """Calculate points based on power factor.
-
     Arguments:
         pf {str} -- the shooters power factor for the match
         totals {dict} -- keys are target scoring zone, values are hits.
-
     Returns:
         [float] -- total points subtract penalites
     """
@@ -401,7 +380,6 @@ def get_dataframe(
 ):
     """Creates a pandas dataframe with the shooters scores for the timeframe
        spescified by match_date_range, excluding dates in delete_list.
-
     Arguments:
         json_obj {list} -- list of dicts/json containing the match data
         match_date_range {dict} -- contains the data range to plot
@@ -409,10 +387,8 @@ def get_dataframe(
         mem_num {str} -- the shooters USPSA membership number, used to search
                          the match data.
         division {str} -- the USPSA division the user wants to plot.
-
     Raises:
         Exception: passes exceptions back to views.py
-
     Returns:
         [tuple] -- contains a pandas dataframe with the scores from all matchs.
                    shooters first name {str} and last name {str}.
@@ -523,13 +499,11 @@ def add_annotation(x_ax, y_ax):
 
 def get_graph(scores, shooter_name, mem_number, division):
     """Produces a matplotlib plot to be rendered to the browser.
-
     Arguments:
         scores {oject} -- pandas dataframe
         shooter_name {str} -- shooters name
         mem_number {str} -- the shooters USPSA memebership number
         division {str} -- the user inputed division name for the plot
-
     Returns:
         [object] -- matplotlib png in the form of a BytesIO stream object.
     """

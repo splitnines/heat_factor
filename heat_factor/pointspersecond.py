@@ -18,20 +18,16 @@ def pointspersec(form_dict):
     """Takes the HTML form data passed from views.py and calls the functions
        to produce an image file to be rendered back to the HTML template via
        views.py.
-
        This is the main function/interface for the module.
-
     Arguments:
         form_dict {dict} -- contains the form data passed from the HTML form
                             to views.py
-
     Raises:
         Exception: USPSA membership number not found.
         Exception: Passes Exception message from get_match_links(),
                    3 possible Exceptions.
         Exception: Dataframe creation failed.
         Exception: Image creation failed.
-
     Returns:
         BytesIO -- a matplotlib image file in a BytesIO data stream
     """
@@ -64,10 +60,8 @@ def pointspersec(form_dict):
 
 def check_mem_num(mem_num):
     """Checks that mem_num is a valid uspsa number.
-
     Arguments:
         mem_num {str} -- the users USPSA membership number (alphanumeric).
-
     Raises:
         Exception: if membership number is not found.
     """
@@ -84,11 +78,9 @@ def get_match_links(form_dict):
     """Logs into Practicescore.com and scrapes the links to each match the
        shooter participated in.  These links are scraped from javascript
        code in the HTML of the users Practiscore home page.
-
     Arguments:
         form_dict {dict} -- dict containing username and password used to log
                             in to Practiscore.com
-
     Returns:
         [deque] -- list of json object containing the match link uuids for
                    pulling match json files from AWS.
@@ -180,11 +172,9 @@ def get_match_links(form_dict):
 
 async def http_get(url, session):
     """Perform the HTTP get request to the AWS server.
-
     Arguments:
         url {str} -- the individual url from the shooters list of matches
         session {object} -- the aiohttp session object
-
     Returns:
         [json object] -- the AWS response for each json file
     """
@@ -198,10 +188,8 @@ async def http_get(url, session):
 
 async def http_sess(links):
     """Creates the async coroutines to fetch the match details from AWS
-
     Arguments:
         links {json object} -- contains the PS AWS uuid for each match
-
     Returns:
         {str} -- the AWS json files as a string objects.
     """
@@ -228,11 +216,9 @@ async def http_sess(links):
 
 def event_loop(func, *args):
     """Calls the specified function with list of args.
-
     Arguments:
         func {function} -- name of async function to call and "place on the
                            loop.
-
     Returns:
         [object] -- returns whatever is received from the called function.
     """
