@@ -4,7 +4,6 @@ import re
 import sys
 
 from django.shortcuts import redirect, render
-from django.utils import timezone
 from django.http import HttpResponse
 
 from .classificationwhatif import ClassificationWhatIf, uspsa_model_util
@@ -291,7 +290,7 @@ def points_view(request):
         image = uspsastats(form_data)
     except Exception as e:
         exception_content = {
-            'message': f'views.py line 253: {e.args[0]}',
+            'message': f'{e.args[0]}',
         }
         return render(request, 'error.html', exception_content)
 
