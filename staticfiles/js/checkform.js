@@ -78,9 +78,6 @@ $(() => {
                 removeSpinner();
             },
             success: (resp) => {
-                // $('#responseHTML').addClass('resp')
-                // .html($(resp)[15].innerHTML)
-                // .hide().slideDown(600);
                 $('#responseHTML').addClass('resp')
                 .html(resp.response_text)
                 .hide().slideDown(600);

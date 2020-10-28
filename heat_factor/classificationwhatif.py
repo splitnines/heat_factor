@@ -130,11 +130,11 @@ def classifier_scores(bs, division):
     table_rows = table_body.find_all('tr')
 
     for row in table_rows[1:]:
+        # bug fix for not factoring in an 'F' as the score to drop 10/28/2020
         if str(row.find_all('td')[3].text.strip()) == 'Y':
-            yield (
-                str(row.find_all('td')[3].text.strip()),
-                float(str(row.find_all('td')[4].text.strip()))
-            )
+            yield float(str(row.find_all('td')[4].text.strip()))
+        elif str(row.find_all('td')[3].text.strip()) == 'F':
+            yield float(str(row.find_all('td')[4].text.strip()))
 
 
 def get_classification_pct(bs, division):
@@ -205,10 +205,18 @@ def calc_scores(bs, division):
     """
     scores = {'sum': 0, 'count': 0}
 
-    for score in classifier_scores(bs, division):
+    # bug fix for not factoring in an 'F' as the score to drop 10/28/2020
+    c_scores = list(classifier_scores(bs, division))
+    if len(c_scores) == 8:
+        c_scores.pop(-1)
+    c_scores.sort(reverse=True)
+
+    for score in c_scores:
         if scores['count'] < 5:
-            scores['sum'] += score[1]
+            scores['sum'] += score
             scores['count'] += 1
+        else:
+            break
     return scores
 
 
