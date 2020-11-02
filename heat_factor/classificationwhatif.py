@@ -256,19 +256,19 @@ def sys_logger(app_name, *app_data):
 def uspsa_model_util(model_name, mem_num, division):
     try:
         record_exists = model_name.objects.filter(
-                uspsa_num=mem_num,
+                uspsa_num=mem_num.upper(),
                 division=division
             ).exists()
         if record_exists:
             record = model_name.objects.get(
-                uspsa_num=mem_num,
+                uspsa_num=mem_num.upper(),
                 division=division
             )
             record.date_updated = timezone.now()
             record.save()
         else:
             record = model_name(
-                uspsa_num=mem_num,
+                uspsa_num=mem_num.upper(),
                 division=division
             )
             record.save()
