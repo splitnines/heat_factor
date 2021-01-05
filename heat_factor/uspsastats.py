@@ -67,6 +67,8 @@ def uspsastats(form_data):
         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
             delete_list.append(delete)
 
+    # trubleshooting 01052021
+    print(match_links_json, file=sys.stderr)
     try:
         scores_df, shooter_fn, shooter_ln = get_dataframe(
             match_links_json, match_date_range, delete_list,
@@ -248,7 +250,6 @@ def get_match_links(form_dict):
     )
 
     for match_link_info in raw_match_links:
-        print(match_link_info['name'], file=sys.stderr)
         match_link_info['name'] = match_link_info['name'].strip()
         if (
             dt.date.fromisoformat(match_link_info['date']) >= epoch and
