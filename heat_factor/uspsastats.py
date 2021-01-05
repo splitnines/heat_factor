@@ -13,6 +13,8 @@ import requests
 from aiohttp import ClientSession
 from requests.adapters import Response
 
+import sys
+
 
 def uspsastats(form_data):
     """Takes the HTML form data passed from views.py and calls the functions
@@ -246,6 +248,8 @@ def get_match_links(form_dict):
     )
 
     for match_link_info in raw_match_links:
+        print(match_link_info['name'], file=sys.stderr)
+        match_link_info['name'] = match_link_info['name'].strip()
         if (
             dt.date.fromisoformat(match_link_info['date']) >= epoch and
             # added 09/30/2020 because Steel Challenge matches break shit
