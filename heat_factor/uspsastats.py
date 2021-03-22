@@ -203,7 +203,7 @@ def get_match_links(form_dict):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/83.0.4103.61 Safari/537.36'
+        'Chrome/87.0.4280.88 Safari/537.36'
     }
     login_status_strs = {
         'bad_pass': 'Forgot Password',
