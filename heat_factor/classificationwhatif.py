@@ -1,7 +1,7 @@
 import sys
 
 import numpy as np
-import requests
+# import requests
 import cloudscraper
 from bs4 import BeautifulSoup
 from django.utils import timezone

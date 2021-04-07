@@ -13,7 +13,7 @@ import requests
 from aiohttp import ClientSession
 from requests.adapters import Response
 
-import sys
+# import sys
 
 
 def uspsastats(form_data):
@@ -68,7 +68,7 @@ def uspsastats(form_data):
             delete_list.append(delete)
 
     # trubleshooting 01052021
-    print(match_links_json, file=sys.stderr)
+    # print(match_links_json, file=sys.stderr)
     try:
         scores_df, shooter_fn, shooter_ln = get_dataframe(
             match_links_json, match_date_range, delete_list,
