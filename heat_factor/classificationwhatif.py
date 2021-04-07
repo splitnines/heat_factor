@@ -2,6 +2,7 @@ import sys
 
 import numpy as np
 import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 from django.utils import timezone
 
@@ -103,8 +104,13 @@ def http_get(mem_num, division):
     else:
         division_search = division.upper().replace(' ', '_')
 
-    http_resp = requests.get(f'https://uspsa.org/classification/{mem_num}')
-    bs = BeautifulSoup(http_resp.text, 'lxml')
+    # http_resp = requests.get(f'https://uspsa.org/classification/{mem_num}')
+    # bs = BeautifulSoup(http_resp.text, 'lxml')
+
+    url = f'https://uspsa.org/classification/{mem_num}'
+    scraper = cloudscraper.create_scraper()
+    http_resp = scraper.get(url).text
+    bs = BeautifulSoup(http_resp, 'lxml')
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
         raise Exception
