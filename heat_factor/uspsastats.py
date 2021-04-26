@@ -44,9 +44,11 @@ def uspsastats(form_data):
     except Exception as e:
         raise Exception(f'{e}')
 
+    epoch = '2019-01-01'
+
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': '2019-01-01',
+        'start_date': '2020-01-01',
     }
 
     if (
@@ -57,10 +59,14 @@ def uspsastats(form_data):
 
     if (
         form_data['shooter_start_date'] != '' and
-        form_data['shooter_start_date'] > match_date_range['start_date'] and
+        # form_data['shooter_start_date'] > match_date_range['start_date'] and
+        # form_data['shooter_start_date'] <= epoch and
         form_data['shooter_start_date'] < match_date_range['end_date']
     ):
         match_date_range['start_date'] = form_data['shooter_start_date']
+
+    if form_data['shooter_start_date'] < epoch:
+        match_date_range['start_date'] = epoch
 
     delete_list = []
     for delete in form_data['delete_match'].replace(' ', '').split(','):

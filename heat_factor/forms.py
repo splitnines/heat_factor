@@ -79,7 +79,7 @@ class AccuStatsForm1(forms.Form):
     )
 
     shooter_start_date = forms.DateField(
-        initial=datetime.date.fromisoformat('2019-01-01'),
+        initial=datetime.date.fromisoformat('2020-01-01'),
         widget=forms.HiddenInput(),
         required=False,
     )
