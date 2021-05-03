@@ -468,9 +468,12 @@ def get_dataframe(
                     )
                 else:
                     alpha_charlie_ratio = np.nan
-                if sum([totals['deltas'], totals['mikes'], totals['ns']]) > 0:
+                # changed error calc to deltas * 0.5, this is untested on
+                # zero delta matches 05/02/2021
+                if sum([totals['deltas'] * 0.5, totals['mikes'],
+                       totals['ns']]) > 0:
                     pct_errors = (
-                        round((sum([totals['deltas'], totals['mikes'],
+                        round((sum([totals['deltas'] * 0.5, totals['mikes'],
                                     totals['ns']]) / round_count) * 100, 2)
                     )
                 else:
