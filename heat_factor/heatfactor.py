@@ -97,6 +97,7 @@ def get_heat_factor(match_def):
         'Open':         [0, 0, 0, 0],
         'PCC':          [0, 0, 0, 0],
         'Single Stack': [0, 0, 0, 0],
+        'Limited 10':   [0, 0, 0, 0],
     }
 
     division_count = defaultdict(int)
