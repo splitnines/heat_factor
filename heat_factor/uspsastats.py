@@ -534,7 +534,7 @@ def get_graph(scores, shooter_name, mem_number, division):
         color='#d3d3d3', linestyle='dashed',  linewidth=2
     )
     plt.plot(
-        x, scores['A/C Ratio'], 'co-', label='A/C Ratio', color='#2b2d9c',
+        x, scores['A/C Ratio'], 'co-', label='C:A Ratio', color='#2b2d9c',
         linestyle='solid', marker='o', markersize=4, linewidth=2
     )
     plt.bar(
