@@ -90,14 +90,24 @@ def get_heat_factor(match_def):
     Returns:
         [dict] -- dict containing the heat index for each division as an int.
     """
+    # division_heat = {
+    #     'Production':   [0, 0, 0, 0],
+    #     'Limited':      [0, 0, 0, 0],
+    #     'Carry Optics': [0, 0, 0, 0],
+    #     'Open':         [0, 0, 0, 0],
+    #     'PCC':          [0, 0, 0, 0],
+    #     'Single Stack': [0, 0, 0, 0],
+    #     'Limited 10':   [0, 0, 0, 0],
+    # }
+
     division_heat = {
-        'Production':   [0, 0, 0, 0],
-        'Limited':      [0, 0, 0, 0],
-        'Carry Optics': [0, 0, 0, 0],
-        'Open':         [0, 0, 0, 0],
-        'PCC':          [0, 0, 0, 0],
-        'Single Stack': [0, 0, 0, 0],
-        'Limited 10':   [0, 0, 0, 0],
+        'Production':   [0, 0, 0],
+        'Limited':      [0, 0, 0],
+        'Carry Optics': [0, 0, 0],
+        'Open':         [0, 0, 0],
+        'PCC':          [0, 0, 0],
+        'Single Stack': [0, 0, 0],
+        'Limited 10':   [0, 0, 0],
     }
 
     division_count = defaultdict(int)
@@ -108,20 +118,24 @@ def get_heat_factor(match_def):
             continue
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'G':
-            division_heat[shooter['sh_dvp']][0] += random.randrange(95, 100)
+            # division_heat[shooter['sh_dvp']][0] += random.randrange(95, 100)
+            division_heat[shooter['sh_dvp']][0] += 100
             division_count[shooter['sh_dvp']] += 1
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'M':
-            division_heat[shooter['sh_dvp']][1] += random.randrange(85, 94)
+            # division_heat[shooter['sh_dvp']][1] += random.randrange(85, 94)
+            division_heat[shooter['sh_dvp']][1] += 85
             division_count[shooter['sh_dvp']] += 1
 
         if 'sh_dvp' in shooter and shooter['sh_grd'] == 'A':
-            division_heat[shooter['sh_dvp']][2] += random.randrange(75, 84)
+            # division_heat[shooter['sh_dvp']][2] += random.randrange(75, 84)
+            division_heat[shooter['sh_dvp']][2] += 75
             division_count[shooter['sh_dvp']] += 1
 
-        if 'sh_dvp' in shooter and shooter['sh_grd'] == 'B':
-            division_heat[shooter['sh_dvp']][3] += random.randrange(60, 74)
-            division_count[shooter['sh_dvp']] += 1
+        # if 'sh_dvp' in shooter and shooter['sh_grd'] == 'B':
+        #     # division_heat[shooter['sh_dvp']][3] += random.randrange(60, 74)
+        #     division_heat[shooter['sh_dvp']][3] += 55
+        #     division_count[shooter['sh_dvp']] += 1
 
     heat_idx = defaultdict(int)
 
