@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'heat_factor.apps.HeatFactorConfig',
     'rest_framework',
     'admin_honeypot_fix.apps.AdminHoneypotFixConfig',
+    'grid_iron',
 ]
 
 MIDDLEWARE = [
