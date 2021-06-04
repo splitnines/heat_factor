@@ -1,3 +1,14 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Gridiron
+
+
+class GridironAdmin(admin.ModelAdmin):
+    readonly_fields = ('id', 'date_created', 'date_updated',)
+    list_display = (
+        'id', 'team_name', 'team_mem1', 'team_mem2', 'team_mem3',
+        'date_created', 'date_updated',
+    )
+
+
+admin.site.register(Gridiron, GridironAdmin)
