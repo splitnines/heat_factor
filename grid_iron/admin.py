@@ -9,6 +9,9 @@ class GridironAdmin(admin.ModelAdmin):
         'id', 'team_name', 'team_mem1', 'team_mem2', 'team_mem3',
         'date_created', 'date_updated',
     )
+    list_editable = (
+        'team_name', 'team_mem1', 'team_mem2', 'team_mem3'
+    )
 
 
 admin.site.register(Gridiron, GridironAdmin)
