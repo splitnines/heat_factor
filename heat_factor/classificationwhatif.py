@@ -115,7 +115,7 @@ def http_get(mem_num, division):
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
         raise Exception
 
-    print(bs, file=sys.stderr)
+    # print(bs, file=sys.stderr)
     return bs
 
 

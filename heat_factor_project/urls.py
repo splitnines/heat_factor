@@ -9,4 +9,5 @@ urlpatterns = [
                               namespace='rest_framework')),
     path('', include('heat_factor.urls')),
     path('', include('admin_honeypot_fix.urls')),
+    path('', include('grid_iron.urls'))
 ]
