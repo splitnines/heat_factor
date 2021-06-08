@@ -10,6 +10,10 @@ from .forms import GridIronUrlForm
 from .grid_iron_calc import grid_iron_calc
 from .models import Gridiron
 
+from rest_framework import viewsets
+from rest_framework import permissions
+from .serializers import GridironSerializer
+
 
 def grid_iron_view(request):
     """Routes to site home page template.
@@ -25,3 +29,9 @@ def grid_iron_view(request):
         return render(request, 'grid_iron_calc.html', forms)
     else:
         return redirect('')
+
+
+class GridironViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Gridiron.objects.all()
+    serializer_class = GridironSerializer
+    # permission_classes = [permissions.IsAuthenticated]
