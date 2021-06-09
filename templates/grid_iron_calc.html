@@ -18,12 +18,16 @@
                 <h2>Grid Iron Team Calculator</h2>
             </center>
         </div>
-        <!-- <p>Copy-n-paste the Grid Iron Practiscore match URL.</p> -->
         <form name="myForm" action="/grid_iron_results/" method="POST">
             {% csrf_token %}
             <h3>{{ p_url.as_p }}</h3>
             <br />
-            <input class="btn" id="gridiron" type="submit" value="Make Ready" />
+            <input
+                class="btn"
+                id="heatfactor"
+                type="submit"
+                value="Make Ready"
+            />
             <div class="cf_msg" id="checkform"></div>
         </form>
         <div id="spinner"></div>
