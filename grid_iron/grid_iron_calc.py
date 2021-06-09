@@ -1,14 +1,15 @@
 import json
 import re
-import sys
 
 import pandas as pd
 import requests
 
 
 def grid_iron_calc(grid_iron_url):
-    print(grid_iron_url, file=sys.stderr)
-    pass
+    match_def, match_results = get_match_def(grid_iron_url)
+    df_grid_iron = get_dataframes(match_def, match_results)
+
+    return get_team_totals(api_get(), df_grid_iron)
 
 
 def get_match_def(match_link):
@@ -106,40 +107,40 @@ def get_team_totals(team_db, df_grid_iron):
         df_grid_team_results = df_grid_team_results.append({
             'Team Name': team_dict['team_name'],
             'Team Member 1': (
-                df_grid_iron[df_grid_iron['sh_uuid'] ==
-                            team_dict['team_mem1']]['sh_fn'].values[0] + ' ' +
-                            df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                        team_dict['team_mem1']]['sh_ln']
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
+                            ['sh_fn'].values[0] + ' ' +
+                df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']]['sh_ln']
                 .values[0]
             ),
             'Team Member 2': (
-                df_grid_iron[df_grid_iron['sh_uuid'] ==
-                            team_dict['team_mem2']]['sh_fn'].values[0] + ' ' +
-                            df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                        team_dict['team_mem2']]['sh_ln']
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
+                            ['sh_fn'].values[0] + ' ' +
+                df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']]['sh_ln']
                 .values[0]
             ),
             'Team Member 3': (
-                df_grid_iron[df_grid_iron['sh_uuid'] ==
-                            team_dict['team_mem3']]['sh_fn'].values[0] + ' ' +
-                            df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                        team_dict['team_mem3']]['sh_ln']
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
+                            ['sh_fn'].values[0] + ' ' +
+                df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem3']]['sh_ln']
                 .values[0]
             ),
             'Member Score 1': (
-                float(df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                team_dict['team_mem1']]['matchPoints']
-                    .values[0])
+                float(df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
+                        ['matchPoints'].values[0])
             ),
             'Member Score 2': (
-                float(df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                team_dict['team_mem2']]['matchPoints']
-                    .values[0])
+                float(df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
+                        ['matchPoints'].values[0])
             ),
             'Member Score 3': (
-                float(df_grid_iron[df_grid_iron['sh_uuid'] ==
-                                team_dict['team_mem3']]['matchPoints']
-                    .values[0])
+                float(df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
+                        ['matchPoints'].values[0])
             ),
         }, ignore_index=True)
 

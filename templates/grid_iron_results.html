@@ -1,10 +1,13 @@
 {% extends "base.html" %} {% block content %}
-<p align="left"><a class="home" href="/">Return Home</a></p>
+<p align="left">
+    <a class="home" href="/grid_iron_calc/">Return to Calculator</a>
+</p>
 <div class="stripe">
     <center>
         <h2>2021 Grid Iron Arena Team Results</h2>
     </center>
 </div>
+{% for i in team_dict %} {{ i }}<br />{% endfor %}
 <p align="right">
     <font size="2" id="date"> {{ date }} </font>
 </p>
