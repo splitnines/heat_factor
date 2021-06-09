@@ -49,7 +49,6 @@ def get_match_def(match_link):
                 f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
                 'match_def.json').text)
         )
-
         match_results = (
             json.loads(requests.get(
                 f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
@@ -63,7 +62,15 @@ def get_match_def(match_link):
 
 
 def get_dataframes(match_def, match_results):
-    """"""
+    """Creates one dataframe from the AWS JSON files.
+
+    Args:
+        match_def (JSON): match data definations
+        match_results (JSON): match results
+
+    Returns:
+        dataframe: combined data from the two JSON files.
+    """
     df_match_def = pd.DataFrame(match_def['match_shooters'])
 
     df_match_results = pd.DataFrame(match_results[0]['Match'][2]['Production'])
@@ -85,7 +92,11 @@ def get_dataframes(match_def, match_results):
 
 
 def api_get():
-    """"""
+    """Grabs gridiron database rows from REST framework API
+
+    Returns:
+        JSON/dict: gridiron database rows
+    """
     HEADERS = {'Content-type': 'application/json'}
 
     api_resp = requests.get(
@@ -96,7 +107,16 @@ def api_get():
 
 
 def get_team_totals(team_db, df_grid_iron):
-    """"""
+    """Calculates the team results for gridiron.
+
+    Args:
+        team_db (dict): database rows from the gridiron team DB
+        df_grid_iron (dataframe): gridiron match df with definations and
+                                  results
+
+    Returns:
+        dict: team results dataframe in the form of a dict
+    """
     results_cols = [
         'Team_Name', 'Team_Member1', 'Team_Member2', 'Team_Member3',
         'Member_Score1', 'Member_Score2', 'Member_Score3',
@@ -108,21 +128,21 @@ def get_team_totals(team_db, df_grid_iron):
             'Team_Name': team_dict['team_name'],
             'Team_Member1': (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
-                            ['sh_fn'].values[0] + ' ' +
+                ['sh_fn'].values[0] + ' ' +
                 df_grid_iron[
                     df_grid_iron['sh_uuid'] == team_dict['team_mem1']]['sh_ln']
                 .values[0]
             ),
             'Team_Member2': (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
-                            ['sh_fn'].values[0] + ' ' +
+                ['sh_fn'].values[0] + ' ' +
                 df_grid_iron[
                     df_grid_iron['sh_uuid'] == team_dict['team_mem2']]['sh_ln']
                 .values[0]
             ),
             'Team_Member3': (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
-                            ['sh_fn'].values[0] + ' ' +
+                ['sh_fn'].values[0] + ' ' +
                 df_grid_iron[
                     df_grid_iron['sh_uuid'] == team_dict['team_mem3']]['sh_ln']
                 .values[0]

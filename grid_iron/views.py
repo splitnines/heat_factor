@@ -1,7 +1,5 @@
 import datetime as dt
-# import json
 import re
-# import sys
 
 from django.shortcuts import redirect, render
 # from django.http import HttpResponse
@@ -11,14 +9,13 @@ from .grid_iron_calc import grid_iron_calc
 from .models import Gridiron
 
 from rest_framework import viewsets
-# from rest_framework import permissions
 from .serializers import GridironSerializer
 
 
 def grid_iron_view(request):
-    """Routes to site home page template.
+    """Routes to grid iron calculator page template.
     Arguments:
-        request {object} -- HTTPRequest object
+        request [object] -- HTTPRequest object
     Returns:
         [object] -- HTTPResponse object
     """
@@ -32,12 +29,11 @@ def grid_iron_view(request):
 
 
 def grid_iron_results_view(request):
-    """Renders the Heat Factor graph for a given USPSA match link.
+    """Renders the Gridiron team results.
     Arguments:
         request {object} -- HTTPRequest object
     Returns:
-        [dict] -- renders the content to the url in the form of a dict
-                  containing the matplotlib image and the data.
+        [dict] -- renders the content to the url in the form of a dict.
     """
     practiscore_url = None
     team_dict = None
