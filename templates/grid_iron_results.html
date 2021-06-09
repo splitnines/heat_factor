@@ -1,4 +1,17 @@
 {% extends "base.html" %} {% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+</style>
 <p align="left">
     <a class="home" href="/grid_iron_calc/">Return to Calculator</a>
 </p>
@@ -7,10 +20,30 @@
         <h2>2021 Grid Iron Arena Team Results</h2>
     </center>
 </div>
-{% for i in team_dict %} {{ i }}<br />{% endfor %}
-<p align="right">
-    <font size="2" id="date"> {{ date }} </font>
-</p>
-<hr />
+<table style="width: 100%">
+    <tr>
+        <th>Team Name</th>
+        <th>Shooter Name</th>
+        <th>Shooter Name</th>
+        <th>Shooter Name</th>
+        <th>Team Score</th>
+    </tr>
+    {% for i in team_dict %}
+    <tr>
 
-{% endblock content %}
+        <td>{{ i.Team_Name }}</td>
+        <td>{{ i.Team_Member1 }}</td>
+        <td>{{ i.Team_Member2 }}</td>
+        <td>{{ i.Team_Member3 }}</td>
+        <td>{{ i.Team_Score }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+        <p align="right">
+            <font size="2" id="date"> {{ date }} </font>
+        </p>
+        <hr />
+
+        {% endblock content %}
+    </tr>
+</table>
