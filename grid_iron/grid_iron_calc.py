@@ -1,6 +1,7 @@
 import json
 import re
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -123,49 +124,95 @@ def get_team_totals(team_db, df_grid_iron):
     ]
     df_grid_team_results = pd.DataFrame(columns=results_cols)
 
+    dict_to_append = {}
     for team_dict in team_db:
-        df_grid_team_results = df_grid_team_results.append({
-            'Team_Name': team_dict['team_name'],
-            'Team_Member1': (
+        dict_to_append['Team_Name'] = team_dict['team_name']
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem1']].empty
+        ):
+            dict_to_append['Team_Member1'] = (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
-                ['sh_fn'].values[0] + ' ' +
-                df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']]['sh_ln']
-                .values[0]
-            ),
-            'Team_Member2': (
+                ['sh_fn'].values[0] + ' ' + df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']
+                    ]['sh_ln'].values[0]
+            )
+        else:
+            dict_to_append['Team_Member1'] = '***mmShooter NOT FOUND***'
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem2']].empty
+        ):
+            dict_to_append['Team_Member2'] = (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
-                ['sh_fn'].values[0] + ' ' +
-                df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']]['sh_ln']
-                .values[0]
-            ),
-            'Team_Member3': (
+                ['sh_fn'].values[0] + ' ' + df_grid_iron[
+                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']
+                    ]['sh_ln'].values[0]
+            )
+        else:
+            dict_to_append['Team_Member2'] = '***mmShooter NOT FOUND***'
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem3']].empty
+        ):
+            dict_to_append['Team_Member3'] = (
                 df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
-                ['sh_fn'].values[0] + ' ' +
-                df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem3']]['sh_ln']
-                .values[0]
-            ),
-            'Member_Score1': (
-                float(df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
-                        ['matchPoints'].values[0])
-            ),
-            'Member_Score2': (
-                float(df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
-                        ['matchPoints'].values[0])
-            ),
-            'Member_Score3': (
-                float(df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
-                        ['matchPoints'].values[0])
-            ),
-        }, ignore_index=True)
+                ['sh_fn'].values[0] + ' ' + df_grid_iron[
+                        df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                        ]['sh_ln'].values[0]
+            )
+        else:
+            dict_to_append['Team_Member3'] = '***mmShooter NOT FOUND***'
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem1']].empty
+        ):
+            dict_to_append['Member_Score1'] = (
+                float(
+                    df_grid_iron[
+                        df_grid_iron['sh_uuid'] == team_dict['team_mem1']
+                        ]['matchPoints'].values[0])
+            )
+        else:
+            dict_to_append['Member_Score1'] = np.nan
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem2']].empty
+        ):
+            dict_to_append['Member_Score2'] = (
+                float(
+                    df_grid_iron[
+                        df_grid_iron['sh_uuid'] == team_dict['team_mem2']
+                                ]['matchPoints'].values[0])
+            )
+        else:
+            dict_to_append['Member_Score2'] = np.nan
+
+        if not (
+            df_grid_iron[
+                df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                ].empty
+        ):
+            dict_to_append['Member_Score3'] = (
+                float(
+                    df_grid_iron[
+                        df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                        ]['matchPoints'].values[0])
+            )
+        else:
+            dict_to_append['Member_Score3'] = np.nan
+
+        df_grid_team_results = df_grid_team_results.append(
+            dict_to_append, ignore_index=True
+        )
 
     df_grid_team_results['Team_Score'] = (
-        df_grid_team_results.iloc[:, -3:].sum(axis=1)
+        df_grid_team_results.iloc[:, -4:].sum(axis=1)
     )
     df_grid_team_results.sort_values(
         by='Team_Score', ascending=False, inplace=True, ignore_index=True
