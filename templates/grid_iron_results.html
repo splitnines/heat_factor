@@ -26,6 +26,7 @@ tr:nth-child(even) {
 </div>
 <table style="width: 100%">
     <tr>
+        <th>PLACE</th>
         <th>TEAM NAME</th>
         <th>TEAM MEM1</th>
         <th>TEAM MEM2</th>
@@ -34,7 +35,7 @@ tr:nth-child(even) {
     </tr>
     {% for i in team_dict %}
     <tr>
-
+        <td>{{ forloop.counter }}</td>
         <td>{{ i.Team_Name }}</td>
         <td>{{ i.Team_Member1 }}</td>
         <td>{{ i.Team_Member2 }}</td>
