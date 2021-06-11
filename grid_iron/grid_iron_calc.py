@@ -9,6 +9,14 @@ from grid_iron.models import Gridiron
 
 
 def grid_iron_calc(grid_iron_url):
+    """Main application function.  Called from views.py.
+
+    Args:
+        grid_iron_url (str): the practiscore URL for the Gridiron match
+
+    Returns:
+        django query object, match name: [description]
+    """
     match_def, match_results = get_match_def(grid_iron_url)
     df_grid_iron, match_name = get_dataframes(match_def, match_results)
 
