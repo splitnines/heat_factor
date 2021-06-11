@@ -12,7 +12,6 @@ def grid_iron_calc(grid_iron_url):
     match_def, match_results = get_match_def(grid_iron_url)
     df_grid_iron, match_name = get_dataframes(match_def, match_results)
 
-    # return get_team_totals(api_get(), df_grid_iron), match_name
     return get_team_totals(query_db(), df_grid_iron), match_name
 
 
@@ -93,21 +92,6 @@ def get_dataframes(match_def, match_results):
     df_grid_iron = df_grid_iron[cols]
 
     return df_grid_iron, match_def['match_name']
-
-
-# def api_get():
-#     """Grabs gridiron database rows from REST framework API
-
-#     Returns:
-#         JSON/dict: gridiron database rows
-#     """
-#     HEADERS = {'Content-type': 'application/json'}
-
-#     api_resp = requests.get(
-#         'https://www.alphamikenoshoot.com/gridiron.json',
-#         headers=HEADERS
-#     )
-#     return api_resp.json()
 
 
 def query_db():
