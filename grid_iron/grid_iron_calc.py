@@ -5,12 +5,15 @@ import numpy as np
 import pandas as pd
 import requests
 
+from grid_iron.models import Gridiron
+
 
 def grid_iron_calc(grid_iron_url):
     match_def, match_results = get_match_def(grid_iron_url)
     df_grid_iron, match_name = get_dataframes(match_def, match_results)
 
-    return get_team_totals(api_get(), df_grid_iron), match_name
+    # return get_team_totals(api_get(), df_grid_iron), match_name
+    return get_team_totals(query_db(), df_grid_iron), match_name
 
 
 def get_match_def(match_link):
@@ -92,19 +95,23 @@ def get_dataframes(match_def, match_results):
     return df_grid_iron, match_def['match_name']
 
 
-def api_get():
-    """Grabs gridiron database rows from REST framework API
+# def api_get():
+#     """Grabs gridiron database rows from REST framework API
 
-    Returns:
-        JSON/dict: gridiron database rows
-    """
-    HEADERS = {'Content-type': 'application/json'}
+#     Returns:
+#         JSON/dict: gridiron database rows
+#     """
+#     HEADERS = {'Content-type': 'application/json'}
 
-    api_resp = requests.get(
-        'https://www.alphamikenoshoot.com/gridiron.json',
-        headers=HEADERS
-    )
-    return api_resp.json()
+#     api_resp = requests.get(
+#         'https://www.alphamikenoshoot.com/gridiron.json',
+#         headers=HEADERS
+#     )
+#     return api_resp.json()
+
+
+def query_db():
+    return Gridiron.objects.all()
 
 
 def get_team_totals(team_db, df_grid_iron):
@@ -126,16 +133,16 @@ def get_team_totals(team_db, df_grid_iron):
 
     dict_to_append = {}
     for team_dict in team_db:
-        dict_to_append['Team_Name'] = team_dict['team_name']
+        dict_to_append['Team_Name'] = team_dict.team_name
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem1']].empty
+                df_grid_iron['sh_uuid'] == team_dict.team_mem1].empty
         ):
             dict_to_append['Team_Member1'] = (
-                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem1']]
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem1]
                 ['sh_fn'].values[0] + ' ' + df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem1']
+                    df_grid_iron['sh_uuid'] == team_dict.team_mem1
                     ]['sh_ln'].values[0]
             )
         else:
@@ -143,12 +150,12 @@ def get_team_totals(team_db, df_grid_iron):
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem2']].empty
+                df_grid_iron['sh_uuid'] == team_dict.team_mem2].empty
         ):
             dict_to_append['Team_Member2'] = (
-                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem2']]
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem2]
                 ['sh_fn'].values[0] + ' ' + df_grid_iron[
-                    df_grid_iron['sh_uuid'] == team_dict['team_mem2']
+                    df_grid_iron['sh_uuid'] == team_dict.team_mem2
                     ]['sh_ln'].values[0]
             )
         else:
@@ -156,12 +163,12 @@ def get_team_totals(team_db, df_grid_iron):
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem3']].empty
+                df_grid_iron['sh_uuid'] == team_dict.team_mem3].empty
         ):
             dict_to_append['Team_Member3'] = (
-                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict['team_mem3']]
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem3]
                 ['sh_fn'].values[0] + ' ' + df_grid_iron[
-                        df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                        df_grid_iron['sh_uuid'] == team_dict.team_mem3
                         ]['sh_ln'].values[0]
             )
         else:
@@ -169,12 +176,12 @@ def get_team_totals(team_db, df_grid_iron):
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem1']].empty
+                df_grid_iron['sh_uuid'] == team_dict.team_mem1].empty
         ):
             dict_to_append['Member_Score1'] = (
                 float(
                     df_grid_iron[
-                        df_grid_iron['sh_uuid'] == team_dict['team_mem1']
+                        df_grid_iron['sh_uuid'] == team_dict.team_mem1
                         ]['matchPoints'].values[0])
             )
         else:
@@ -182,12 +189,12 @@ def get_team_totals(team_db, df_grid_iron):
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem2']].empty
+                df_grid_iron['sh_uuid'] == team_dict.team_mem2].empty
         ):
             dict_to_append['Member_Score2'] = (
                 float(
                     df_grid_iron[
-                        df_grid_iron['sh_uuid'] == team_dict['team_mem2']
+                        df_grid_iron['sh_uuid'] == team_dict.team_mem2
                                 ]['matchPoints'].values[0])
             )
         else:
@@ -195,13 +202,13 @@ def get_team_totals(team_db, df_grid_iron):
 
         if not (
             df_grid_iron[
-                df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                df_grid_iron['sh_uuid'] == team_dict.team_mem3
                 ].empty
         ):
             dict_to_append['Member_Score3'] = (
                 float(
                     df_grid_iron[
-                        df_grid_iron['sh_uuid'] == team_dict['team_mem3']
+                        df_grid_iron['sh_uuid'] == team_dict.team_mem3
                         ]['matchPoints'].values[0])
             )
         else:
