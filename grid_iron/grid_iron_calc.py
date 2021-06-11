@@ -8,9 +8,9 @@ import requests
 
 def grid_iron_calc(grid_iron_url):
     match_def, match_results = get_match_def(grid_iron_url)
-    df_grid_iron = get_dataframes(match_def, match_results)
+    df_grid_iron, match_name = get_dataframes(match_def, match_results)
 
-    return get_team_totals(api_get(), df_grid_iron)
+    return get_team_totals(api_get(), df_grid_iron), match_name
 
 
 def get_match_def(match_link):
@@ -89,7 +89,7 @@ def get_dataframes(match_def, match_results):
     cols = ['sh_uuid', 'sh_ln', 'sh_fn', 'sh_id', 'sh_dvp', 'matchPoints']
     df_grid_iron = df_grid_iron[cols]
 
-    return df_grid_iron
+    return df_grid_iron, match_def['match_name']
 
 
 def api_get():

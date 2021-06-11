@@ -47,7 +47,7 @@ def grid_iron_results_view(request):
         return render(request, 'error.html', exception_content)
 
     try:
-        team_dict = grid_iron_calc(practiscore_url)
+        team_dict, match_name = grid_iron_calc(practiscore_url)
     except Exception as e:
         if re.match('Error downloading AWS S3 json file.', e.args[0]):
             exception_content = {
@@ -60,6 +60,7 @@ def grid_iron_results_view(request):
 
     content = {
         'team_dict': team_dict,
+        'match_name': match_name,
         'date': dt.datetime.now(),
     }
     return render(request, 'grid_iron_results.html', content)
