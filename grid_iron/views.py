@@ -35,8 +35,6 @@ def grid_iron_results_view(request):
     Returns:
         [dict] -- renders the content to the url in the form of a dict.
     """
-    practiscore_url = None
-    team_dict = None
     if request.method == 'POST':
         if GridIronUrlForm(request.POST).is_valid():
             practiscore_url = request.POST.get('p_url')
