@@ -1,6 +1,5 @@
 import json
 import re
-import sys
 
 import numpy as np
 import pandas as pd
@@ -229,5 +228,5 @@ def grid_iron_db_to_csv():
             f'{team.team_name},{team.team_mem1},{team.team_mem2},'
             f'{team.team_mem3}'
         )
-    print(team_list, file=sys.stderr)
+
     return team_list
