@@ -2,7 +2,8 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from .views import (
-    grid_iron_view, grid_iron_results_view, bad_url_view, error_view
+    grid_iron_view, grid_iron_results_view, bad_url_view, error_view,
+    grid_iron_db_csv
 )
 
 from grid_iron.views import GridironViewSet
@@ -21,4 +22,5 @@ urlpatterns = [
     path(
         r'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
     ),
+    path('grid_iron_teamdb.csv', grid_iron_db_csv),
 ]

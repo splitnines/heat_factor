@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 
 import numpy as np
 import pandas as pd
@@ -218,3 +219,15 @@ def get_team_totals(team_db, df_grid_iron):
     )
 
     return df_grid_team_results.to_dict(orient='records')
+
+
+def grid_iron_db_to_csv():
+    team_db = query_db()
+    team_list = []
+    for team in team_db:
+        team_list.append(
+            f'{team.team_name},{team.team_mem1},{team.team_mem2},'
+            f'{team.team_mem3}'
+        )
+    print(team_list, file=sys.stderr)
+    return team_list

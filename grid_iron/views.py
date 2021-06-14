@@ -2,10 +2,11 @@ import datetime as dt
 import re
 
 from django.shortcuts import redirect, render
-# from django.http import HttpResponse
+from django.http import HttpResponse
+from django.views.decorators.http import require_GET
 
 from .forms import GridIronUrlForm
-from .grid_iron_calc import grid_iron_calc
+from .grid_iron_calc import grid_iron_calc, grid_iron_db_to_csv
 from .models import Gridiron
 
 from rest_framework import viewsets
@@ -83,6 +84,13 @@ def bad_url_view(request):
 
 def error_view(request):
     return render(request, 'error.html')
+
+
+@require_GET
+def grid_iron_db_csv(request):
+    team_list = grid_iron_db_to_csv()
+
+    return HttpResponse("\n".join(team_list), content_type="text/plain")
 
 
 class GridironViewSet(viewsets.ReadOnlyModelViewSet):
