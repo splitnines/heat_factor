@@ -222,7 +222,7 @@ def get_team_totals(team_db, df_grid_iron):
 
 def grid_iron_db_to_csv():
     team_db = query_db()
-    team_list = []
+    team_list = ['TEAM NAME,TEAM MEM1,TEAM MEM2,TEAM MEM3']
     for team in team_db:
         team_list.append(
             f'{team.team_name},{team.team_mem1},{team.team_mem2},'
