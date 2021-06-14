@@ -5,6 +5,7 @@ import sys
 
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.views.decorators.http import require_GET
 
 from .classificationwhatif import ClassificationWhatIf, uspsa_model_util
 from .forms import (
@@ -356,6 +357,16 @@ def pps_view(request):
 
 def error_view(request):
     return render(request, 'error.html')
+
+
+@require_GET
+def robots_txt(request):
+    lines = [
+        "User-Agent: *",
+        "Disallow: /grid_iron_calc/",
+        "Disallow: /mgnt/",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
 class UspsaViewSet(viewsets.ReadOnlyModelViewSet):

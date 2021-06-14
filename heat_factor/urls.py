@@ -3,7 +3,7 @@ from django.views.generic import RedirectView
 
 from .views import (
     home_view, points_view, heat_factor_view, bad_url_view,
-    get_upped_view, error_view, pps_view
+    get_upped_view, error_view, pps_view, robots_txt,
 )
 from heat_factor.views import UspsaViewSet
 from rest_framework import routers
@@ -23,4 +23,5 @@ urlpatterns = [
     path(
         r'favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico')
     ),
+    path('robots.txt', robots_txt),
 ]

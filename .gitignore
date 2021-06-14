@@ -10,3 +10,4 @@ heat_factor_project/settings_dev.py
 __pycache__/
 *.py[cod]
 heat_factor_project/__pycache__/settings_dev.cpython-38.pyc
+heat_factor/tests.py
