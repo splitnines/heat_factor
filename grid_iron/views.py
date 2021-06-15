@@ -62,6 +62,7 @@ def grid_iron_results_view(request):
         'match_name': match_name,
         'date': dt.datetime.now(),
     }
+
     return render(request, 'grid_iron_results.html', content)
 
 

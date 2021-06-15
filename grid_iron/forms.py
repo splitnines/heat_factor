@@ -11,3 +11,4 @@ class GridIronUrlForm(forms.Form):
         required=True,
         widget=forms.TextInput(attrs={'size': '65'})
     )
+    # csv = forms.BooleanField(label="CSV Output", required=False)
