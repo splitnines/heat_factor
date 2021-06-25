@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% load static %}
 <style>
     table {
         font-family: arial, sans-serif;
@@ -20,6 +20,13 @@
 <p align="left">
     <a class="home" href="/grid_iron_calc/">Return to Calculator</a>
 </p>
+<center>
+    <img
+        src="{% static 'images/gridiron_bg1.jpg' %}"
+        width="200"
+        height="250"
+    />
+</center>
 <div class="stripe">
     <center>
         <!-- <h2>2021 Grid Iron Team Results</h2> -->
