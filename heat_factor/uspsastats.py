@@ -13,7 +13,7 @@ import requests
 from aiohttp import ClientSession
 from requests.adapters import Response
 
-# import sys
+import sys
 
 
 def uspsastats(form_data):
@@ -254,6 +254,7 @@ def get_match_links(form_dict):
     raw_match_links = json.loads(
         match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
     )
+    print(raw_match_links, file=sys.stderr)
 
     for match_link_info in raw_match_links:
         match_link_info['name'] = match_link_info['name'].strip()
