@@ -13,7 +13,7 @@ import requests
 from aiohttp import ClientSession
 from requests.adapters import Response
 
-# import sys
+import sys
 
 
 def uspsastats(form_data):
@@ -261,7 +261,6 @@ def get_match_links(form_dict):
                                     .replace('(', '')
                                     .replace(')', '')
     )
-    # print(raw_match_links, file=sys.stderr)
 
     for match_link_info in raw_match_links:
         match_link_info['name'] = match_link_info['name'].strip()
@@ -345,20 +344,25 @@ def calc_totals(match_scores, idx, shtr_uuid):
     """
     totals = defaultdict(int)
 
-    for score in match_scores[idx]['match_scores']:
-        for stage_score in score['stage_stagescores']:
-            if re.match(shtr_uuid, stage_score['shtr']):
-                totals['alphas'] += stage_score['poph']
-                totals['mikes'] += stage_score['popm']
-                if 'ts' in stage_score:
-                    for ts in stage_score['ts']:
-                        totals['alphas'] += num_alphas(ts)
-                        totals['bravos'] += num_bravos(ts)
-                        totals['charlies'] += num_charlies(ts)
-                        totals['deltas'] += num_deltas(ts)
-                        totals['ns'] += num_ns(ts)
-                        totals['mikes'] += num_m(ts)
-                        totals['npm'] += num_npm(ts)
+    try:
+        for score in match_scores[idx]['match_scores']:
+            for stage_score in score['stage_stagescores']:
+                if re.match(shtr_uuid, stage_score['shtr']):
+                    totals['alphas'] += stage_score['poph']
+                    totals['mikes'] += stage_score['popm']
+                    if 'ts' in stage_score:
+                        for ts in stage_score['ts']:
+                            totals['alphas'] += num_alphas(ts)
+                            totals['bravos'] += num_bravos(ts)
+                            totals['charlies'] += num_charlies(ts)
+                            totals['deltas'] += num_deltas(ts)
+                            totals['ns'] += num_ns(ts)
+                            totals['mikes'] += num_m(ts)
+                            totals['npm'] += num_npm(ts)
+
+    except Exception:
+        raise Exception('Line: 349 - General Error')
+
     return totals
 
 
@@ -427,12 +431,15 @@ def get_dataframe(
     match_def_json = (json.loads(i) for i in match_def_data)
     match_scores_json = [json.loads(i) for i in match_scores_data]
 
-    scores_df = pd.DataFrame(columns=[
-        'Match Date', 'Total Alphas', 'Total Charlies', 'Total Deltas',
-        'Total No-shoots', 'Total Mikes', 'Total NPM', 'Round Count',
-        'Points Poss.', 'Points Scored', 'Pct Points', 'A/C Ratio',
-        'Errors']
-    )
+    try:
+        scores_df = pd.DataFrame(columns=[
+            'Match Date', 'Total Alphas', 'Total Charlies', 'Total Deltas',
+            'Total No-shoots', 'Total Mikes', 'Total NPM', 'Round Count',
+            'Points Poss.', 'Points Scored', 'Pct Points', 'A/C Ratio',
+            'Errors']
+        )
+    except Exception:
+        raise Exception('Line: 431 - Error')
 
     for idx, match_def in enumerate(match_def_json):
         match_date = dt.date.fromisoformat(match_def['match_date'])
@@ -443,13 +450,24 @@ def get_dataframe(
             dt.date.fromisoformat(match_date_range['start_date'])
         )
         if match_date <= form_end_date and match_date >= form_start_date:
-            if match_def['match_subtype'] != 'uspsa':
+            if (
+                'match_subtype' in match_def and
+                match_def['match_subtype'] != 'uspsa'
+            ):
                 continue
             match_date = match_def['match_date']
+
             for match_info in match_def['match_shooters']:
                 if (
+                    'sh_del' in match_info and
+                    match_info['sh_del'] is True
+                ):
+                    continue
+                if (
                     'sh_id' in match_info and
-                    match_info['sh_id'].upper() == mem_num.upper()
+                    match_info['sh_id'].upper() == mem_num.upper()  # and
+                    # 'sh_del' in match_info and
+                    # match_info['sh_del'] != 'true'
                 ):
 
                     shooter_uuid = match_info['sh_uid']
@@ -460,7 +478,10 @@ def get_dataframe(
                     continue
                 if division.lower() != match_info['sh_dvp'].lower():
                     continue
-                totals = calc_totals(match_scores_json, idx, shooter_uuid)
+                try:
+                    totals = calc_totals(match_scores_json, idx, shooter_uuid)
+                except Exception:
+                    raise Exception('Line: 473 - General Error')
                 round_count = get_round_count(totals)
                 points_possible = round_count * 5
                 points_scored = get_points_scored(shooter_pf, totals)
@@ -500,10 +521,13 @@ def get_dataframe(
                     break
                 break
 
-    scores_df['Avg Pct Scored'] = (
-        round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
-               .sum()) * 100, 2)
-    )
+    try:
+        scores_df['Avg Pct Scored'] = (
+            round((scores_df['Points Scored'].sum() / scores_df['Points Poss.']
+                        .sum()) * 100, 2)
+            )
+    except Exception:
+        raise Exception('failed at line 518')
     scores_df.sort_values(by=['Match Date'], inplace=True)
 
     return scores_df, shooter_fname, shooter_lname
