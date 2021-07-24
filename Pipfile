@@ -45,6 +45,7 @@ markdown = "*"
 django-filter = "*"
 django-admin-honeypot = "*"
 cloudscraper = "*"
+cloudflare = "*"
 
 [requires]
 python_version = "3.8"

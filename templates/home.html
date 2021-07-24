@@ -45,11 +45,11 @@
             will tell what percentage you need on your next classifier to move
             up a class.
         </p>
-        <p style="color: red">
+        <!-- <p style="color: red">
             NOTICE: uspsa.org changed how they authenticate user traffic. In
             doing so it broke this tool. I'm currently working on a solution.
             When this message no longer appears the problem will be fixed.
-        </p>
+        </p> -->
         <form id="classificationCalc" action="/get_upped/" method="POST">
             {% csrf_token %}
             <h3>{{ get_upped_form.as_p }}</h3>
