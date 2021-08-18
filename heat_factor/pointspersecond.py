@@ -178,8 +178,16 @@ async def http_get(url, session):
     Returns:
         [json object] -- the AWS response for each json file
     """
+    headers = {
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Referer': 'https://practiscore.com/',
+        'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+        'sec-ch-ua-mobile': '?0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+        'X-CSRF-TOKEN': '2ml0QNDDNyYOr9MtxKRdXGV9WGeGh68xtnf3hcBH'
+    }
     try:
-        async with session.get(url) as response:
+        async with session.get(url, headers=headers) as response:
             assert response.status == 200
             return await response.text()
     except Exception:

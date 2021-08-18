@@ -46,6 +46,14 @@ def get_match_def(match_link):
     Returns:
         [dict] -- json object with the match data from AWS.
     """
+    headers = {
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Referer': 'https://practiscore.com/',
+        'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+        'sec-ch-ua-mobile': '?0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+        'X-CSRF-TOKEN': '2ml0QNDDNyYOr9MtxKRdXGV9WGeGh68xtnf3hcBH'
+    }
     uuid_re = re.compile(
         r'practiscore\.com/results/new/([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-'
         r'[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})$'
@@ -72,7 +80,7 @@ def get_match_def(match_link):
         match_def = (
             json.loads(requests.get(
                 f'https://s3.amazonaws.com/ps-scores/production/{match_uuid}/'
-                'match_def.json').text)
+                'match_def.json', headers=headers).text)
         )
 
     except Exception:
