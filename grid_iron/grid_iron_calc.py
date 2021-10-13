@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 
 from grid_iron.models import Gridiron
+import sys
 
 
 def grid_iron_calc(grid_iron_url):
@@ -92,10 +93,20 @@ def get_dataframes(match_def, match_results):
     """
     df_match_def = pd.DataFrame(match_def['match_shooters'])
 
-    df_match_results = pd.DataFrame(match_results[0]['Match'][2]['Production'])
+    prod_index = int()
+    ss_index = int()
+    for entry in range(0, len(match_results[0]['Match'])):
+        if 'Production' in match_results[0]['Match'][entry].keys():
+            prod_index = entry
+        if 'Single Stack' in match_results[0]['Match'][entry].keys():
+            ss_index = entry
+
+    df_match_results = pd.DataFrame(
+        match_results[0]['Match'][prod_index]['Production']
+    )
     df_match_results = (
         df_match_results.append(pd.DataFrame(
-            match_results[0]['Match'][3]['Single Stack']
+            match_results[0]['Match'][ss_index]['Single Stack']
         ), ignore_index=True)
     )
 
