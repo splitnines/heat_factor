@@ -101,12 +101,21 @@ def get_dataframes(match_def, match_results):
         if 'Single Stack' in match_results[0]['Match'][entry].keys():
             ss_index = entry
 
+   # df_match_results = pd.DataFrame(
+   #     match_results[0]['Match'][prod_index]['Production']
+   # )
+   # df_match_results = (
+   #     df_match_results.append(pd.DataFrame(
+   #         match_results[0]['Match'][ss_index]['Single Stack']
+   #     ), ignore_index=True)
+   # )
+    
     df_match_results = pd.DataFrame(
-        match_results[0]['Match'][prod_index]['Production']
+        match_results[0]['Match'][0]['Overall']
     )
     df_match_results = (
         df_match_results.append(pd.DataFrame(
-            match_results[0]['Match'][ss_index]['Single Stack']
+            match_results[0]['Match'][0]['Overall']
         ), ignore_index=True)
     )
 
