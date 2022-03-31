@@ -170,7 +170,9 @@ def get_match_links(form_dict):
             str(dt.date.fromisoformat(match_link_info['date'])) not in
             delete_list and
             # added 09/30/2020 because steel challenge matches broke shit
-            'Steel Challenge' not in match_link_info['name']
+            'Steel Challenge' not in match_link_info['name'] and
+            # added for FullMetalJess because it broke shit 03/31/2022
+            'Monster Match League' in match_link_info['name']
         ):
             match_links_json.append(match_link_info)
 
