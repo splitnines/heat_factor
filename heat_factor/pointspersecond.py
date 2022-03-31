@@ -174,6 +174,10 @@ def get_match_links(form_dict):
             # added for FullMetalJessy because it broke shit 03/31/2022
             'Monster Match League' not in match_link_info['name']
         ):
+            print(
+                f'SYS_LOGGER: {match_link_info}',
+                file=sys.stderr
+            )
             match_links_json.append(match_link_info)
 
     return match_links_json
