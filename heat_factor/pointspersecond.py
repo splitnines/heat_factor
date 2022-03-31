@@ -272,12 +272,16 @@ def get_pps(match_defs, match_results, mem_num, division):
     for match_def, match_result in zip(match_defs, match_results):
         match_def = json.loads(match_def)
         match_result = json.loads(match_result)
-        uspsa_re = re.compile(r'uspsa')
-        match_type = match_def.get('match_type')
-        if match_type is not None and not uspsa_re.search(match_type.lower()):
+        # uspsa_re = re.compile(r'uspsa')
+        # match_type = match_def.get('match_type')
+        # if match_type is not None and not uspsa_re.search(match_type.lower()):
+        if (
+                'match_subtype' in match_def and
+                match_def['match_subtype'] != 'uspsa'
+            ):
             continue
-        # match_date = dt.date.fromisoformat(match_def['match_date'])
-        match_date = match_def['match_date']
+        match_date = dt.date.fromisoformat(match_def['match_date'])
+        # match_date = match_def['match_date']
 
         for shooter in match_def['match_shooters']:
             if division.lower() != shooter['sh_dvp'].lower():
