@@ -135,7 +135,7 @@ def get_match_links(form_dict):
     today = dt.date.today()
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': '2017-01-01',
+        'start_date': '2020-01-01',
     }
     if (
         form_dict['end_date'] != '' and
@@ -272,13 +272,9 @@ def get_pps(match_defs, match_results, mem_num, division):
     for match_def, match_result in zip(match_defs, match_results):
         match_def = json.loads(match_def)
         match_result = json.loads(match_result)
-        # uspsa_re = re.compile(r'uspsa')
-        # match_type = match_def.get('match_type')
-        # if match_type is not None and not uspsa_re.search(match_type.lower()):
-        if (
-                'match_subtype' in match_def and
-                match_def['match_subtype'] != 'uspsa'
-            ):
+        uspsa_re = re.compile(r'uspsa')
+        match_type = match_def.get('match_type')
+        if match_type is not None and not uspsa_re.search(match_type.lower()):
             continue
         match_date = dt.date.fromisoformat(match_def['match_date'])
         # match_date = match_def['match_date']
