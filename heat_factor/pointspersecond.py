@@ -38,7 +38,7 @@ def pointspersec(form_dict):
     try:
         match_links = get_match_links(form_dict)
     except Exception as e:
-        raise Exception(e)
+        raise Exception(f'Line: 41: {e}')
     try:
         match_defs, match_results = event_loop(http_sess, match_links)
     except Exception:
@@ -130,19 +130,19 @@ def get_match_links(form_dict):
     match_links_json = deque()
     # epoch = dt.date.fromisoformat('2017-01-01')
     raw_match_links = json.loads(
-        match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
-        # match_link_raw_data.group(1).replace('\\\\"', '')
-        #                             .replace('\\\'', '')
-        #                             .replace('\\u', '')
-        #                             .replace('\\', '')
-        #                             .replace('/', '')
-        #                             .replace('(', '')
-        #                             .replace(')', '')
+        # match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
+        match_link_raw_data.group(1).replace('\\\\"', '')
+                                    .replace('\\\'', '')
+                                    .replace('\\u', '')
+                                    .replace('\\', '')
+                                    .replace('/', '')
+                                    .replace('(', '')
+                                    .replace(')', '')
     )
     today = dt.date.today()
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': '2020-01-01',
+        'start_date': '2019-01-01',
     }
     if (
         form_dict['end_date'] != '' and
@@ -163,6 +163,7 @@ def get_match_links(form_dict):
 
     for match_link_info in raw_match_links:
         if (
+            dt.date.fromisoformat(match_link_info['date']) and 
             dt.date.fromisoformat(match_link_info['date']) >=
             dt.date.fromisoformat(match_date_range['start_date']) and
             dt.date.fromisoformat(match_link_info['date']) <=
