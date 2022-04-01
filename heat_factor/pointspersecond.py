@@ -163,7 +163,7 @@ def get_match_links(form_dict):
 
     for match_link_info in raw_match_links:
         if (
-            dt.date.fromisoformat(match_link_info['date']) and 
+            dt.date.fromisoformat(match_link_info['date']) and
             dt.date.fromisoformat(match_link_info['date']) >=
             dt.date.fromisoformat(match_date_range['start_date']) and
             dt.date.fromisoformat(match_link_info['date']) <=
