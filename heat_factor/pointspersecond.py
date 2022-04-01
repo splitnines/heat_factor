@@ -161,6 +161,8 @@ def get_match_links(form_dict):
         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
             delete_list.append(delete)
 
+    print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
+
     for match_link_info in raw_match_links:
         if (
             dt.date.fromisoformat(match_link_info['date']) and
@@ -176,11 +178,9 @@ def get_match_links(form_dict):
             'Monster Match League'.lower() not in \
                 match_link_info['name'].lower()
         ):
-            print(
-                f'SYS_LOGGER: {match_link_info}',
-                file=sys.stderr
-            )
             match_links_json.append(match_link_info)
+
+    print(f'SYS_LOGGER: {match_links_json}', file=sys.stderr)
 
     return match_links_json
 
