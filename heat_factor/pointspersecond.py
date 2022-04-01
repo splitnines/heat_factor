@@ -35,10 +35,10 @@ def pointspersec(form_dict):
         check_mem_num(form_dict['mem_num'])
     except Exception:
         raise Exception('USPSA membership number not found.')
-    try:
-        match_links = get_match_links(form_dict)
-    except Exception as e:
-        raise Exception(f'Line: 41: {e}')
+    # try:
+    match_links = get_match_links(form_dict)
+    # except Exception as e:
+    #     raise Exception(f'Line: 41: {e}')
     try:
         match_defs, match_results = event_loop(http_sess, match_links)
     except Exception:
@@ -173,7 +173,8 @@ def get_match_links(form_dict):
             # added 09/30/2020 because steel challenge matches broke shit
             'Steel Challenge' not in match_link_info['name'] and
             # added for FullMetalJessy because it broke shit 03/31/2022
-            'Monster Match League' not in match_link_info['name']
+            'Monster Match League'.lower() not in \
+                match_link_info['name'].lower()
         ):
             print(
                 f'SYS_LOGGER: {match_link_info}',
