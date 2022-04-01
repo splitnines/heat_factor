@@ -35,10 +35,10 @@ def pointspersec(form_dict):
         check_mem_num(form_dict['mem_num'])
     except Exception:
         raise Exception('USPSA membership number not found.')
-    # try:
-    match_links = get_match_links(form_dict)
-    # except Exception as e:
-    #     raise Exception(f'Line: 41: {e}')
+    try:
+        match_links = get_match_links(form_dict)
+    except Exception as e:
+        raise Exception(f'Line: 41: {e}')
     try:
         match_defs, match_results = event_loop(http_sess, match_links)
     except Exception:
