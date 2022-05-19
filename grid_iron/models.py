@@ -14,7 +14,7 @@ class Gridiron(models.Model):
     team_mem2 = models.CharField(max_length=20, unique=True, editable=True)
     team_mem3 = models.CharField(max_length=20, unique=True, editable=True)
     team_event = models.CharField(
-        max_length=20, choices=EVENT_CHOICES, default=1, editable=True
+        max_length=20, choices=EVENT_CHOICES, default='PRODSS', editable=True
     )
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, editable=True)
