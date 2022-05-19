@@ -1,11 +1,21 @@
 from django.db import models
 
 
+EVENT_CHOICES = (
+    ('PCCOPEN', 'PCCOPEN'),
+    ('PRODSS', 'PRODSS'),
+    ('COLIMITED', 'COLIMITED')
+)
+
+
 class Gridiron(models.Model):
     team_name = models.CharField(max_length=100, unique=True, editable=True)
     team_mem1 = models.CharField(max_length=20, unique=True, editable=True)
     team_mem2 = models.CharField(max_length=20, unique=True, editable=True)
     team_mem3 = models.CharField(max_length=20, unique=True, editable=True)
+    team_event = models.CharField(
+        max_length=20, choices=EVENT_CHOICES, default=1, editable=True
+    )
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, editable=True)
 

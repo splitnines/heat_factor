@@ -147,13 +147,14 @@ def get_team_totals(team_db, df_grid_iron):
     """
     results_cols = [
         'Team_Name', 'Team_Member1', 'Team_Member2', 'Team_Member3',
-        'Member_Score1', 'Member_Score2', 'Member_Score3',
+        'Member_Score1', 'Member_Score2', 'Member_Score3', 'Team_Event',
     ]
     df_grid_team_results = pd.DataFrame(columns=results_cols)
 
     dict_to_append = {}
     for team_dict in team_db:
         dict_to_append['Team_Name'] = team_dict.team_name
+        dict_to_append['Team_Event'] = team_dict.team_event
 
         if not (
             df_grid_iron[

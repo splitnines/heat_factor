@@ -22,8 +22,8 @@
 </p>
 <center>
     <img
-        src="{% static 'images/gridiron_bg1.jpg' %}"
-        width="200"
+        src="{% static 'images/gridiron_1.png' %}"
+        width="350"
         height="250"
     />
 </center>
@@ -41,6 +41,7 @@
         <th>TEAM MEM2</th>
         <th>TEAM MEM3</th>
         <th>TEAM SCORE</th>
+        <th>TEAM EVENT</th>
     </tr>
     {% for i in team_dict %}
     <tr>
@@ -50,6 +51,7 @@
         <td>{{ i.Team_Member2 }}</td>
         <td>{{ i.Team_Member3 }}</td>
         <td>{{ i.Team_Score }}</td>
+        <td>{{ i.Team_Event }}</td>
     </tr>
     {% endfor %}
 </table>
