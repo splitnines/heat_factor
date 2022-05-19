@@ -36,10 +36,13 @@
 <table style="width: 100%">
     <tr>
         <th>PLACE</th>
-        <th>TEAM NAME</th>
-        <th>TEAM MEM1</th>
-        <th>TEAM MEM2</th>
-        <th>TEAM MEM3</th>
+        <th>TEAM</th>
+        <th>SHOOTER</th>
+        <th>DIVISION</th>
+        <th>SHOOTER</th>
+        <th>DIVISION</th>
+        <th>SHOOTER</th>
+        <th>DIVISION</th>
         <th>TEAM SCORE</th>
         <th>TEAM EVENT</th>
     </tr>
@@ -48,8 +51,11 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ i.Team_Name }}</td>
         <td>{{ i.Team_Member1 }}</td>
+        <td>{{ i.Member_Div1 }}</td>
         <td>{{ i.Team_Member2 }}</td>
+        <td>{{ i.Member_Div2 }}</td>
         <td>{{ i.Team_Member3 }}</td>
+        <td>{{ i.Member_Div3 }}</td>
         <td>{{ i.Team_Score }}</td>
         <td>{{ i.Team_Event }}</td>
     </tr>

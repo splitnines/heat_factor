@@ -146,8 +146,12 @@ def get_team_totals(team_db, df_grid_iron):
         dict: team results dataframe in the form of a dict
     """
     results_cols = [
-        'Team_Name', 'Team_Member1', 'Team_Member2', 'Team_Member3',
-        'Member_Score1', 'Member_Score2', 'Member_Score3', 'Team_Event',
+        'Team_Name',
+        'Team_Member1', 'Division1',
+        'Team_Member2', 'Division2',
+        'Team_Member3', 'Division3',
+        'Member_Score1', 'Member_Score2', 'Member_Score3',
+        'Team_Event',
     ]
     df_grid_team_results = pd.DataFrame(columns=results_cols)
 
@@ -166,6 +170,10 @@ def get_team_totals(team_db, df_grid_iron):
                     df_grid_iron['sh_uuid'] == team_dict.team_mem1
                     ]['sh_ln'].values[0]
             )
+            dict_to_append['Member_Div1'] = (
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem1]
+                ['sh_dvp'].values[0]
+            )
         else:
             dict_to_append['Team_Member1'] = '***mmShooter NOT FOUND***'
 
@@ -179,6 +187,10 @@ def get_team_totals(team_db, df_grid_iron):
                     df_grid_iron['sh_uuid'] == team_dict.team_mem2
                     ]['sh_ln'].values[0]
             )
+            dict_to_append['Member_Div2'] = (
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem2]
+                ['sh_dvp'].values[0]
+            )
         else:
             dict_to_append['Team_Member2'] = '***mmShooter NOT FOUND***'
 
@@ -191,6 +203,10 @@ def get_team_totals(team_db, df_grid_iron):
                 ['sh_fn'].values[0] + ' ' + df_grid_iron[
                         df_grid_iron['sh_uuid'] == team_dict.team_mem3
                         ]['sh_ln'].values[0]
+            )
+            dict_to_append['Member_Div3'] = (
+                df_grid_iron[df_grid_iron['sh_uuid'] == team_dict.team_mem3]
+                ['sh_dvp'].values[0]
             )
         else:
             dict_to_append['Team_Member3'] = '***mmShooter NOT FOUND***'
@@ -240,7 +256,7 @@ def get_team_totals(team_db, df_grid_iron):
         )
 
     df_grid_team_results['Team_Score'] = (
-        df_grid_team_results.iloc[:, -4:].sum(axis=1)
+        df_grid_team_results.iloc[:, -7:].sum(axis=1)
     )
     df_grid_team_results.sort_values(
         by='Team_Score', ascending=False, inplace=True, ignore_index=True
