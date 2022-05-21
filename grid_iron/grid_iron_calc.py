@@ -134,6 +134,30 @@ def query_db():
     return Gridiron.objects.all()
 
 
+def check_event(row):
+
+    division_col_names = ['Member_Div1', 'Member_Div2', 'Member_Div3']
+
+    if row['Team_Event'] == 'PCCOPEN' and \
+            row[division_col_names].str.match('PCC|Open', case=False).all():
+        return 'False'
+
+    elif row['Team_Event'] == 'COLIMITED' and \
+            row[division_col_names].str.match(
+                'Carry Optics|CO|Limited', case=False
+            ).all():
+        return 'False'
+
+    elif row['Team_Event'] == 'PRODSS' and \
+            row[division_col_names].str.match(
+                'Production|Single Stack', case=False
+            ).all():
+        return 'False'
+
+    else:
+        return 'True'
+
+
 def get_team_totals(team_db, df_grid_iron):
     """Calculates the team results for gridiron.
 
@@ -147,9 +171,9 @@ def get_team_totals(team_db, df_grid_iron):
     """
     results_cols = [
         'Team_Name',
-        'Team_Member1', 'Division1',
-        'Team_Member2', 'Division2',
-        'Team_Member3', 'Division3',
+        'Team_Member1', 'Member_Div1',
+        'Team_Member2', 'Member_Div2',
+        'Team_Member3', 'Member_Div3',
         'Member_Score1', 'Member_Score2', 'Member_Score3',
         'Team_Event',
     ]
@@ -260,6 +284,9 @@ def get_team_totals(team_db, df_grid_iron):
     )
     df_grid_team_results.sort_values(
         by='Team_Score', ascending=False, inplace=True, ignore_index=True
+    )
+    df_grid_team_results['DQ'] = df_grid_team_results.apply(
+        lambda row: check_event(row), axis=1
     )
 
     return df_grid_team_results.to_dict(orient='records')

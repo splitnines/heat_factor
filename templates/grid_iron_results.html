@@ -45,6 +45,7 @@
         <th>DIVISION</th>
         <th>TEAM SCORE</th>
         <th>TEAM EVENT</th>
+        <th>TEAM DQ</th>
     </tr>
     {% for i in team_dict %}
     <tr>
@@ -58,6 +59,7 @@
         <td>{{ i.Member_Div3 }}</td>
         <td>{{ i.Team_Score }}</td>
         <td>{{ i.Team_Event }}</td>
+        <td>{{ i.DQ }}</td>
     </tr>
     {% endfor %}
 </table>
