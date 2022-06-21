@@ -178,7 +178,7 @@ def get_match_links(form_dict):
             # 'Steel Challenge' not in match_link_info['name'] and
             # added for FullMetalJessy because it broke shit 03/31/2022
             # 'Monster Match League'.lower() not in \
-            #     match_link_info['name'].lower()
+            #     match_link_info['name'].lower() test
         ):
             match_links_json.append(match_link_info)
 
