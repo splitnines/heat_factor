@@ -128,7 +128,7 @@ def get_match_links(form_dict):
         match_link_re.search(str(shooter_ps_match_links.content))
     )
     match_links_json = deque()
-    # epoch = dt.date.fromisoformat('2017-01-01')
+    epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(
         # match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
         match_link_raw_data.group(1).replace('\\\\"', '')
@@ -142,7 +142,7 @@ def get_match_links(form_dict):
     today = dt.date.today()
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': '2019-01-01',
+        'start_date': epoch,
     }
     if (
         form_dict['end_date'] != '' and
@@ -151,7 +151,7 @@ def get_match_links(form_dict):
         match_date_range['end_date'] = form_dict['end_date']
     if (
         form_dict['start_date'] != '' and
-        form_dict['start_date'] > match_date_range['start_date'] and
+        # form_dict['start_date'] > match_date_range['start_date'] and
         form_dict['start_date'] < match_date_range['end_date']
     ):
         match_date_range['start_date'] = form_dict['start_date']
@@ -161,22 +161,24 @@ def get_match_links(form_dict):
         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
             delete_list.append(delete)
 
-    print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
+    # print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
 
     for match_link_info in raw_match_links:
         if (
-            dt.date.fromisoformat(match_link_info['date']) and
-            dt.date.fromisoformat(match_link_info['date']) >=
-            dt.date.fromisoformat(match_date_range['start_date']) and
+            # dt.date.fromisoformat(match_link_info['date']) and
+            dt.date.fromisoformat(match_link_info['date']) >= epoch and
+            # dt.date.fromisoformat(match_link_info['date']) >=
+            # dt.date.fromisoformat(match_date_range['start_date']) and
             dt.date.fromisoformat(match_link_info['date']) <=
             dt.date.fromisoformat(match_date_range['end_date']) and
             str(dt.date.fromisoformat(match_link_info['date'])) not in
             delete_list and
             # added 09/30/2020 because steel challenge matches broke shit
-            'Steel Challenge' not in match_link_info['name'] and
+            'Steel Challenge' not in match_link_info['name']
+            # 'Steel Challenge' not in match_link_info['name'] and
             # added for FullMetalJessy because it broke shit 03/31/2022
-            'Monster Match League'.lower() not in \
-                match_link_info['name'].lower()
+            # 'Monster Match League'.lower() not in \
+            #     match_link_info['name'].lower()
         ):
             match_links_json.append(match_link_info)
 
