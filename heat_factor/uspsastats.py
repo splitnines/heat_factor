@@ -44,7 +44,7 @@ def uspsastats(form_data):
     except Exception as e:
         raise Exception(f'{e}')
 
-    epoch = '2019-01-01'
+    epoch = '2020-01-01'
 
     match_date_range = {
         'end_date': str(dt.date.fromisoformat(str(today))),

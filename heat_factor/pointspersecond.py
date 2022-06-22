@@ -39,6 +39,9 @@ def pointspersec(form_dict):
         match_links = get_match_links(form_dict)
     except Exception as e:
         raise Exception(f'Line: 41: {e}')
+
+    # Need to perform filtering here
+
     try:
         match_defs, match_results = event_loop(http_sess, match_links)
     except Exception:
@@ -89,7 +92,7 @@ def get_match_links(form_dict):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/83.0.4103.61 Safari/537.36'
+        'Chrome/87.0.4280.88 Safari/537.36'
     }
     login_status_strs = {
         'bad_pass': 'Forgot Password',
@@ -100,6 +103,7 @@ def get_match_links(form_dict):
         'username': form_dict['username'],
         'password': form_dict['password'],
     }
+
     with requests.Session() as sess:
         login = sess.post(
             'https://practiscore.com/login', data=login_dict, headers=headers
@@ -127,6 +131,7 @@ def get_match_links(form_dict):
     match_link_raw_data = (
         match_link_re.search(str(shooter_ps_match_links.content))
     )
+
     match_links_json = deque()
     epoch = dt.date.fromisoformat('2019-01-01')
     raw_match_links = json.loads(
@@ -139,52 +144,130 @@ def get_match_links(form_dict):
                                     .replace('(', '')
                                     .replace(')', '')
     )
-    today = dt.date.today()
-    match_date_range = {
-        'end_date': str(dt.date.fromisoformat(str(today))),
-        'start_date': epoch,
-    }
-    if (
-        form_dict['end_date'] != '' and
-        form_dict['end_date'] < str(dt.date.fromisoformat(str(today)))
-    ):
-        match_date_range['end_date'] = form_dict['end_date']
-    if (
-        form_dict['start_date'] != '' and
-        # form_dict['start_date'] > match_date_range['start_date'] and
-        form_dict['start_date'] < match_date_range['end_date']
-    ):
-        match_date_range['start_date'] = form_dict['start_date']
-
-    delete_list = []
-    for delete in form_dict['delete_match'].replace(' ', '').split(','):
-        if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
-            delete_list.append(delete)
-
-    # print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
 
     for match_link_info in raw_match_links:
+        match_link_info['name'] = match_link_info['name'].strip()
         if (
-            # dt.date.fromisoformat(match_link_info['date']) and
             dt.date.fromisoformat(match_link_info['date']) >= epoch and
-            # dt.date.fromisoformat(match_link_info['date']) >=
-            # dt.date.fromisoformat(match_date_range['start_date']) and
-            dt.date.fromisoformat(match_link_info['date']) <=
-            dt.date.fromisoformat(match_date_range['end_date']) and
-            str(dt.date.fromisoformat(match_link_info['date'])) not in
-            delete_list and
-            # added 09/30/2020 because steel challenge matches broke shit
+            # added 09/30/2020 because Steel Challenge matches break shit
             'Steel Challenge' not in match_link_info['name']
-            # 'Steel Challenge' not in match_link_info['name'] and
-            # added for FullMetalJessy because it broke shit 03/31/2022
-            # 'Monster Match League'.lower() not in \
-            #     match_link_info['name'].lower() test
         ):
             match_links_json.append(match_link_info)
 
-    print(f'SYS_LOGGER: {match_links_json}', file=sys.stderr)
-
     return match_links_json
+
+
+# def get_match_links(form_dict):
+#     """Logs into Practicescore.com and scrapes the links to each match the
+#        shooter participated in.  These links are scraped from javascript
+#        code in the HTML of the users Practiscore home page.
+#     Arguments:
+#         form_dict {dict} -- dict containing username and password used to log
+#                             in to Practiscore.com
+#     Returns:
+#         [deque] -- list of json object containing the match link uuids for
+#                    pulling match json files from AWS.
+#     """
+#     shooter_ps_match_links = Response
+#     headers = {
+#         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+#         'AppleWebKit/537.36 (KHTML, like Gecko) '
+#         'Chrome/83.0.4103.61 Safari/537.36'
+#     }
+#     login_status_strs = {
+#         'bad_pass': 'Forgot Password',
+#         'bad_email': 'have an account with the email',
+#         'success': r'<a href=\"([\w:/\.\d]+)\"\sid=\"viewAllButton\"'
+#     }
+#     login_dict = {
+#         'username': form_dict['username'],
+#         'password': form_dict['password'],
+#     }
+#     with requests.Session() as sess:
+#         login = sess.post(
+#             'https://practiscore.com/login', data=login_dict, headers=headers
+#         )
+#         if re.findall(login_status_strs['bad_pass'], str(login.content)):
+#             sess.close
+#             raise Exception('Bad password.')
+#         if re.findall(login_status_strs['bad_email'], str(login.content)):
+#             sess.close
+#             raise Exception('Bad email/username')
+#         if not re.findall(login_status_strs['success'], str(login.content)):
+#             sess.close
+#             raise Exception('"ViewAll" link not found.')
+#         if re.search(login_status_strs['success'], str(login.content)):
+#             view_all_link = (
+#                 re.search(login_status_strs['success'], str(login.content))
+#             )
+#             shooter_ps_match_links = (
+#                 sess.get(view_all_link.group(1), headers=headers)
+#             )
+#             sess.get('https://practiscore.com/logout', headers=headers)
+#             sess.close
+
+#     match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
+#     match_link_raw_data = (
+#         match_link_re.search(str(shooter_ps_match_links.content))
+#     )
+#     match_links_json = deque()
+#     epoch = dt.date.fromisoformat('2019-01-01')
+#     raw_match_links = json.loads(
+#         # match_link_raw_data.group(1).replace('\\\\"', '').replace('\\\'', '')
+#         match_link_raw_data.group(1).replace('\\\\"', '')
+#                                     .replace('\\\'', '')
+#                                     .replace('\\u', '')
+#                                     .replace('\\', '')
+#                                     .replace('/', '')
+#                                     .replace('(', '')
+#                                     .replace(')', '')
+#     )
+#     today = dt.date.today()
+#     match_date_range = {
+#         'end_date': str(dt.date.fromisoformat(str(today))),
+#         'start_date': epoch,
+#     }
+#     if (
+#         form_dict['end_date'] != '' and
+#         form_dict['end_date'] < str(dt.date.fromisoformat(str(today)))
+#     ):
+#         match_date_range['end_date'] = form_dict['end_date']
+#     if (
+#         form_dict['start_date'] != '' and
+#         # form_dict['start_date'] > match_date_range['start_date'] and
+#         form_dict['start_date'] < match_date_range['end_date']
+#     ):
+#         match_date_range['start_date'] = form_dict['start_date']
+
+#     delete_list = []
+#     for delete in form_dict['delete_match'].replace(' ', '').split(','):
+#         if re.match(r'^(\d\d\d\d-\d\d-\d\d)$', delete):
+#             delete_list.append(delete)
+
+#     # print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
+
+#     for match_link_info in raw_match_links:
+#         if (
+#             # dt.date.fromisoformat(match_link_info['date']) and
+#             dt.date.fromisoformat(match_link_info['date']) >= epoch and
+#             # dt.date.fromisoformat(match_link_info['date']) >=
+#             # dt.date.fromisoformat(match_date_range['start_date']) and
+#             dt.date.fromisoformat(match_link_info['date']) <=
+#             dt.date.fromisoformat(match_date_range['end_date']) and
+#             str(dt.date.fromisoformat(match_link_info['date'])) not in
+#             delete_list and
+#             # added 09/30/2020 because steel challenge matches broke shit
+#             'Steel Challenge' not in match_link_info['name']
+#             # 'Steel Challenge' not in match_link_info['name'] and
+#             # added for FullMetalJessy because it broke shit 03/31/2022
+#             # 'Monster Match League'.lower() not in \
+#             #     match_link_info['name'].lower() test
+#         ):
+#             match_links_json.append(match_link_info)
+
+#     print(f'SYS_LOGGER: {match_links_json}', file=sys.stderr)
+
+#     return match_links_json
 
 
 async def http_get(url, session):
