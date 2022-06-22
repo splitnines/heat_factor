@@ -145,6 +145,8 @@ def get_match_links(form_dict):
                                     .replace(')', '')
     )
 
+    print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
+
     for match_link_info in raw_match_links:
         match_link_info['name'] = match_link_info['name'].strip()
         if (
