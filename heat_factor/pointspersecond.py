@@ -127,6 +127,7 @@ def get_match_links(form_dict):
             sess.get('https://practiscore.com/logout', headers=headers)
             sess.close
 
+    print(f'SYS_LOGGER: {str(shooter_ps_match_links.content)}', file=sys.stderr)
     match_link_re = re.compile(r'var matches = (\[.+\]);\\n\s+var selected =')
     match_link_raw_data = (
         match_link_re.search(str(shooter_ps_match_links.content))
@@ -145,7 +146,7 @@ def get_match_links(form_dict):
                                     .replace(')', '')
     )
 
-    print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
+    # print(f'SYS_LOGGER: {raw_match_links}', file=sys.stderr)
 
     for match_link_info in raw_match_links:
         match_link_info['name'] = match_link_info['name'].strip()
