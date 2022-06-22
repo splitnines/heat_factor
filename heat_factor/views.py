@@ -243,7 +243,7 @@ def points_view(request):
             form_data = {
                 'username': request.POST.get('username'),
                 'password': request.POST.get('password'),
-                'mem_num': request.POST.get('mem_num'),
+                'mem_num': request.POST.get('mem_num').strip(),
                 'division': request.POST.get('division'),
 
                 'delete_match': (
@@ -309,7 +309,7 @@ def pps_view(request):
             form_data = {
                 'username': request.POST.get('username_pps'),
                 'password': request.POST.get('password_pps'),
-                'mem_num': request.POST.get('mem_num_pps'),
+                'mem_num': request.POST.get('mem_num_pps').strip(),
                 'division': request.POST.get('division_pps'),
                 'delete_match': (
                     request.POST.get('delete_match_pps')
