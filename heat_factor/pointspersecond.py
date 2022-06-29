@@ -304,7 +304,7 @@ def get_pps(match_defs, match_results, mem_num, division):
                 continue
             if (
                 'sh_id' in shooter and
-                mem_num.upper() == shooter['sh_id'].upper()
+                re.sub(r'\D', '', mem_num) == re.sub(r'\D', '', shooter['sh_id'])
             ):
                 try:
                     pps_dict[match_date] = (
