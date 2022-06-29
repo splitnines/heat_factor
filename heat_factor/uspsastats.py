@@ -474,7 +474,9 @@ def get_dataframe(
                     continue
                 if (
                     'sh_id' in match_info and
-                    match_info['sh_id'].upper() == mem_num.upper()  # and
+                    re.sub(r'\D', '', match_info['sh_id']) ==
+                        re.sub(r'\D', '', mem_num)
+                    # match_info['sh_id'].upper() == mem_num.upper()  # and
                     # 'sh_del' in match_info and
                     # match_info['sh_del'] != 'true'
                 ):
