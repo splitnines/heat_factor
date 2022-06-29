@@ -302,22 +302,28 @@ def get_pps(match_defs, match_results, mem_num, division):
         for shooter in match_def['match_shooters']:
             if division.lower() != shooter['sh_dvp'].lower():
                 continue
-            if (
-                'sh_id' in shooter and
-                mem_num.upper() == shooter['sh_id'].upper()
-            ):
-                try:
-                    pps_dict[match_date] = (
-                        results_gopher(match_result, shooter['sh_uid'])
-                    )
-                except Exception:
-                    raise Exception('Received exception from results_gopher.')
-                if pps_dict[match_date] == 0:
-                    del pps_dict[match_date]
-                shooter_fn = shooter['sh_fn']
-                shooter_ln = shooter['sh_ln']
-            else:
-                continue
+            # if (
+            #     'sh_id' in shooter and
+            #     mem_num.upper() == shooter['sh_id'].upper()
+            # ):
+            if 'sh_id' in shooter:
+                mem_num = re.sub(r'\w', '', mem_num)
+                shooter_sh_id = re.sub(r'\w', '', shooter['sh_id'])
+                if mem_num == shooter_sh_id:
+                    try:
+                        pps_dict[match_date] = (
+                            results_gopher(match_result, shooter['sh_uid'])
+                        )
+                    except Exception:
+                        raise Exception(
+                            'Received exception from results_gopher.'
+                        )
+                    if pps_dict[match_date] == 0:
+                        del pps_dict[match_date]
+                    shooter_fn = shooter['sh_fn']
+                    shooter_ln = shooter['sh_ln']
+                else:
+                    continue
 
     if len(pps_dict) > 0:
         return (
