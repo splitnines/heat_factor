@@ -150,7 +150,7 @@ def check_event(row):
 
     elif row['Team_Event'] == 'PRODSS' and \
             row[division_col_names].str.match(
-                'Production|Single Stack', case=False
+                'Production|Single Stack|Revolver', case=False
             ).all():
         return 'False'
 
