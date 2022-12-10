@@ -94,7 +94,7 @@ def get_dataframes(match_def, match_results):
     df_match_def = pd.DataFrame(match_def['match_shooters'])
 
     # prod_index = int()
-    # ss_index = int() test
+    # ss_index = int()
     # for entry in range(0, len(match_results[0]['Match'])):
         # if 'Production' in match_results[0]['Match'][entry].keys():
         #     prod_index = entry
