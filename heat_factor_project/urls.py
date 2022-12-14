@@ -9,7 +9,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
     path('', include('heat_factor.urls')),
-    # path('', include('admin_honeypot_fix.urls')),
+    path('', include('admin_honeypot_fix.urls')),
     path('', include('grid_iron.urls')),
     path(
         'robots.txt',
