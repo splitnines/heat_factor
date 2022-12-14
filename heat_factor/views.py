@@ -26,6 +26,10 @@ def sys_logger(app_name, *app_data):
     print(f'SYS_LOGGER: {app_name}, {app_data}', file=sys.stderr)
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 def home_view(request):
     """Routes to site home page template.
     Arguments:
@@ -198,7 +202,8 @@ def get_upped_view(request):
             """,
             'date': str(dt.datetime.now()),
         }
-        if request.is_ajax():
+        # if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse(
                 json.dumps(content), content_type="application/json"
             )

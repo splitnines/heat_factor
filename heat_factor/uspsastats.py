@@ -526,7 +526,8 @@ def get_dataframe(
                     alpha_charlie_ratio, pct_errors
                 ]
                 score_series = pd.Series(score_list, index=scores_df.columns)
-                scores_df = scores_df.append(score_series, ignore_index=True)
+                # scores_df = scores_df.append(score_series, ignore_index=True)
+                scores_df = pd.concat([scores_df, score_series.to_frame().T])
                 # limit total matches to plot to 50
                 if idx > 50:
                     break
@@ -576,8 +577,12 @@ def get_graph(scores, shooter_name, mem_number, division):
         x, scores['Avg Pct Scored'], label='Average Percent Points',
         color='#d3d3d3', linestyle='dashed',  linewidth=2
     )
+    # plt.plot(
+    #     x, scores['A/C Ratio'], 'co-', label='C:A Ratio', color='#2b2d9c',
+    #     linestyle='solid', marker='o', markersize=4, linewidth=2
+    # )
     plt.plot(
-        x, scores['A/C Ratio'], 'co-', label='C:A Ratio', color='#2b2d9c',
+        x, scores['A/C Ratio'], label='C:A Ratio', color='#2b2d9c',
         linestyle='solid', marker='o', markersize=4, linewidth=2
     )
     plt.bar(

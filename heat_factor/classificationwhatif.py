@@ -110,7 +110,8 @@ def http_get(mem_num, division):
     url = f'https://uspsa.org/classification/{mem_num}'
     scraper = cloudscraper.create_scraper()
     http_resp = scraper.get(url).text
-    bs = BeautifulSoup(http_resp, 'lxml')
+    # bs = BeautifulSoup(http_resp, 'lxml')
+    bs = BeautifulSoup(http_resp, 'html.parser')
 
     if bs.find('tbody', {'id': f'{division_search}-dropDown'}) is None:
         raise Exception
