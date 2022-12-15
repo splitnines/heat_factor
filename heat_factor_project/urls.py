@@ -3,8 +3,8 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
-    # path('admin/', include('admin_honeypot.urls',
-    #      namespace='admin_honeypot')),
+    path('admin/', include('admin_honeypot.urls',
+         namespace='admin_honeypot')),
     path('mgnt', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
