@@ -6,6 +6,7 @@ import re
 from collections import defaultdict, deque
 from io import BytesIO
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -14,6 +15,9 @@ from aiohttp import ClientSession
 from requests.adapters import Response
 
 import sys
+
+
+matplotlib.use('AGG')
 
 
 def uspsastats(form_data):
