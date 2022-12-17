@@ -54,7 +54,6 @@ tzdata = "==2022.7"
 urllib3 = "==1.26.13"
 whitenoise = "==6.2.0"
 yarl = "==1.8.2"
-django-admin-honeypot = {git = "https://github.com/dmpayton/django-admin-honeypot.git"}
 
 [requires]
 python_version = "3.1"
