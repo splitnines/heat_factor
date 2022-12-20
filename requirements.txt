@@ -13,7 +13,6 @@ contourpy==1.0.6
 cycler==0.11.0
 dj-database-url==1.1.0
 Django==4.1.4
-django-admin-honeypot @ git+https://github.com/dmpayton/django-admin-honeypot.git@a840496d183df89965eeb33c9a5dd9ea3919dfff
 django-filter==22.1
 django-heroku==0.3.1
 django-ipware==4.0.2
