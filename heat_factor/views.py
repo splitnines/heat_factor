@@ -142,7 +142,8 @@ def get_upped_view(request):
         shooter = ClassificationWhatIf(mem_num, division)
         uspsa_model_util(Uspsa, mem_num, division)
     except Exception:
-        if request.is_ajax():
+        # if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse(
                 json.dumps(exception_content), content_type="application/json"
             )
@@ -157,7 +158,8 @@ def get_upped_view(request):
                 </font>. Nowhere to go from here.""",
             'date': str(dt.datetime.now()),
         }
-        if request.is_ajax():
+        # if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse(
                 json.dumps(content), content_type="application/json"
             )
@@ -168,7 +170,8 @@ def get_upped_view(request):
         try:
             initial_dict = shooter.get_initial()
         except Exception:
-            if request.is_ajax():
+            # if request.is_ajax():
+            if is_ajax(request):
                 return HttpResponse(
                     json.dumps(exception_content),
                     content_type="application/json"
@@ -186,7 +189,8 @@ def get_upped_view(request):
             'response_text': initial_calssification_html,
             'date': str(dt.datetime.now()),
         }
-        if request.is_ajax():
+        # if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse(
                 json.dumps(content), content_type="application/json"
             )
@@ -224,7 +228,8 @@ def get_upped_view(request):
             """,
             'date': str(dt.datetime.now()),
         }
-        if request.is_ajax():
+        # if request.is_ajax():
+        if is_ajax(request):
             return HttpResponse(
                 json.dumps(content), content_type="application/json"
             )
