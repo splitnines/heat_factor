@@ -139,7 +139,7 @@ def check_event(row):
     division_col_names = ['Member_Div1', 'Member_Div2', 'Member_Div3']
 
     if row['Team_Event'] == 'PCCOPEN' and \
-            row[division_col_names].str.match('PCC|Open', case=False).all():
+            row[division_col_names].str.match('PCC|Open|Limited Optics', case=False).all():
         return 'False'
 
     elif row['Team_Event'] == 'COLIMITED' and \
