@@ -10,6 +10,7 @@ DIVISION_LIST = [
     ('Limited', 'Limited'),
     ('Production', 'Production'),
     ('Carry Optics', 'Carry Optics'),
+    ('Limited Optics', 'Limited Optics')
     ('PCC', 'PCC'),
     ('Single Stack', 'Single Stack'),
     ('Limited 10', 'Limited 10'),
