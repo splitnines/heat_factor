@@ -127,14 +127,21 @@ def get_upped_view(request):
             return render(request, 'error.html', exception_content)
     sys_logger('get_upped', mem_num, division)
 
+    # exception_content = {
+    #         'response_text': f"""
+    #             <font color=\"red\">2 Mikes, 2 No-shoots:</font> Member number
+    #             <font color=\"red\">{mem_num}</font> in
+    #             <font color=\"red\">{division}</font> division.<br> If
+    #             your USPSA classifier scores are set to priviate this
+    #             tool won\'t work.<br> Also, if you don\'t have at least 3
+    #             qualifing classifier scores on record this tool won\'t work.
+    #             """,
+    #         'date': str(dt.datetime.now())
+    #     }
     exception_content = {
             'response_text': f"""
-                <font color=\"red\">2 Mikes, 2 No-shoots:</font> Member number
-                <font color=\"red\">{mem_num}</font> in
-                <font color=\"red\">{division}</font> division.<br> If
-                your USPSA classifier scores are set to priviate this
-                tool won\'t work.<br> Also, if you don\'t have at least 3
-                qualifing classifier scores on record this tool won\'t work.
+                This tool is no longer working because USPSA.org is now blocking 
+                my access to the classifier data.
                 """,
             'date': str(dt.datetime.now())
         }
