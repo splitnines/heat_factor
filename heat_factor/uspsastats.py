@@ -275,7 +275,7 @@ def get_match_links(form_dict):
             raise Exception('Bad email/username')
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
-            # debugging cloudscraper
+            # debugging cloudscraper...
             # print(str(login.content))
             raise Exception('"ViewAll" link not found.')
         if re.search(login_status_strs['success'], str(login.content)):
