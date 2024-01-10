@@ -1,3 +1,4 @@
+
 import asyncio
 import base64
 import datetime as dt
@@ -11,9 +12,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
+import cloudscraper
 from aiohttp import ClientSession
 from requests.adapters import Response
-
 import sys
 
 
@@ -210,11 +211,33 @@ def get_match_links(form_dict):
                    pulling match json files from AWS.
     """
     shooter_ps_match_links = Response
+    # headers = {
+    #     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) '
+    #     'Gecko/20100101 Firefox/91.0'
+    #     # 'AppleWebKit/537.36 (KHTML, like Gecko) '
+    #     # 'Chrome/87.0.4280.88 Safari/537.36'
+    # }
     headers = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/87.0.4280.88 Safari/537.36'
+        'Host': 'practiscore.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': '85',
+        'Origin': 'https://practiscore.com',
+        'Connection': 'keep-alive',
+        'Referer': 'https://practiscore.com/login',
+        'Cookie': 'laravel_session=eyJpdiI6IlM2czdJSXQrN3pVQndBRjBHVE1QV0E9PSIsInZhbHVlIjoiKzNXTkxzOUVxYlZQWVo3ajlMa045dVBVbzlCanBVSWlSSUQ0UWE2eWt2Y25NZlwveitOYWJlZ3JxajZvSzF2VnQiLCJtYWMiOiJiY2VkODg4Zjg4OTE1MTlhMzE2MDA0ZTVkNmI3MDE4ZmE5MzA2YjU4ZGNhMGYxNjU3N2M2N2U2MWQ5MDgxNGEyIn0%3D; _ga_LL3PDFZ266=GS1.1.1704258040.75.1.1704259458.59.0.0; _ga=GA1.2.456714906.1702348844; __stripe_mid=7a5bf927-d333-4165-95e3-2d1e03f9c70c26dbb8; ps_id=9be4bb05-6023-4143-8a6f-e54a5733c39f; userThemeColor=dark; cookieconsent_status=dismiss; _fbp=fb.1.1703294617586.1617478448; cf_clearance=XhqlA4Ok.P6DTG1uuYgMDxDL4MiwoOWdN_Z12wG.V9I-1704722686-0-2-ce41c899.ba92e002.99409779-0.2.1704722686; 8B0Y6N6rRPZC2rJ8a4WxG9l9qhh4upiByB1pwMzz=eyJpdiI6Im84OTVNZ2hhVG1aeTVEelBMOEtjNkE9PSIsInZhbHVlIjoiR1NiQkxMXC9lT3poakJ6TFRJcFJERmtwTkxwZTlBVGExOXNzSGx5UnQ4byttUHo4bk1udU1DdnZXQVY5bU5maHV0Z1NxOXJZbTlON3RVWEpaQkl4YmNISlY5YmpZb2lONFA0N1FGMXh6VmREeFlIcVNcL1NcL0JUcGRYNFRnb0JJM0NXSWFKNnJQeFBTcGQ1UDlmcnRtSmxcL1JqbTgxMkxDbFpGRVRsVmxqbXJkeDZMWDhJdVpWWnp5S0pUYzZCRFBwMmhBaWg4RDRGVERtZTdJUlwvOXVOdm5TVXhYTUswWWZIdHI1UUtLbk9SM1podHU4NHhTRUdWOHh0aVVqYzBjNGNVOXh4eVNobk9JMmRLbFU2ejRoZkRYTnY3TWZBZEtOak5lM09iXC9raTBHcjh1M2JFY0tqdVNJRXByMHFLUitUK2siLCJtYWMiOiI1OGMxNjUwOTg2YWIxODUzNjU3MDMzZTFjNmI1Y2NkNTk4NjBlZmRlZTBjOGM0YmY3ZjU2MDNmOTFhMjMxMjc3In0%3D; __stripe_sid=75f76e12-280a-4d0b-a810-7c0a823d47eeefc08c',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+        'Sec-GPC': '1',
+        'TE': 'trailers',
     }
+
     login_status_strs = {
         'bad_pass': 'Forgot Password',
         'bad_email': 'have an account with the email',
@@ -225,7 +248,22 @@ def get_match_links(form_dict):
         'password': form_dict['password'],
     }
 
-    with requests.Session() as sess:
+    # with requests.Session() as sess:
+    # session = requests.session()
+    session = requests.Session()
+    with cloudscraper.create_scraper(
+        sess=session, delay=10,
+        interpreter='nodejs',
+        browser={
+            'browser': 'chrome',
+            'platform': 'windows',
+            'desktop': True,
+        },
+        captcha={
+            'provider': '2captcha',
+            'api_key': 'you_2captcha_api_key',
+        },
+    ) as sess:
         login = sess.post(
             'https://practiscore.com/login', data=login_dict, headers=headers
         )
@@ -237,6 +275,8 @@ def get_match_links(form_dict):
             raise Exception('Bad email/username')
         if not re.findall(login_status_strs['success'], str(login.content)):
             sess.close
+            # debugging cloudscraper...
+            # print(str(login.content))
             raise Exception('"ViewAll" link not found.')
         if re.search(login_status_strs['success'], str(login.content)):
             view_all_link = (
