@@ -54,7 +54,12 @@ tzdata = "==2022.7"
 urllib3 = "==1.26.13"
 whitenoise = "==6.2.0"
 yarl = "==1.8.2"
+<<<<<<< HEAD
 cfscrape = "*"
+=======
+django-ipware = "==4.0.2"
+packaging = "==22.0"
+>>>>>>> 412614b678a87db651db54d97ac2af6e608866d1
 
 [requires]
 python_version = "3.11"

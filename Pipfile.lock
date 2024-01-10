@@ -1,7 +1,11 @@
 {
     "_meta": {
         "hash": {
+<<<<<<< HEAD
             "sha256": "b4068f3870c77cc33aad12df6b741696bc2b3fcbfe6030aedfe1e5370cb24d5e"
+=======
+            "sha256": "e63d66b9451644fcef129e565d9a8c68f3e16a40cf429fd58a3c41ddeee70665"
+>>>>>>> 412614b678a87db651db54d97ac2af6e608866d1
         },
         "pipfile-spec": 6,
         "requires": {
@@ -324,6 +328,15 @@
             ],
             "index": "pypi",
             "version": "==0.3.1"
+        },
+        "django-ipware": {
+            "hashes": [
+                "sha256:602a58325a4808bd19197fef2676a0b2da2df40d0ecf21be414b2ff48c72ad05",
+                "sha256:878dbb06a87e25550798e9ef3204ed70a200dd8b15e47dcef848cf08244f04c9"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
+            "version": "==4.0.2"
         },
         "djangorestframework": {
             "hashes": [
@@ -717,11 +730,12 @@
         },
         "packaging": {
             "hashes": [
-                "sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5",
-                "sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7"
+                "sha256:2198ec20bd4c017b8f9717e00f0c8714076fc2fd93816750ab48e2c41de2cfd3",
+                "sha256:957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3"
             ],
+            "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==23.2"
+            "version": "==22.0"
         },
         "pandas": {
             "hashes": [
