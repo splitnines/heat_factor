@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "be29fa2fd360a8b9cab9bce1964fbd99d30d10ce825dbaa206674b3a7cce2f21"
+            "sha256": "b4068f3870c77cc33aad12df6b741696bc2b3fcbfe6030aedfe1e5370cb24d5e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -181,6 +181,14 @@
             "markers": "python_version >= '3.6'",
             "version": "==2022.12.7"
         },
+        "cfscrape": {
+            "hashes": [
+                "sha256:7c5ef94554e0d6ee7de7cd0d42051526e716ce6c0357679ee0b82c49e189e2ef",
+                "sha256:c62085b42822e196907196f6a09561ec6b2aea8bd87e5a6f84d382e60dd23fe4"
+            ],
+            "index": "pypi",
+            "version": "==2.1.1"
+        },
         "charset-normalizer": {
             "hashes": [
                 "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845",
@@ -192,11 +200,11 @@
         },
         "cloudscraper": {
             "hashes": [
-                "sha256:5f0cde23774270e8a092de68e0fbd68e17854c767fc2d4042a91bda9e4816871",
-                "sha256:ec30da6cee60d0a95e898d9b3aaf09291a0d8b6cf751e86c6f3420b699a00091"
+                "sha256:429c6e8aa6916d5bad5c8a5eac50f3ea53c9ac22616f6cb21b18dcc71517d0d3",
+                "sha256:76f50ca529ed2279e220837befdec892626f9511708e200d48d5bb76ded679b0"
             ],
             "index": "pypi",
-            "version": "==1.2.66"
+            "version": "==1.2.71"
         },
         "contourpy": {
             "hashes": [
@@ -909,11 +917,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2",
-                "sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6"
+                "sha256:385eb4edd9c9d5c17540511303e39a147ce2fc04bc55289c322b9e5904fe2c05",
+                "sha256:be1af57fc409f93647f2e8e4573a142ed38724b8cdd389706a867bb4efcf1e78"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==69.0.2"
+            "version": "==69.0.3"
         },
         "six": {
             "hashes": [
